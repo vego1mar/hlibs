@@ -8,9 +8,15 @@
 
 namespace file {
 
-    class FileReaderBuffered : FileReaderBase {
+    class FileReaderBuffered : public FileReaderBase {
+    private:
+        std::string line;
+
     public:
-        FileReaderBuffered() = default;
+        FileReaderBuffered() = delete;
+
+        explicit FileReaderBuffered(const std::string &filePath) : FileReaderBase(filePath) {
+        }
 
         FileReaderBuffered(const FileReaderBuffered &rhs) = delete;
 
@@ -20,22 +26,14 @@ namespace file {
 
         FileReaderBuffered &operator=(FileReaderBuffered &&rhs) noexcept = delete;
 
-        ~FileReaderBuffered() override = default;
-
-        inline std::string getNextLine() {
-            if (!file.is_open()) {
-                throw std::bad_function_call("!file.is_open()");
-            }
-
-            std::string line;
+        const auto &getNextLine() {
             std::getline(stream, line);
             return line;
         }
 
         bool hasNextLine() {
-            return FileInfo::isEOF(stream);
+            return !FileInfo::isEOF(stream);
         }
-
     };
 
 }

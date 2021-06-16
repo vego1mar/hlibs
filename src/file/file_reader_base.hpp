@@ -16,10 +16,12 @@ namespace file {
         std::ifstream stream;
         std::vector<char> content;
 
-        FileReaderBase() : path(), stream(), content({}) {
-        }
-
     public:
+        FileReaderBase() = delete;
+
+        explicit FileReaderBase(const std::string &filePath)
+                : path(filePath), stream(std::ifstream(filePath, std::ios::in)), content({}) {
+        }
 
         FileReaderBase(const FileReaderBase &rhs) = delete;
 
@@ -29,34 +31,24 @@ namespace file {
 
         FileReaderBase &operator=(FileReaderBase &&rhs) noexcept = delete;
 
-        virtual ~FileReaderBase() = default;
-
-        inline bool open(const std::string &filePath, std::ios_base::openmode openModes = std::ios::out) {
-            if (stream.is_open()) {
-                stream.close();
-            }
-
-            path = std::string(filePath);
-            stream = std::ifstream(filePath, openModes);
-            return stream.fail();
-        }
-
-        inline void close() {
-            if (stream.is_open()) {
-                stream.close();
-            }
-        }
+        virtual ~FileReaderBase() {
+            stream.close();
+        };
 
         inline const auto &getPath() const {
             return path;
         }
 
-        inline auto &getContent() const {
+        inline auto &get() {
             return content;
         }
 
         bool isReadClean() const {
             return static_cast<std::size_t>(FileInfo::getFileSize(path)) == content.size();
+        }
+
+        bool isOpened() const {
+            return !stream.fail() && stream.is_open();
         }
 
     };

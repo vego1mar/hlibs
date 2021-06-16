@@ -6,9 +6,12 @@
 
 namespace file {
 
-    class FileReader : FileReaderBase {
+    class FileReader : public FileReaderBase {
     public:
-        FileReader() = default;
+        FileReader() = delete;
+
+        explicit FileReader(const std::string &filePath) : FileReaderBase(filePath) {
+        }
 
         FileReader(const FileReader &rhs) = delete;
 
@@ -18,19 +21,11 @@ namespace file {
 
         FileReader &operator=(FileReader &&rhs) noexcept = delete;
 
-        ~FileReader() override = default;
-
-        inline bool readFile() {
-            if (!file.is_open()) {
-                return false;
-            }
-
+        void readFile() {
             auto first = (std::istreambuf_iterator<char>(stream));
             auto last = (std::istreambuf_iterator<char>());
             content = std::vector<char>(first, last);
-            return true;
         }
-
     };
 
 }
