@@ -1,38 +1,39 @@
 #ifndef FILE_READER_BUFFERED_HPP
 #define FILE_READER_BUFFERED_HPP
 
-#include <functional>
 #include "file_reader_base.hpp"
 #include "file_info.hpp"
 
 
-namespace file {
+namespace file::reader {
 
     class FileReaderBuffered : public FileReaderBase {
     private:
         std::string line;
+        std::size_t lines;
 
     public:
-        FileReaderBuffered() = delete;
 
-        explicit FileReaderBuffered(const std::string &filePath) : FileReaderBase(filePath) {
+        explicit FileReaderBuffered(const std::string &filePath) : FileReaderBase(filePath), lines(0) {
         }
-
-        FileReaderBuffered(const FileReaderBuffered &rhs) = delete;
-
-        FileReaderBuffered &operator=(const FileReaderBuffered &rhs) = delete;
-
-        FileReaderBuffered(FileReaderBuffered &&rhs) noexcept = delete;
-
-        FileReaderBuffered &operator=(FileReaderBuffered &&rhs) noexcept = delete;
 
         const auto &getNextLine() {
             std::getline(stream, line);
+            ++lines;
             return line;
         }
 
         bool hasNextLine() {
-            return !FileInfo::isEOF(stream);
+            return !info::is_eof(stream);
+        }
+
+        std::string toString() const noexcept override {
+            auto mangledName = std::string(typeid(this).name());
+            mangledName.append("{ ");
+            mangledName.append("path=\"" + path + "\", ");
+            mangledName.append("lines=" + std::to_string(lines));
+            mangledName.append(" }");
+            return mangledName;
         }
     };
 

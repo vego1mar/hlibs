@@ -8,7 +8,7 @@
 #include "file_info.hpp"
 
 
-namespace file {
+namespace file::reader {
 
     class FileReaderBase {
     protected:
@@ -17,40 +17,23 @@ namespace file {
         std::vector<char> content;
 
     public:
-        FileReaderBase() = delete;
-
         explicit FileReaderBase(const std::string &filePath)
                 : path(filePath), stream(std::ifstream(filePath, std::ios::in)), content({}) {
         }
 
-        FileReaderBase(const FileReaderBase &rhs) = delete;
-
-        FileReaderBase(FileReaderBase &&rhs) noexcept = delete;
-
-        FileReaderBase &operator=(const FileReaderBase &rhs) = delete;
-
-        FileReaderBase &operator=(FileReaderBase &&rhs) noexcept = delete;
-
-        virtual ~FileReaderBase() {
-            stream.close();
-        };
-
-        inline const auto &getPath() const {
-            return path;
-        }
-
-        inline auto &get() {
+        inline auto &get() noexcept {
             return content;
         }
 
         bool isReadClean() const {
-            return static_cast<std::size_t>(FileInfo::getFileSize(path)) == content.size();
+            return static_cast<std::size_t>(info::get_file_size(path)) == content.size();
         }
 
-        bool isOpened() const {
+        inline bool isOpened() const {
             return !stream.fail() && stream.is_open();
         }
 
+        virtual std::string toString() const noexcept = 0;
     };
 
 }
