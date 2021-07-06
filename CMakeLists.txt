@@ -10,4 +10,6 @@ add_executable(
         src/file/file_reader_buffered.hpp
         src/file/file_reader.hpp
         src/file/file_info.hpp
+
+        src/interfaces/i_stringify.hpp
 )

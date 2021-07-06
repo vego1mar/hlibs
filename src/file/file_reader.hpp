@@ -8,20 +8,19 @@ namespace file::reader {
 
     class FileReader : public FileReaderBase {
     public:
-        explicit FileReader(const std::string &filePath) : FileReaderBase(filePath) {
-        }
+        using FileReaderBase::FileReaderBase;
 
         void readFile() {
-            auto first = (std::istreambuf_iterator<char>(stream));
+            auto first = (std::istreambuf_iterator<char>(elicitStream()));
             auto last = (std::istreambuf_iterator<char>());
-            content = std::vector<char>(first, last);
+            elicitContent() = std::vector<char>(first, last);
         }
 
         std::string toString() const noexcept override {
             auto mangledName = std::string(typeid(this).name());
             mangledName.append("{ ");
-            mangledName.append("path=\"" + path + "\", ");
-            mangledName.append("content.size()=" + std::to_string(content.size()));
+            mangledName.append("path=\"" + elicitPath() + "\", ");
+            mangledName.append("content.size()=" + std::to_string(elicitContentSize()));
             mangledName.append(" }");
             return mangledName;
         }
