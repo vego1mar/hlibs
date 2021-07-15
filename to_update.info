@@ -1,0 +1,4 @@
+[sonar-scanner] https://docs.sonarqube.org/latest/analysis/scan/sonarscanner/
+[build-wrapper] https://sonarcloud.io/static/cpp/build-wrapper-linux-x86.zip
+[Catch2] https://github.com/catchorg/Catch2/releases
+

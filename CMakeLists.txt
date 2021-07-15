@@ -4,7 +4,8 @@ project(LIBS)
 set(CMAKE_CXX_STANDARD 20)
 
 add_executable(
-        LIBS src/main.cpp
+        LIBS
+        src/main.cpp
 
         src/file/file_reader_base.hpp
         src/file/file_reader_buffered.hpp
@@ -13,3 +14,7 @@ add_executable(
 
         src/interfaces/i_stringify.hpp
 )
+
+enable_testing()
+add_subdirectory(catch2_tests)
+
