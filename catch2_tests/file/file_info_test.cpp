@@ -2,7 +2,7 @@
 #include "../../src/file/file_info.hpp"
 
 
-TEST_CASE("GetFileSize()", "[GetFileSize]") {
+TEST_CASE("GetFileSize()", "[file][GetFileSize]") {
 
     SECTION("f(literal) -> 1065 B", "[functional_requirements]") {
         constexpr long LICENSE_MD_SIZE = 1065;

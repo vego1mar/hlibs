@@ -4,7 +4,7 @@
 #include "../../src/file/file_reader_buffered.hpp"
 
 
-SCENARIO("Comparing FileReader's speed", "[file_readers][!mayfail]") {
+SCENARIO("Comparing FileReader's speed", "[file][file_readers][!mayfail]") {
 
     struct Tasks {
         using Runner = std::function<const std::string(const std::string &)>;
