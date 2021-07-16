@@ -22,7 +22,7 @@ namespace file::reader {
         }
 
         bool hasNextLine() {
-            return !info::is_eof(elicitStream());
+            return !info::IsEOF(elicitStream());
         }
 
         std::string toString() const noexcept override {

@@ -39,7 +39,7 @@ namespace file::reader {
         }
 
         bool isReadClean() const {
-            return static_cast<std::size_t>(info::get_file_size(path)) == content.size();
+            return static_cast<std::size_t>(info::GetFileSize(path)) == content.size();
         }
 
         inline bool isOpened() const {
