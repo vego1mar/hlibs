@@ -13,6 +13,8 @@ add_executable(
         src/file/file_info.hpp
 
         src/interfaces/i_stringify.hpp
+
+        src/logging/logger.hpp src/logging/logger.cpp
 )
 
 enable_testing()

@@ -7,6 +7,8 @@ add_executable(
         file/file_reader_base_test.cpp ../src/file/file_reader_base.hpp
 
         interfaces/i_stringify_test.cpp ../src/interfaces/i_stringify.hpp
+
+        logging/severity_level_test.cpp ../src/logging/logger.hpp
 )
 
 target_link_libraries(Catch2_tests_run)
