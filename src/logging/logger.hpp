@@ -4,10 +4,10 @@
 #include <string>
 #include <sstream>
 #include <fstream>
-#include <mutex>
 #include <cinttypes>
 #include <iosfwd>
 #include <unordered_map>
+#include <experimental/source_location>
 
 
 namespace logging {
@@ -51,17 +51,18 @@ namespace logging {
     };
 
 
+    struct LoggerSettings {
+        unsigned short messages_before_flush = 11;
+        bool is_enabled = true;
+    };
+
+
     class Logger {
-    public:
-        static constexpr uint8_t MESSAGES_BEFORE_FLUSH = 11;
-
     private:
-        uint8_t buffered_messages = 0;
-        std::ostringstream buffer;
-        std::ofstream file;
+        LoggerSettings settings{};
 
     public:
-        Logger() = delete;
+        Logger() = default;
 
         Logger(const Logger& rhs) = delete;
 
@@ -73,12 +74,23 @@ namespace logging {
 
         virtual ~Logger() noexcept = default;
 
-        virtual void info(const std::string& msg) = 0;
+        virtual void fatal(const std::string& msg) = 0;
+
+        virtual void warning(const std::string& msg) = 0;
+
+        virtual void info(const std::string& msg, std::experimental::source_location source) = 0;
+
+        virtual void debug(const std::string& msg) = 0;
 
         virtual void exception(const std::string& msg, const std::exception& e) = 0;
 
     private:
         virtual void log(SeverityLevel::Level level, const std::string& msg) = 0;
+
+    protected:
+        inline LoggerSettings& elicitSettings() noexcept {
+            return settings;
+        }
     };
 
 }
