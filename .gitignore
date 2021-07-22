@@ -2,7 +2,7 @@
 .scannerwork/
 cmake-build-debug/*
 bw_outputs/
-sonar-build/
+sonar_build/
 
 sonar-project.properties
 

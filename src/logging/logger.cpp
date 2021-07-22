@@ -3,7 +3,7 @@
 
 namespace logging {
 
-    Logger::Logger(const std::string& path) : buffer(std::ios::ate), file(path, std::ios::out) {
+    Logger::Logger(const std::string& path) : file(path, std::ios::out) {
         if (!file.is_open()) {
             throw std::ios::failure("!file.is_open()");
         }
