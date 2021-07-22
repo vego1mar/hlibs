@@ -16,59 +16,52 @@ namespace logging {
     public:
         enum class Level : uint8_t {
             Fatal = 1,
-            Error = 2,
-            Warning = 4,
-            Info = 16,
-            Debug = 32,
+            Warning = 2,
+            Info = 4,
+            Debug = 8,
         };
 
-        friend std::ostream& operator<<(std::ostream& lhs, const Level& rhs) noexcept {
+        static std::string ToString(const Level& level) {
             const std::unordered_map<Level, std::string> mapping = {
                     {Level::Fatal,   "Fatal"},
-                    {Level::Error,   "Error"},
                     {Level::Warning, "Warning"},
                     {Level::Info,    "Info"},
                     {Level::Debug,   "Debug"},
             };
 
-            lhs << mapping.at(rhs);
-            return lhs;
+            return mapping.at(level);
         }
 
-        static const Level& begin() {
+        static const Level& Begin() noexcept {
             return *all_items.begin();
         }
 
-        static const Level& next(int position) {
+        static const Level& Next(int position) {
             return *(all_items.begin() + position);
         }
 
-        static const Level& end() {
+        static const Level& End() noexcept {
             return *all_items.end();
         }
 
     private:
-        static constexpr std::array<Level, 5> all_items = {
-                Level::Fatal,
-                Level::Error,
-                Level::Warning,
-                Level::Info,
-                Level::Debug
+        static constexpr std::array<Level, 4> all_items = {
+                Level::Fatal, Level::Warning, Level::Info, Level::Debug
         };
     };
 
 
     class Logger {
+    public:
+        static constexpr uint8_t MESSAGES_BEFORE_FLUSH = 11;
+
     private:
         uint8_t buffered_messages = 0;
         std::ostringstream buffer;
         std::ofstream file;
-        mutable std::mutex log_mutex;
 
     public:
         Logger() = delete;
-
-        explicit Logger(const std::string& path);
 
         Logger(const Logger& rhs) = delete;
 
@@ -78,10 +71,14 @@ namespace logging {
 
         Logger& operator=(Logger&& rhs) noexcept = delete;
 
-        ~Logger() = default;
+        virtual ~Logger() noexcept = default;
+
+        virtual void info(const std::string& msg) = 0;
+
+        virtual void exception(const std::string& msg, const std::exception& e) = 0;
 
     private:
-        void log(SeverityLevel::Level level, const std::string& msg);
+        virtual void log(SeverityLevel::Level level, const std::string& msg) = 0;
     };
 
 }
