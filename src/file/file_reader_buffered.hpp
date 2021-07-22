@@ -15,7 +15,7 @@ namespace file::reader {
     public:
         using FileReaderBase::FileReaderBase;
 
-        const auto &getNextLine() {
+        const auto& getNextLine() {
             std::getline(elicitStream(), line);
             ++lines;
             return line;

@@ -20,21 +20,21 @@ namespace file::reader {
     public:
         FileReaderBase() = delete;
 
-        FileReaderBase(const FileReaderBase &rhs) = delete;
+        FileReaderBase(const FileReaderBase& rhs) = delete;
 
-        FileReaderBase &operator=(const FileReaderBase &rhs) = delete;
+        FileReaderBase& operator=(const FileReaderBase& rhs) = delete;
 
-        FileReaderBase(FileReaderBase &&rhs) noexcept = default;
+        FileReaderBase(FileReaderBase&& rhs) noexcept = default;
 
-        FileReaderBase &operator=(FileReaderBase &&rhs) noexcept = default;
+        FileReaderBase& operator=(FileReaderBase&& rhs) noexcept = default;
 
         ~FileReaderBase() noexcept override = default;
 
-        explicit FileReaderBase(const std::string &filePath)
+        explicit FileReaderBase(const std::string& filePath)
                 : path(filePath), stream(std::ifstream(filePath, std::ios::in)) {
         }
 
-        inline auto &get() noexcept {
+        inline auto& get() noexcept {
             return content;
         }
 
@@ -49,15 +49,15 @@ namespace file::reader {
         std::string toString() const noexcept override = 0;
 
     protected:
-        inline const std::string &elicitPath() const noexcept {
+        inline const std::string& elicitPath() const noexcept {
             return path;
         }
 
-        inline std::ifstream &elicitStream() noexcept {
+        inline std::ifstream& elicitStream() noexcept {
             return stream;
         }
 
-        inline std::vector<char> &elicitContent() noexcept {
+        inline std::vector<char>& elicitContent() noexcept {
             return content;
         }
 
