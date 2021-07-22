@@ -1,3 +1,4 @@
+#include <iostream>
 #include "../catch.hpp"
 #include "../../src/file/file_reader_base.hpp"
 #include "../../src/file/file_reader.hpp"
@@ -81,16 +82,17 @@ SCENARIO("Comparing FileReader's speed", "[file][file_readers][!mayfail]") {
     };
 
     GIVEN("N simulations per M iterations") {
-        constexpr auto FILE_PATH = "../../LICENSE.md";
+        constexpr auto FILE_PATH = "../../UNLICENSE.md";
         constexpr std::size_t ITERATIONS = 1'000;
         constexpr std::size_t SIMULATIONS = 3;
 
         WHEN("computing the speed ratio") {
             const auto speedRatio = Tasks::RunMonteCarloSimulation(SIMULATIONS, ITERATIONS, FILE_PATH);
 
-            THEN("ratio is in range of (2.3, 2.8)") {
+            THEN("ratio is in range of (1.45, 1.65)") {
                 const auto speed = speedRatio * 100;
-                const bool isInRange = speed > 2.3 && speed < 2.8;
+                const bool isInRange = speed > 1.45 && speed < 1.65;
+                std::cout << speed << std::endl;
                 CHECK(isInRange);
             }
         }

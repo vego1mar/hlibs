@@ -4,9 +4,9 @@
 
 TEST_CASE("GetFileSize()", "[file][GetFileSize]") {
 
-    SECTION("f(literal) -> 1065 B", "[functional_requirements]") {
-        constexpr long LICENSE_MD_SIZE = 1065;
-        const auto size = file::info::GetFileSize("../../LICENSE.md");
+    SECTION("f(literal) -> 1213 B", "[functional_requirements]") {
+        constexpr long LICENSE_MD_SIZE = 1213;
+        const auto size = file::info::GetFileSize("../../UNLICENSE.md");
         CHECK(size == LICENSE_MD_SIZE);
     }
 

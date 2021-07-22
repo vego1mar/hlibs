@@ -31,7 +31,7 @@ function build() {
    echo "./sonar-build"
    "$COMPILATOR" $FLAGS -c src/main.cpp -o sonar-build/main.o
 
-   echo "./sonar-build/file"
+   # echo "./sonar-build/file"
    # mkdir sonar-build/file
 }
 
