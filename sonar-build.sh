@@ -36,18 +36,6 @@ function build() {
     echo $DATE_TIME_DIR
     # 'date_time' has only headers for now
 
-    local FILE_DIR="./$BUILD_DIR/file"
-    echo $FILE_DIR
-    # 'file' has only headers for now
-
-    local INTERFACES_DIR="./$BUILD_DIR/interfaces"
-    echo $INTERFACES_DIR
-    # 'interfaces' has only headers for now
-
-    local LOGGING_DIR="./$BUILD_DIR/logging"
-    echo $LOGGING_DIR
-    # 'logging' has only headers for now
-
 }
 
 

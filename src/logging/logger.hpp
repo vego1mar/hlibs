@@ -75,15 +75,19 @@ namespace logging {
 
         Logger& operator=(Logger&& rhs) noexcept = delete;
 
-        virtual void fatal(const std::string& msg) = 0;
+        virtual void fatal(const std::string& msg, std::experimental::source_location source) = 0;
 
-        virtual void warning(const std::string& msg) = 0;
+        virtual void warning(const std::string& msg, std::experimental::source_location source) = 0;
 
         virtual void info(const std::string& msg, std::experimental::source_location source) = 0;
 
-        virtual void debug(const std::string& msg) = 0;
+        virtual void debug(const std::string& msg, std::experimental::source_location source) = 0;
 
-        virtual void exception(const std::string& msg, const std::exception& e) = 0;
+        virtual void exception(const std::string& msg, const std::exception& e, std::experimental::source_location source) = 0;
+
+        void set(LoggerSettings&& newSettings) {
+            settings = newSettings;
+        }
 
     private:
         virtual void log(SeverityLevel::Level level, const std::string& msg, std::experimental::source_location source) = 0;

@@ -12,6 +12,9 @@ add_executable(
 
         logging/severity_level_test.cpp ../src/logging/logger.hpp
         logging/string_logger_test.cpp ../src/logging/string_logger.hpp
+
+        strings/strings_test.cpp ../src/strings/strings.hpp
+
 )
 
 target_link_libraries(Catch2_tests_run)
