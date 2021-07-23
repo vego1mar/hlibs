@@ -14,6 +14,14 @@ namespace strings {
         return str;
     }
 
+    static bool Contains(const std::string_view source, const char what) {
+        return source.find(what) != std::string::npos;
+    }
+
+    static bool Contains(const std::string_view source, const std::string_view what) {
+        return source.find(what) != std::string::npos;
+    }
+
 }
 
 #endif //STRINGS_HPP

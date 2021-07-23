@@ -1,7 +1,8 @@
-#include <iostream>
+#include "logging/stdout_logger.hpp"
 
 
 int main() {
-    std::cout << "Hello, World!" << std::endl;
+    logging::StdOutLogger logger(true);
+    logger.debug("Hello World!");
     return EXIT_SUCCESS;
 }

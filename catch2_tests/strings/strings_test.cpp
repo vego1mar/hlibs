@@ -20,4 +20,24 @@ TEST_CASE("strings", "[strings]") {
         REQUIRE_THAT(result, Catch::Equals(expectedStr));
     }
 
+    SECTION("Contains(char) -> true", "[functional_requirements]") {
+        std::string source("xXVvOfFvjW9zHyNAVzQL\n");
+        bool isNewLined = strings::Contains(source, '\n');
+        REQUIRE(isNewLined);
+    }
+
+    SECTION("Contains(str) -> true", "[functional_requirements]") {
+        std::string source("5D7OVjSrm0JLVEgTwae2");
+        std::string strToFind("m0JLVEg");
+        bool isFound = strings::Contains(source, strToFind);
+        REQUIRE(isFound);
+    }
+
+    SECTION("Contains(str) -> false", "[functional_requirements]") {
+        std::string source("MMWfSBhRBOiMau3yAfMO");
+        std::string strToFind("RBOj");
+        bool isFound = strings::Contains(source, strToFind);
+        REQUIRE(!isFound);
+    }
+
 }

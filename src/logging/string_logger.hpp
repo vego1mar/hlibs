@@ -37,7 +37,6 @@ namespace logging {
                 return;
             }
 
-            // manual flush because flush() should be virtual
             flushed_messages += buffered_messages;
             str_buffer << "~StringLogger()->flushed_messages=" << flushed_messages << '\n';
             target.append(str_buffer.str());
@@ -53,6 +52,7 @@ namespace logging {
             const std::string message = "std::exception | " + msg + " | " + e.what();
             str_buffer << header << message << '\n';
             ++buffered_messages;
+            onBufferedMessage();
             checkFlush();
         }
 
@@ -72,6 +72,21 @@ namespace logging {
             return result;
         }
 
+        void flush() {
+            target.append(str_buffer.str());
+            str_buffer.str("");
+            str_buffer.clear();
+            flushed_messages += buffered_messages;
+            buffered_messages = 0;
+        }
+
+        void checkFlush() {
+            if (buffered_messages >= elicitSettings().messages_before_flush) {
+                onFlush();
+                flush();
+            }
+        }
+
     protected:
         void log(SeverityLevel::Level level, const std::string& msg, SourceLocation source) override {
             if (!elicitSettings().is_enabled) {
@@ -82,22 +97,24 @@ namespace logging {
             const auto header = GetMessageHeader(level, source);
             str_buffer << header << msg << '\n';
             ++buffered_messages;
+            onBufferedMessage();
             checkFlush();
         }
 
-        virtual void flush() {
-            target.append(str_buffer.str());
-            str_buffer.str("");
-            str_buffer.clear();
-            flushed_messages += buffered_messages;
-            buffered_messages = 0;
+        virtual void onFlush() {
+        };
+
+        virtual void onBufferedMessage() {
         }
 
-        void checkFlush() {
-            if (buffered_messages >= elicitSettings().messages_before_flush) {
-                flush();
-            }
+        inline const std::ostringstream& elicitStringBuffer() const noexcept {
+            return str_buffer;
         }
+
+        inline const unsigned long& elicitFlushedMessages() const noexcept {
+            return flushed_messages;
+        }
+
     };
 
 }
