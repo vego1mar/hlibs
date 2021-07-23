@@ -57,14 +57,12 @@ namespace logging {
     };
 
 
+    using SourceLocation = std::experimental::source_location;
+
+
     class Logger {
     private:
         LoggerSettings settings{};
-
-    protected:
-        Logger() = default;
-
-        virtual ~Logger() noexcept = default;
 
     public:
         Logger(const Logger& rhs) = delete;
@@ -75,30 +73,38 @@ namespace logging {
 
         Logger& operator=(Logger&& rhs) noexcept = delete;
 
-        virtual void fatal(const std::string& msg, std::experimental::source_location source) = 0;
+        void fatal(const std::string& msg, SourceLocation source = SourceLocation::current()) {
+            log(SeverityLevel::Level::Fatal, msg, source);
+        }
 
-        virtual void warning(const std::string& msg, std::experimental::source_location source) = 0;
+        void warning(const std::string& msg, SourceLocation source = SourceLocation::current()) {
+            log(SeverityLevel::Level::Warning, msg, source);
+        }
 
-        virtual void info(const std::string& msg, std::experimental::source_location source) = 0;
+        void info(const std::string& msg, SourceLocation source = SourceLocation::current()) {
+            log(SeverityLevel::Level::Info, msg, source);
+        }
 
-        virtual void debug(const std::string& msg, std::experimental::source_location source) = 0;
+        void debug(const std::string& msg, SourceLocation source = SourceLocation::current()) {
+            log(SeverityLevel::Level::Debug, msg, source);
+        }
 
-        virtual void exception(const std::string& msg, const std::exception& e, std::experimental::source_location source) = 0;
-
-        void set(LoggerSettings&& newSettings) {
+        void set(LoggerSettings&& newSettings) noexcept {
             settings = newSettings;
         }
 
-    private:
+    protected:
+        Logger() = default;
+
+        virtual ~Logger() noexcept = default;
+
         virtual void log(SeverityLevel::Level level, const std::string& msg, std::experimental::source_location source) = 0;
 
-    protected:
         inline LoggerSettings& elicitSettings() noexcept {
             return settings;
         }
     };
 
 }
-
 
 #endif //LOGGER_HPP

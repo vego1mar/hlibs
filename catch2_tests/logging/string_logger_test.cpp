@@ -37,4 +37,47 @@ TEST_CASE("StringLogger", "[logging]") {
         REQUIRE_THAT(target, Catch::Equals(""));
     }
 
+    SECTION("exception() -> flush=OK", "[functional_requirements]") {
+        std::string target{};
+        logging::LoggerSettings settings{};
+        settings.messages_before_flush = 1;
+
+        logging::StringLogger logger{target};
+        logger.set(std::move(settings));
+        const std::string exceptionMsg("Deliberately thrown runtime_exception!");
+        const std::string msgToLog("std::runtime_error");
+
+        try {
+            throw std::runtime_error(exceptionMsg);
+        }
+        catch (std::runtime_error& e) {
+            logger.exception(msgToLog, e);
+        }
+
+        std::string expectedMsg(" [DEBUG] string_logger_test.cpp(");
+        const std::string expectedEnding =
+                ") @\"____C_A_T_C_H____T_E_S_T____0\": std::exception | " + msgToLog + " | " + exceptionMsg + '\n';
+        REQUIRE_THAT(target, Catch::Contains(expectedMsg));
+        REQUIRE_THAT(target, Catch::EndsWith(expectedEnding));
+    }
+
+    SECTION("~StringLogger() -> buffer flushed", "[functional_requirements]") {
+        std::string target{};
+
+        constexpr auto logOneMessage = [](std::string& target) {
+            logging::LoggerSettings settings{};
+            settings.messages_before_flush = 2;
+
+            logging::StringLogger logger{target};
+            logger.set(std::move(settings));
+            logger.debug("dtor_check");
+
+            REQUIRE_THAT(target, Catch::Equals(""));
+        };
+
+        logOneMessage(target);
+        const std::string expectedEnding("dtor_check\n~StringLogger()->flushed_messages=1\n");
+        REQUIRE_THAT(target, Catch::EndsWith(expectedEnding));
+    }
+
 }
