@@ -7,6 +7,8 @@ add_executable(
         LIBS
         src/main.cpp
 
+        src/date_time/date_time.hpp
+
         src/file/file_reader_base.hpp
         src/file/file_reader_buffered.hpp
         src/file/file_reader.hpp

@@ -3,6 +3,8 @@ add_executable(
 
         main_test.cpp
 
+        date_time/date_time_test.cpp ../src/date_time/date_time.hpp
+
         file/file_info_test.cpp ../src/file/file_info.hpp
         file/file_reader_base_test.cpp ../src/file/file_reader_base.hpp
 

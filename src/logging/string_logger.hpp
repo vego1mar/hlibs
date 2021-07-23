@@ -1,39 +1,15 @@
 #ifndef STRING_LOGGER_HPP
 #define STRING_LOGGER_HPP
 
-#include "logger.hpp"
 #include <sstream>
-#include <ctime>
+#include <iostream>
+
+#include "logger.hpp"
 
 
 namespace logging {
 
-    struct LoggerMsgHelper {
-    public:
-        std::string date;
-        std::string time;
-        // 2021-07-22 19:46 DEBUG string_logger.cpp(15:55) @"struct LoggerMsgHelper()": Hello log!
-        // $Date $Time $Level $SourceFile($Line:$Column) @"$FunctionPrototype": $Message
-
-        void build() {
-            const auto dateTime = GetDateTime();
-            const auto delimiterPos = dateTime.find('_');
-            date = dateTime.substr(0, delimiterPos);
-            time = dateTime.substr(delimiterPos + 1);
-        }
-
-    private:
-        static std::string GetDateTime() {
-            time_t now = std::time(0);
-            struct tm t_struct{};
-            const int BUFFER_SIZE = 80;
-            char buf[BUFFER_SIZE];
-            t_struct = *localtime(&now);
-            strftime(buf, sizeof(buf), "%Y-%m-%d_%X", &t_struct);
-            std::string result(buf);
-            return result;
-        }
-    };
+    using SourceLocation = std::experimental::source_location;
 
 
     class StringLogger : public Logger {
@@ -47,21 +23,19 @@ namespace logging {
         }
 
         void fatal(const std::string& msg) override {
-            log(SeverityLevel::Level::Fatal, msg);
+            //log(SeverityLevel::Level::Fatal, msg);
         }
 
         void warning(const std::string& msg) override {
-            log(SeverityLevel::Level::Warning, msg);
+            //log(SeverityLevel::Level::Warning, msg);
         }
 
-        void info(const std::string& msg,
-                  std::experimental::source_location source = std::experimental::source_location::current()) override {
-            // TODO: check it out
-            log(SeverityLevel::Level::Info, msg);
+        void info(const std::string& msg, SourceLocation source = SourceLocation::current()) override {
+            log(SeverityLevel::Level::Info, msg, source);
         }
 
         void debug(const std::string& msg) override {
-            log(SeverityLevel::Level::Debug, msg);
+            //log(SeverityLevel::Level::Debug, msg);
         }
 
         void exception(const std::string& msg, const std::exception& e) override {
@@ -69,12 +43,15 @@ namespace logging {
         }
 
     private:
-        void log(SeverityLevel::Level level, const std::string& msg) override {
+        void log(SeverityLevel::Level level, const std::string& msg, SourceLocation source) override {
             if (!elicitSettings().is_enabled) {
                 return;
             }
 
             // TODO: build message string and put it in a buffer
+            str_buffer << '@' << msg << '\n';
+            // 2021-07-22 19:46 DEBUG string_logger.cpp(15:55) @"struct LoggerMsgHelper()": Hello log!
+            // $Date $Time $Level $SourceFile($Line:$Column) @"$FunctionPrototype": $Message
             ++buffered_messages;
 
             if (buffered_messages > elicitSettings().messages_before_flush) {

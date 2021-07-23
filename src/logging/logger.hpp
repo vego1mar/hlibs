@@ -61,9 +61,12 @@ namespace logging {
     private:
         LoggerSettings settings{};
 
-    public:
+    protected:
         Logger() = default;
 
+        virtual ~Logger() noexcept = default;
+
+    public:
         Logger(const Logger& rhs) = delete;
 
         Logger(Logger&& rhs) noexcept = delete;
@@ -71,8 +74,6 @@ namespace logging {
         Logger& operator=(const Logger& rhs) = delete;
 
         Logger& operator=(Logger&& rhs) noexcept = delete;
-
-        virtual ~Logger() noexcept = default;
 
         virtual void fatal(const std::string& msg) = 0;
 
@@ -85,7 +86,7 @@ namespace logging {
         virtual void exception(const std::string& msg, const std::exception& e) = 0;
 
     private:
-        virtual void log(SeverityLevel::Level level, const std::string& msg) = 0;
+        virtual void log(SeverityLevel::Level level, const std::string& msg, std::experimental::source_location source) = 0;
 
     protected:
         inline LoggerSettings& elicitSettings() noexcept {
