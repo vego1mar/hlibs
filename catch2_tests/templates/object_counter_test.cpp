@@ -16,10 +16,21 @@ TEST_CASE("ObjectCounter", "[templates]") {
         }
     };
 
+
     using A = Implementer1;
     using B = Implementer2;
     using CounterA = templates::ObjectCounter<Implementer1>;
     using CounterB = templates::ObjectCounter<Implementer2>;
+
+
+    struct Before {
+        static void CleanStaticStorage() {
+            CounterA::created = 0;
+            CounterA::alive = 0;
+            CounterB::created = 0;
+            CounterB::alive = 0;
+        }
+    };
 
 
     SECTION("ctor(automatic) -> OK", "[functional_requirements]") {
@@ -34,29 +45,50 @@ TEST_CASE("ObjectCounter", "[templates]") {
             A a6;
         };
 
+        Before::CleanStaticStorage();
         A a1;
         B b1('a');
-        REQUIRE(CounterA::alive == CounterA::created);
-        REQUIRE(CounterB::alive == CounterB::created);
+        REQUIRE(CounterA::created == 1U);
         REQUIRE(CounterA::alive == 1U);
+        REQUIRE(CounterB::created == 1U);
         REQUIRE(CounterB::alive == 1U);
 
         createAndDestroy();
         B b5('e');
         REQUIRE(CounterA::alive == 1U);
-        REQUIRE(CounterB::alive == 2U);
         REQUIRE(CounterA::created == 6U);
+        REQUIRE(CounterB::alive == 2U);
         REQUIRE(CounterB::created == 5U);
     }
 
     SECTION("ctor(dynamic) -> OK", "[functional_requirements]") {
-        std::unique_ptr<A> a1(new A());
-        auto b1 = std::make_unique<B>('1');
-        REQUIRE(CounterA::alive == 1U);
-        REQUIRE(CounterB::alive == 1U);
-        REQUIRE(CounterA::created != CounterA::alive);
-        REQUIRE(CounterB::created != CounterB::alive);
+        constexpr auto tryDynamicStorage = []() {
+            std::unique_ptr<A> a1(new A());
+            auto b1 = std::make_unique<B>('1');
+        };
 
+        Before::CleanStaticStorage();
+        tryDynamicStorage();
+        REQUIRE(CounterA::alive == 0U);
+        REQUIRE(CounterA::created == 1U);
+        REQUIRE(CounterB::alive == 0U);
+        REQUIRE(CounterB::created == 1U);
+
+        auto b2 = std::make_unique<B>('2');
+        auto b3 = std::make_unique<B>('3');
+        auto b4 = std::make_unique<B>('4');
+        auto b5 = std::make_unique<B>('5');
+        auto a2 = std::make_unique<A>();
+        auto a3 = std::make_unique<A>();
+        auto a4 = std::make_unique<A>();
+        b3.reset();
+        a3.reset();
+        b4.reset();
+        b2.reset();
+        REQUIRE(CounterA::alive == 2U);
+        REQUIRE(CounterA::created == 4U);
+        REQUIRE(CounterB::alive == 1U);
+        REQUIRE(CounterB::created == 5U);
     }
 
 }

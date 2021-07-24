@@ -10,6 +10,7 @@ namespace templates {
         static unsigned int created;
         static unsigned int alive;
 
+    public:
         ObjectCounter() {
             increment();
         }
@@ -18,29 +19,26 @@ namespace templates {
             increment();
         }
 
-        ObjectCounter& operator=(const ObjectCounter&) {
-            increment();
-        }
+        ObjectCounter& operator=(const ObjectCounter&) = delete;
 
-        //ObjectCounter(ObjectCounter&&) noexcept = default;
+        ObjectCounter(ObjectCounter&&) noexcept = delete;
 
-        //ObjectCounter& operator=(ObjectCounter&&) noexcept = default;
-
-    private:
-        void increment() {
-            ++created;
-            ++alive;
-        }
+        ObjectCounter& operator=(ObjectCounter&&) noexcept = delete;
 
     protected:
         virtual ~ObjectCounter() noexcept {
             --alive;
         }
 
+        inline void increment() {
+            ++created;
+            ++alive;
+        }
+
     };
 
-    template<typename T> unsigned int ObjectCounter<T>::created(0);
     template<typename T> unsigned int ObjectCounter<T>::alive(0);
+    template<typename T> unsigned int ObjectCounter<T>::created(0);
 
 }
 
