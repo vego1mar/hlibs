@@ -14,7 +14,7 @@ namespace logging {
 
     class StdOutLogger : public StringLogger {
     private:
-        enum class MessageTarget : uint8_t {
+        enum class MessageTarget : bool {
             StdOut,
             StdErr
         };
@@ -29,7 +29,6 @@ namespace logging {
         explicit StdOutLogger(bool isEnabled, unsigned short messagesBeforeFlush = 4) : StringLogger(str_target) {
             elicitSettings().is_enabled = isEnabled;
             elicitSettings().messages_before_flush = messagesBeforeFlush;
-            // TODO: possibly change parameter to more meaningful: hash/id?
         }
 
         StdOutLogger(const StdOutLogger& rhs) = delete;
@@ -41,7 +40,7 @@ namespace logging {
         StdOutLogger& operator=(StdOutLogger&& rhs) noexcept = delete;
 
         ~StdOutLogger() noexcept override {
-            flushStringBufferInDerivedDestructor();
+            onFlushInDerivedDestructor();
             print();
             str_target.clear();
             std::cout << "~StdOutLogger(" << elicitFlushedMessages() << ")\n";
@@ -54,12 +53,9 @@ namespace logging {
             messages.clear();
         }
 
-        void print() {
-            for (const auto& item : messages) {
-                const auto& target = item.first;
-                const auto& message = item.second;
-
-                if (target == MessageTarget::StdOut) {
+        void print() const {
+            for (const auto&[msgTarget, message] : messages) {
+                if (msgTarget == MessageTarget::StdOut) {
                     std::cout << message;
                     continue;
                 }

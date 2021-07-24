@@ -1,9 +1,9 @@
 #!/bin/bash
 
-COMPILATOR=/usr/bin/gcc
+COMPILATOR=/usr/bin/gcc-10
 CPP_STANDARD=-std=c++2a
 FLAGS="-Wall -Wextra -Wfloat-equal -Wundef -Wshadow=global -Wpointer-arith -Wcast-align=strict -Wwrite-strings -Wcast-qual
-       -Wswitch-default -Wswitch-enum -Wconversion -Wunreachable-code -Wformat=2 -Wpedantic -Werror
+       -Wswitch-default -Wswitch-enum -Wconversion -Wunreachable-code -Wformat=2 -Wpedantic -Wno-unused-function
        -fexceptions -fpie -fwrapv
        -O2
        $CPP_STANDARD -ggdb"

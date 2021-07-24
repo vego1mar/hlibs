@@ -9,6 +9,8 @@
 #include <unordered_map>
 #include <experimental/source_location>
 
+#include "../templates/object_counter.hpp"
+
 
 namespace logging {
 
@@ -60,9 +62,10 @@ namespace logging {
     using SourceLocation = std::experimental::source_location;
 
 
-    class Logger {
+    class Logger : private templates::ObjectCounter<Logger> {
     private:
         LoggerSettings settings{};
+        unsigned int id = 0;
 
     public:
         Logger(const Logger& rhs) = delete;
@@ -90,13 +93,19 @@ namespace logging {
         }
 
         void set(LoggerSettings&& newSettings) noexcept {
-            settings = newSettings;
+            settings = std::move(newSettings);
+        }
+
+        [[nodiscard]] inline const unsigned int& getID() const noexcept {
+            return id;
         }
 
     protected:
-        Logger() = default;
+        Logger() {
+            id = templates::ObjectCounter<Logger>::created;
+        }
 
-        virtual ~Logger() noexcept = default;
+        ~Logger() noexcept override = default;
 
         virtual void log(SeverityLevel::Level level, const std::string& msg, std::experimental::source_location source) = 0;
 

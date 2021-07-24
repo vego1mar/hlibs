@@ -3,18 +3,18 @@
 
 #include <string>
 #include <ctime>
+#include <array>
 
 
 namespace date_time {
 
     static std::string GetDateAndTime() {
         time_t now = std::time(nullptr);
-        struct tm t_struct{};
-        const int BUFFER_SIZE = 80;
-        char buf[BUFFER_SIZE];
-        t_struct = *localtime(&now);
-        strftime(buf, sizeof(buf), "%Y-%m-%d %X", &t_struct);
-        std::string result(buf);
+        struct tm timeStruct{};
+        std::array<char, 40> buffer{};
+        timeStruct = *localtime_r(&now, &timeStruct);
+        strftime(buffer.begin(), buffer.size(), "%Y-%m-%d %X", &timeStruct);
+        std::string result(std::begin(buffer));
         return result;
     }
 

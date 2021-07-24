@@ -21,7 +21,7 @@ namespace logging {
     public:
         StringLogger() = delete;
 
-        explicit StringLogger(std::string& target) : target(target) {
+        explicit StringLogger(std::string& strTarget) : target(strTarget) {
         }
 
         StringLogger(const StringLogger& rhs) = delete;
@@ -101,13 +101,18 @@ namespace logging {
             checkFlush();
         }
 
+        /// An event for flushing logged messages in derived classes before clearing the buffer.
         virtual void onFlush() {
-        };
-
-        virtual void onBufferedMessage() {
+            // It will be invoked before flush() that will clear str_buffer.
         }
 
-        void flushStringBufferInDerivedDestructor() {
+        /// An event indicating that another message has been logged into buffer.
+        virtual void onBufferedMessage() {
+            // Used after message addition to str_buffer with log() or exception() but before checkFlush().
+        }
+
+        /// An event to use only in derived destructors to force flush from buffer to str_target.
+        void onFlushInDerivedDestructor() {
             flush();
         }
 

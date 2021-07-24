@@ -3,6 +3,7 @@
 
 #include <string>
 #include <string_view>
+#include <ranges>
 #include <algorithm>
 
 
@@ -10,7 +11,7 @@ namespace strings {
 
     static std::string ToUpperCase(const std::string_view source) {
         std::string str{source};
-        std::transform(str.begin(), str.end(), str.begin(), ::toupper);
+        std::ranges::transform(str.begin(), str.end(), str.begin(), ::toupper);
         return str;
     }
 

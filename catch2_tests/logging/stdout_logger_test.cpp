@@ -10,10 +10,10 @@ TEST_CASE("StdOutLogger", "[logging]") {
         const std::string stdOutFile("../../outputs/test_StdOutLogger__stdout.txt");
         const std::string clogFile("../../outputs/test_StdOutLogger__clog.txt");
 
-        constexpr auto logIntoFiles = [](const std::string& stdOutPath, const std::string& clogPath){
+        constexpr auto logIntoFiles = [](const std::string& stdOutPath, const std::string& clogPath) {
             file::StreamToFile stdOut(std::cout, stdOutPath);
             file::StreamToFile stdLog(std::clog, clogPath);
-            logging::StdOutLogger logger{true, 5 };
+            logging::StdOutLogger logger{true, 5};
             logger.debug("debug1");
             logger.info("info2");
             logger.fatal("fatal3");
@@ -34,8 +34,10 @@ TEST_CASE("StdOutLogger", "[logging]") {
         std::string output{};
         logging::StdOutLogger logger1(false);
         logging::StringLogger logger2(output);
-        //REQUIRE(logger1.GetID() == 1UL);
-        //REQUIRE(logger2.GetID() == 2UL);
+
+        // Take into consideration static storage from the previous test of ObjectCounter<Logger> CRTP.
+        REQUIRE(logger1.getID() == 2UL);
+        REQUIRE(logger2.getID() == 3UL);
     }
 
 }

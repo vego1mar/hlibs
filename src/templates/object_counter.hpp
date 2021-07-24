@@ -10,7 +10,6 @@ namespace templates {
         static unsigned int created;
         static unsigned int alive;
 
-    public:
         ObjectCounter() {
             increment();
         }
@@ -30,7 +29,7 @@ namespace templates {
             --alive;
         }
 
-        inline void increment() {
+        inline void increment() const {
             ++created;
             ++alive;
         }
