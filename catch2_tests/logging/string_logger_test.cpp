@@ -76,7 +76,7 @@ TEST_CASE("StringLogger", "[logging]") {
         };
 
         logOneMessage(target);
-        const std::string expectedEnding("dtor_check\n~StringLogger()->flushed_messages=1\n");
+        const std::string expectedEnding("dtor_check\n~StringLogger(1)\n");
         REQUIRE_THAT(target, Catch::EndsWith(expectedEnding));
     }
 

@@ -7,6 +7,7 @@ add_executable(
 
         file/file_info_test.cpp ../src/file/file_info.hpp
         file/file_reader_base_test.cpp ../src/file/file_reader_base.hpp
+        file/stream_to_file_test.cpp ../src/file/stream_to_file.hpp
 
         interfaces/i_stringify_test.cpp ../src/interfaces/i_stringify.hpp
 

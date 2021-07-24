@@ -22,6 +22,8 @@ namespace strings {
         return source.find(what) != std::string::npos;
     }
 
+    // TODO: ::string -> Split(), Contains(); check LM project
+
 }
 
 #endif //STRINGS_HPP

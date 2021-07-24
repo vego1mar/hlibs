@@ -4,7 +4,7 @@
 
 TEST_CASE("StdOutLogger", "[logging]") {
 
-    SECTION("? -> ?", "[functional_requirements]") {
+    SECTION("log 4 messages -> 4+1 lines", "[functional_requirements]") {
         logging::StdOutLogger logger{true, 4 };
         logger.debug("debug1");
         logger.info("info2");

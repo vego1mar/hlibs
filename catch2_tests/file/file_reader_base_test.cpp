@@ -1,4 +1,8 @@
 #include <iostream>
+#include <iomanip>
+#include <vector>
+#include <string>
+
 #include "../catch.hpp"
 #include "../../src/file/file_reader_base.hpp"
 #include "../../src/file/file_reader.hpp"
@@ -27,6 +31,7 @@ SCENARIO("Comparing FileReader's speed", "[file][file_readers][!mayfail]") {
         }
 
         static auto RunFileReaderBuffered(const std::string &path) {
+            std::vector<std::string> lines{};
             file::reader::FileReaderBuffered reader{path};
 
             if (!reader.isOpened()) {
@@ -35,6 +40,7 @@ SCENARIO("Comparing FileReader's speed", "[file][file_readers][!mayfail]") {
 
             while (reader.hasNextLine()) {
                 auto line = reader.getNextLine();
+                lines.push_back(line);
             }
 
             return reader.toString();
@@ -84,7 +90,7 @@ SCENARIO("Comparing FileReader's speed", "[file][file_readers][!mayfail]") {
     GIVEN("N simulations per M iterations") {
         constexpr auto FILE_PATH = "../../UNLICENSE.md";
         constexpr std::size_t ITERATIONS = 1'000;
-        constexpr std::size_t SIMULATIONS = 3;
+        constexpr std::size_t SIMULATIONS = 4;
 
         WHEN("computing the speed ratio") {
             const auto speedRatio = Tasks::RunMonteCarloSimulation(SIMULATIONS, ITERATIONS, FILE_PATH);
@@ -92,7 +98,7 @@ SCENARIO("Comparing FileReader's speed", "[file][file_readers][!mayfail]") {
             THEN("ratio is in range of (1.45, 1.65)") {
                 const auto speed = speedRatio * 100;
                 const bool isInRange = speed > 1.45 && speed < 1.65;
-                std::cout << speed << std::endl;
+                std::cout << std::setprecision(4) << speed << std::endl;
                 CHECK(isInRange);
             }
         }

@@ -29,7 +29,7 @@ namespace logging {
         explicit StdOutLogger(bool isEnabled, unsigned short messagesBeforeFlush = 4) : StringLogger(str_target) {
             elicitSettings().is_enabled = isEnabled;
             elicitSettings().messages_before_flush = messagesBeforeFlush;
-            // TODO: possibly change parameter to more meaningful
+            // TODO: possibly change parameter to more meaningful: hash/id?
         }
 
         StdOutLogger(const StdOutLogger& rhs) = delete;
@@ -41,12 +41,10 @@ namespace logging {
         StdOutLogger& operator=(StdOutLogger&& rhs) noexcept = delete;
 
         ~StdOutLogger() noexcept override {
-            // TODO: manual flush
-            // TODO: check number of flushed messages from StringLogger
-            // TODO: ::string -> Split(), Contains(); check LM project
+            flushStringBufferInDerivedDestructor();
             print();
             str_target.clear();
-            std::cout << "~StdOutLogger()->flushed_messages=" << elicitFlushedMessages();
+            std::cout << "~StdOutLogger(" << elicitFlushedMessages() << ")\n";
         }
 
     protected:

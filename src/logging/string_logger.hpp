@@ -38,7 +38,7 @@ namespace logging {
             }
 
             flushed_messages += buffered_messages;
-            str_buffer << "~StringLogger()->flushed_messages=" << flushed_messages << '\n';
+            str_buffer << "~StringLogger(" << flushed_messages << ")\n";
             target.append(str_buffer.str());
         }
 
@@ -105,6 +105,10 @@ namespace logging {
         };
 
         virtual void onBufferedMessage() {
+        }
+
+        void flushStringBufferInDerivedDestructor() {
+            flush();
         }
 
         inline const std::ostringstream& elicitStringBuffer() const noexcept {
