@@ -22,6 +22,8 @@ add_executable(
         src/logging/logger.hpp
         src/logging/stdout_logger.hpp
         src/logging/string_logger.hpp
+
+        src/templates/object_counter.hpp
 )
 
 enable_testing()

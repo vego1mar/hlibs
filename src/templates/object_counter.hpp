@@ -1,0 +1,47 @@
+#ifndef OBJECT_COUNTER_HPP
+#define OBJECT_COUNTER_HPP
+
+
+namespace templates {
+
+    template<typename T>
+    struct ObjectCounter {
+    public:
+        static unsigned int created;
+        static unsigned int alive;
+
+        ObjectCounter() {
+            increment();
+        }
+
+        ObjectCounter(const ObjectCounter&) {
+            increment();
+        }
+
+        ObjectCounter& operator=(const ObjectCounter&) {
+            increment();
+        }
+
+        //ObjectCounter(ObjectCounter&&) noexcept = default;
+
+        //ObjectCounter& operator=(ObjectCounter&&) noexcept = default;
+
+    private:
+        void increment() {
+            ++created;
+            ++alive;
+        }
+
+    protected:
+        virtual ~ObjectCounter() noexcept {
+            --alive;
+        }
+
+    };
+
+    template<typename T> unsigned int ObjectCounter<T>::created(0);
+    template<typename T> unsigned int ObjectCounter<T>::alive(0);
+
+}
+
+#endif //OBJECT_COUNTER_HPP

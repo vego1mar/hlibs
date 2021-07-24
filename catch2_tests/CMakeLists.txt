@@ -17,6 +17,7 @@ add_executable(
 
         strings/strings_test.cpp ../src/strings/strings.hpp
 
+        templates/object_counter_test.cpp ../src/templates/object_counter.hpp
 )
 
 target_link_libraries(Catch2_tests_run)

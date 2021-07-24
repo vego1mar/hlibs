@@ -103,6 +103,7 @@ namespace logging {
         inline LoggerSettings& elicitSettings() noexcept {
             return settings;
         }
+
     };
 
 }
