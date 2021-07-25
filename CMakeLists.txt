@@ -20,8 +20,9 @@ add_executable(
         src/interfaces/i_stringify.hpp
 
         src/logging/logger.hpp
-        src/logging/stdout_logger.hpp
         src/logging/string_logger.hpp
+        src/logging/stdout_logger.hpp
+        src/logging/console_logger.hpp
 
         src/templates/object_counter.hpp
 )

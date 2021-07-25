@@ -12,12 +12,13 @@ add_executable(
         interfaces/i_stringify_test.cpp ../src/interfaces/i_stringify.hpp
 
         logging/severity_level_test.cpp ../src/logging/logger.hpp
-        logging/stdout_logger_test.cpp ../src/logging/stdout_logger.hpp
         logging/string_logger_test.cpp ../src/logging/string_logger.hpp
+        logging/stdout_logger_test.cpp ../src/logging/stdout_logger.hpp
 
         strings/strings_test.cpp ../src/strings/strings.hpp
 
         templates/object_counter_test.cpp ../src/templates/object_counter.hpp
+
 )
 
 target_link_libraries(Catch2_tests_run)

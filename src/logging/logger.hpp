@@ -54,8 +54,14 @@ namespace logging {
 
 
     struct LoggerSettings {
+        /// Number of messages that will go to buffer before placing them in the target output.
         unsigned short messages_before_flush = 11;
+
+        /// On false, prevents processing of logged messages.
         bool is_enabled = true;
+
+        /// Used in StdOutLogger to prevent double output in ConsoleLogger.
+        bool skip_print_to_stdout = false;
     };
 
 

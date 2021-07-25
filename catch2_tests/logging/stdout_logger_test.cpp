@@ -6,7 +6,18 @@
 
 TEST_CASE("StdOutLogger", "[logging]") {
 
+    struct Before {
+        using LoggerCounter = templates::ObjectCounter<logging::Logger>;
+
+        static void CleanStaticStorage() {
+            LoggerCounter::created = 0;
+            LoggerCounter::alive = 0;
+        }
+    };
+
+
     SECTION("log 4 messages -> const log size", "[functional_requirements]") {
+        Before::CleanStaticStorage();
         const std::string stdOutFile("../../outputs/test_StdOutLogger__stdout.txt");
         const std::string clogFile("../../outputs/test_StdOutLogger__clog.txt");
 
@@ -31,13 +42,13 @@ TEST_CASE("StdOutLogger", "[logging]") {
     }
 
     SECTION("GetID() -> distinct per object", "[functional_requirements]") {
+        Before::CleanStaticStorage();
         std::string output{};
         logging::StdOutLogger logger1(false);
         logging::StringLogger logger2(output);
 
-        // Take into consideration static storage from the previous test of ObjectCounter<Logger> CRTP.
-        REQUIRE(logger1.getID() == 2UL);
-        REQUIRE(logger2.getID() == 3UL);
+        REQUIRE(logger1.getID() == 1UL);
+        REQUIRE(logger2.getID() == 2UL);
     }
 
 }

@@ -13,12 +13,13 @@
 namespace logging {
 
     class StdOutLogger : public StringLogger {
-    private:
+    protected:
         enum class MessageTarget : bool {
             StdOut,
             StdErr
         };
 
+    private:
         std::vector<std::pair<MessageTarget, std::string>> messages{};
         std::size_t last_message_position = 0;
         std::string str_target{};
@@ -43,17 +44,19 @@ namespace logging {
             onFlushInDerivedDestructor();
             print();
             str_target.clear();
-            std::cout << "~StdOutLogger(" << elicitFlushedMessages() << ")\n";
+            printDestructorMessage();
         }
 
-    protected:
-        void onFlush() override {
-            print();
-            last_message_position = 0;
-            messages.clear();
+    private:
+        void print() {
+            if (elicitSettings().skip_print_to_stdout) {
+                return;
+            }
+
+            printMessages();
         }
 
-        void print() const {
+        void printMessages() const {
             for (const auto&[msgTarget, message] : messages) {
                 if (msgTarget == MessageTarget::StdOut) {
                     std::cout << message;
@@ -62,6 +65,21 @@ namespace logging {
 
                 std::clog << message;
             }
+        }
+
+        void printDestructorMessage() {
+            if (elicitSettings().skip_print_to_stdout) {
+                return;
+            }
+
+            std::cout << "~StdOutLogger(" << elicitFlushedMessages() << ")\n";
+        }
+
+    protected:
+        void onFlush() override {
+            print();
+            last_message_position = 0;
+            messages.clear();
         }
 
         void onBufferedMessage() override {
@@ -75,6 +93,10 @@ namespace logging {
             bool isErrorMsg = isExceptionMsg || isFatalMsg;
             const auto key = isErrorMsg ? MessageTarget::StdErr : MessageTarget::StdOut;
             messages.emplace_back(std::make_pair<>(key, lastMessage));
+        }
+
+        inline const auto& elicitStdOutMessages() const noexcept {
+            return messages;
         }
 
     };
