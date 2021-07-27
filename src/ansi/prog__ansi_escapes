@@ -1,0 +1,347 @@
+
+/* Typical ANSI control sequence:
+   "\033[31;42mText\033[m", where:
+       "\033["  starts the sequence, 
+       "31;42"  are parameters,
+       "m"      is the end character of the sequence,
+       "Text"   is what you may assume it is,
+       "\033[m" resets changes applied by parameters, alias to "\033[0m".
+                           
+   "ESC["   usually expands to "\033["
+ */
+
+/// ANSI escape sequences
+domain ANSI {
+    // select a single character from an alternative character set
+    (SS2, Single Shift Two,            "ESC N"),    # "\033N"
+    (SS3, Single Shift Three,          "ESC 0"),    # "\0330"
+    
+    // manipulate on control string
+    (DCS, Device Control String,       "ESC P"),    # "\033P"
+    (ST,  String Terminator,           "ESC \"),    # "\033\"
+    (OSC, Operating System Command,    "ESC ]"),    # "\033]"
+    
+    // take a string argument
+    (SOS, Start of String,             "ESC X"),    # "\033X"
+    (PM,  Privacy Message,             "ESC ^"),    # "\033^"
+    (APC, Application Program Command, "ESC _"),    # "\033_"
+    
+    // starts most useful sequences
+    (CSI, Control Sequence Introducer, "ESC ["),    # "\033["
+    
+    // ...
+}
+
+
+/* CSI control sequence:
+   "CSI n A", where CSI="\033[" or "\x1B", n and m=<number>, A is end character;
+   etc., e.g. "\033[1;4m" where end character is 'm', semicolon ';' separate bytes
+ */
+ 
+/* 
+  CSI or Control Sequence Introducer:
+  * parameter bytes       range( 0x30-0x3F ) -> ( 0-9:;<=>? )
+  * intermediate bytes    range( 0x20-0x2F ) -> ( !" #$%&'()*+,-./ )
+  * final byte            range( 0x40-0x7E ) -> ( A-Z[\]^_`a-z{|}~ )
+  * private bytes         range( 0x70–0x7E ) -> ( p–z{|}~ )
+  
+  Notice, that space is an intermediate byte (yet, it is very likely unsupported).
+  Private bytes area is a subset of final bytes (left for custom sequences).
+  In short: CSI control sequence must be in the range( 0x20-0x7E ).
+ */
+
+domain ANSI::CSI {
+    (CUU, Cursor Up,                    "CSI n A"),         # "\033[1A"
+    (CUD, Cursor Down,                  "CSI n B"),         # "\033[2B"
+    (CUF, Cursor Forward,               "CSI n C"),         # "\033[3C"
+    (CUB, Cursor Back,                  "CSI n D"),         # "\033[4D"
+    (CNL, Cursor Next Line,             "CSI n E"),         # "\033[1E"
+    (CPL, Cursor Previous Line,         "CSI n F"),         # "\033[1F"
+    (CHA, Cursor Horizontal Absolute,   "CSI n G"),         # "\033[1G"
+    (CUP, Cursor Position,              "CSI n ; m H"),     # "\033[2;4H"
+    (HVP, Horizontal Vertical Position, "CSI n ; m f"),     # "\033[2;4f"
+    
+    (ED,  Erase in Display,             "CSI n J"),         # "\033[1J"
+    (EL,  Erase in Line,                "CSI n K"),         # "\033[1K"
+    (SU,  Scroll Up,                    "CSI n S"),         # "\033[1S"
+    (SD,  Scroll Down,                  "CSI n T"),         # "\033[1T"
+    
+    // sets the appearance of the following characters
+    (SGR, Select Graphic Rendition,     "CSI n m"),         # "\033[1m"
+    
+    // ...
+    
+    domain ANSI::CSI::private {
+        // SC0 console mode
+        (SCP, Save Current Cursor Position,  "CSI s"),      # "\033[s"
+        (RCP, Restore Saved Cursor Position, "CSI u"),      # "\033[u"
+        // ..
+    }
+}
+
+
+/*
+  SGR parameters (display attributes):
+  * attrubutes are separated with semicolons as a subset of CSI
+  * attribute effect remains until another SGR sequence resets it
+  * "CSI m" is treated as "CSI 0 m"
+*/
+
+/// domain ANSI::CSI::SGR
+enum class SGRDisplayAttribute : uint8_t {
+    Reset = 0,               // or normal
+    Bold = 1,                // or increased intensity
+    Faint = 2,               // or decreased intensity
+    Italic = 3,
+    NormalIntensity = 22,    // neither bold nor faint    
+
+    Underline = 4,
+    DoublyUnderlined = 21,   // or not bold
+    NotUnderlined = 24,      // neither singly or doubly underlined    
+    Overlined = 53,
+    NotOverlined = 55,    
+    Strikeout = 9,           // or cross out
+    NotStrikeout = 29,       // or not crossed out    
+
+    Blink = 5,               // or slow blink
+    NotBlinking = 25,
+    Invert = 7,              // or reverse video (swaps FG and BG colors)
+    NotInverted = 27,        // or not reversed    
+    Conceal = 8,             // or hide    
+    Reveal = 28,             // or not concealed    
+
+    /*
+    DefaultFont = 10,
+    AlternativeFont = 11,
+    ForegroundColor = 38,    // followed by "5;n" or "2;r;g;b"
+    BackgroundColor = 48,    // followed by "5;n" or "2;r;g;b"
+    */
+    
+    // ...
+};
+
+
+/* Foreground (FG) and background (BG) colors
+   "ESC[ $n m"               // 4-bit color (16 named colors)
+   "ESC[ $n;$m m"
+   "ESC[38;5; $n m"          // 8-bit color (256-color mode)
+   "ESC[38;2; $r;$g;$b m"    // 24-bit color, true color (16M as RGB)
+*/
+
+// 4-bit colors
+struct SGRNamedColor {
+    enum class Foreground : uint8_t {
+        Black = 30,
+        Red = 31,
+        Green = 32,
+        Yellow = 33,
+        Blue = 34,
+        Magenta = 35,
+        Cyan = 36,
+        White = 37,
+        Gray = 90,
+        BrightRed = 91,
+        BrightGreen = 92,
+        BrightYellow = 93,
+        BrightBlue = 94,
+        BrightMagenta = 95,
+        BrightCyan = 96,
+        BrightWhite = 97
+    };
+       
+    enum class Background : uint8_t {
+        Black = 40,
+        Red = 41,
+        Green = 42,
+        Yellow = 43,
+        Blue = 44,
+        Magenta = 45,
+        Cyan = 46,
+        White = 47,
+        Gray = 100,
+        BrightRed = 101,
+        BrightGreen = 102,
+        BrightYellow = 103,
+        BrightBlue = 104,
+        BrightMagenta = 105,
+        BrightCyan = 106,
+        BrightWhite = 107
+    };       
+};
+   
+
+
+
+namespace ansi {
+    enum class EscapeCharacterType : bool {
+        Octal,
+        Hexadecimal
+    };
+        
+    /// Control Sequence Introducer. Either "\033[" or "\x1B[".
+    struct CSI {
+        EscapeCharacterType type = EscapeCharacterType::Octal;
+        std::array<char,2> csi = { '\033', '[' };
+        
+        void set(EscapeCharacterType charType) {
+            char sign = EscapeCharacterType::Hexadecimal ? '\x1B' : '\033';
+            auto firstChar = *csi.begin();
+            firstChar = sign;
+        }
+   
+        const auto operator()() const noexcept {
+            return csi;
+        }
+    };    
+    
+    /// CSI end character
+    struct Enclose {
+        static char CUU() { return 'A'; }
+        static char CUD() { return 'B'; }
+        static char CUF() { return 'C'; }
+        static char CUB() { return 'D'; }
+        static char CNL() { return 'E'; }
+        static char CPL() { return 'F'; }
+        static char CHA() { return 'G'; }
+        static char CUP() { return 'H'; }
+        static char EL()  { return 'K'; }
+        static char ED()  { return 'J'; }
+        static char SU()  { return 'S'; }
+        static char SD()  { return 'T'; }
+        static char HVP() { return 'f'; }
+        static char SGR() { return 'm'; }
+    };
+    
+    struct RGBColor {
+        uint8_t red;
+        uint8_t green;
+        uint8_t blue;
+        
+        Color(uint8_t r, uint8_t g, uint8_t b) : red(r), green(g), blue(b);
+        
+        Color(const std::string_view htmlHex) {
+            // htmlHex := "0x008080" | "008080"
+            // convert from HTML/hex to RGB
+        }
+    };
+    
+    enum class CursorDirection : uint8_t {
+        Up,
+        Down,
+        Forward,
+        Backward
+    };
+
+    struct CursorPosition {
+        std::size_t line = 0;
+        std::size_t column = 0;
+        
+        CursorPosition(std::size_t hCells, std::size_t vCells) : line(hCells), column(vCells);
+    };
+    
+    
+    class ANSISequence {
+    private:
+        std::ostreamstring sequence{};
+        CSI csi{};
+    
+    public:    
+        inline std::string get() const noexcept;
+        
+    protected:
+        inline std::ostringstream& elicitSequence() noexcept;
+        inline CSI& elicitCSI() noexcept;
+    };
+
+    /// To compile SGR control sequences use SGRSequence.
+    class CSISequencer : public ANSISequence {
+    public:
+        CSISequencer(EscapeCharacterType code = EscapeCharacterType::Octal);
+    
+        void setCUU(uint8_t n);
+        void setCUD(uint8_t n);
+        void setCUF(uint8_t n);
+        void setCUB(uint8_t n);
+        void setCNL(uint8_t n);
+        void setCPL(uint8_t n);
+        void setCUP(uint8_t n);
+        void setCHA(uint8_t n);
+        void setHVP(uint8_t n);
+        void setED(uint8_t n);
+        void setEL(uint8_t n);
+        void setSU(uint8_t n);
+        void setSD(uint8_t n);
+        
+        // private sequences
+        void setSCP();                      // "ESC[s"
+        void setRCP();                      // "ESC[u"
+        void reset();                       // "ESC[0m"
+                
+        /// Send custom ANSI CSI escape sequence beside those anticipated.
+        // range check of 0x20-0x7E; must starts with "ESC["; regex in future
+        // CSISequenceType: (SingleByte, TwoBytes, MultiBytes)
+        // <<csi_seq>> or throw()        
+        setXX(const std::string_view sequence);
+
+    };
+    
+    class SGRSequence : public ANSISequence {
+    public:
+        SGRSequence(EscapeCharacterType code = EscapeCharacterType::Octal);
+    
+        void setDisplayAttribute(SGRDisplayAttribute param);      // "ESC[ $n m"
+        void setDisplayAttributes(SGRDisplayAttribute params...); // "ESC[ $n;$m; m"
+        
+        // 4-bit color
+        void setColor(SGRNamedColor::Foreground fg);              // "ESC[ $n m"
+        void setColor(SGRNamedColor::Background bg);
+        void setColor(Foreground fg, Background bg);              // "ESC[ $n;$m m"
+
+        // 8-bit color (256-color mode)
+        void setColor(uint8_t color);                             // "ESC[38;5; $n m"
+        
+        /// Try to default FG and BG or reset all attributes.
+        void resetColors(bool force = false);                     // "ESC[39;49m" and "ESC[m"
+
+        void setForegroundColor(RGBColor color, bool useColons = true);
+        void setBackgroundColor(RGBColor color, bool useColons = true);
+    
+    private:
+        // code := { 38, 48 } -> { fb, bg }
+        // "ESC[38;2;  $r;$g;$b m" vs "ESC[48:2:: $r:$g:$b m"
+        void setColor(const std::string& code, RGBColor c, bool useColons);
+
+    };
+}
+
+
+
+
+
+
+namespace console {
+    void setCursorPosition(CursorPosition pos);
+    void moveCursor(CursorDirection direction, std::size_t cells);
+    void saveCursorPosition();
+    void restoreCursorPosition();
+
+    /// CSI:EL - Erase in Line
+    void setEL(uint8_t n) {
+        // "ESC[ $n K"    
+        // n=0 → clear from cursor to the end of the line
+        // n=1 → clear from cursor to beginning of the line
+        // n=2 → clear entire line
+    }
+    
+    /// CSI::ED control seuqence - Erase in Display
+    void setED(uint8_t n) {
+        // "ESC[ $n J"    
+        // n=0 → clear from cursor to end of screen
+        // n=1 → clear from cursor to beginning of the screen
+        // n=2 → clear entire screen
+        // n=3 → clear entire screen and delete all lines saved in the scrollback buffer
+    }
+        
+};
+
+

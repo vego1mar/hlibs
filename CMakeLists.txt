@@ -7,7 +7,7 @@ add_executable(
         LIBS
         src/main.cpp
 
-        src/strings/strings.hpp
+        src/ansi/ansi.hpp
 
         src/date_time/date_time.hpp
 
@@ -24,7 +24,10 @@ add_executable(
         src/logging/stdout_logger.hpp
         src/logging/console_logger.hpp
 
+        src/strings/strings.hpp
+
         src/templates/object_counter.hpp
+
 )
 
 enable_testing()

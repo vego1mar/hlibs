@@ -3,6 +3,8 @@ add_executable(
 
         main_test.cpp
 
+        ansi/ansi_test.cpp ../src/ansi/ansi.hpp
+
         date_time/date_time_test.cpp ../src/date_time/date_time.hpp
 
         file/file_info_test.cpp ../src/file/file_info.hpp
