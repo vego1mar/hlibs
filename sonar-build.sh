@@ -32,8 +32,8 @@ function build() {
     mkdir $BUILD_DIR
     "$COMPILATOR" $FLAGS -c src/main.cpp -o $BUILD_DIR/main.o
 
-    local DATE_TIME_DIR="./$BUILD_DIR/date_time"
-    echo $DATE_TIME_DIR
+    # local DATE_TIME_DIR="./$BUILD_DIR/date_time"
+    # echo $DATE_TIME_DIR
     # 'date_time' has only headers for now
 
 }

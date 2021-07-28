@@ -1,8 +1,12 @@
 #include "logging/console_logger.hpp"
+#include "ansi/ansi.hpp"
 
 
 int main() {
-    logging::ConsoleLogger logger{};
+    using logging::ConsoleLogger;
+
+    ConsoleLogger logger{};
     logger.debug("Hello World!");
+
     return EXIT_SUCCESS;
 }

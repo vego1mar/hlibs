@@ -173,44 +173,6 @@ struct SGRNamedColor {
 
 
 namespace ansi {
-    enum class EscapeCharacterType : bool {
-        Octal,
-        Hexadecimal
-    };
-        
-    /// Control Sequence Introducer. Either "\033[" or "\x1B[".
-    struct CSI {
-        EscapeCharacterType type = EscapeCharacterType::Octal;
-        std::array<char,2> csi = { '\033', '[' };
-        
-        void set(EscapeCharacterType charType) {
-            char sign = EscapeCharacterType::Hexadecimal ? '\x1B' : '\033';
-            auto firstChar = *csi.begin();
-            firstChar = sign;
-        }
-   
-        const auto operator()() const noexcept {
-            return csi;
-        }
-    };    
-    
-    /// CSI end character
-    struct Enclose {
-        static char CUU() { return 'A'; }
-        static char CUD() { return 'B'; }
-        static char CUF() { return 'C'; }
-        static char CUB() { return 'D'; }
-        static char CNL() { return 'E'; }
-        static char CPL() { return 'F'; }
-        static char CHA() { return 'G'; }
-        static char CUP() { return 'H'; }
-        static char EL()  { return 'K'; }
-        static char ED()  { return 'J'; }
-        static char SU()  { return 'S'; }
-        static char SD()  { return 'T'; }
-        static char HVP() { return 'f'; }
-        static char SGR() { return 'm'; }
-    };
     
     struct RGBColor {
         uint8_t red;
@@ -239,52 +201,6 @@ namespace ansi {
         CursorPosition(std::size_t hCells, std::size_t vCells) : line(hCells), column(vCells);
     };
     
-    
-    class ANSISequence {
-    private:
-        std::ostreamstring sequence{};
-        CSI csi{};
-    
-    public:    
-        inline std::string get() const noexcept;
-        
-    protected:
-        inline std::ostringstream& elicitSequence() noexcept;
-        inline CSI& elicitCSI() noexcept;
-    };
-
-    /// To compile SGR control sequences use SGRSequence.
-    class CSISequencer : public ANSISequence {
-    public:
-        CSISequencer(EscapeCharacterType code = EscapeCharacterType::Octal);
-    
-        void setCUU(uint8_t n);
-        void setCUD(uint8_t n);
-        void setCUF(uint8_t n);
-        void setCUB(uint8_t n);
-        void setCNL(uint8_t n);
-        void setCPL(uint8_t n);
-        void setCUP(uint8_t n);
-        void setCHA(uint8_t n);
-        void setHVP(uint8_t n);
-        void setED(uint8_t n);
-        void setEL(uint8_t n);
-        void setSU(uint8_t n);
-        void setSD(uint8_t n);
-        
-        // private sequences
-        void setSCP();                      // "ESC[s"
-        void setRCP();                      // "ESC[u"
-        void reset();                       // "ESC[0m"
-                
-        /// Send custom ANSI CSI escape sequence beside those anticipated.
-        // range check of 0x20-0x7E; must starts with "ESC["; regex in future
-        // CSISequenceType: (SingleByte, TwoBytes, MultiBytes)
-        // <<csi_seq>> or throw()        
-        setXX(const std::string_view sequence);
-
-    };
-    
     class SGRSequence : public ANSISequence {
     public:
         SGRSequence(EscapeCharacterType code = EscapeCharacterType::Octal);
@@ -301,7 +217,8 @@ namespace ansi {
         void setColor(uint8_t color);                             // "ESC[38;5; $n m"
         
         /// Try to default FG and BG or reset all attributes.
-        void resetColors(bool force = false);                     // "ESC[39;49m" and "ESC[m"
+        void resetColors(bool force = false);                     // "ESC[39;49m"
+        void reset();                                             // "ESC[0m"
 
         void setForegroundColor(RGBColor color, bool useColons = true);
         void setBackgroundColor(RGBColor color, bool useColons = true);
@@ -316,32 +233,11 @@ namespace ansi {
 
 
 
-
-
-
 namespace console {
     void setCursorPosition(CursorPosition pos);
     void moveCursor(CursorDirection direction, std::size_t cells);
     void saveCursorPosition();
     void restoreCursorPosition();
-
-    /// CSI:EL - Erase in Line
-    void setEL(uint8_t n) {
-        // "ESC[ $n K"    
-        // n=0 → clear from cursor to the end of the line
-        // n=1 → clear from cursor to beginning of the line
-        // n=2 → clear entire line
-    }
-    
-    /// CSI::ED control seuqence - Erase in Display
-    void setED(uint8_t n) {
-        // "ESC[ $n J"    
-        // n=0 → clear from cursor to end of screen
-        // n=1 → clear from cursor to beginning of the screen
-        // n=2 → clear entire screen
-        // n=3 → clear entire screen and delete all lines saved in the scrollback buffer
-    }
-        
 };
 
 
