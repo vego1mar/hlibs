@@ -22,6 +22,8 @@ add_executable(
         templates/object_counter_test.cpp ../src/templates/object_counter.hpp
         templates/range_test.cpp ../src/templates/range.hpp
 
+        types_test.cpp ../src/types.hpp
+
 )
 
 target_link_libraries(Catch2_tests_run)

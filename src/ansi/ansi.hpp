@@ -6,9 +6,11 @@
 #include <cinttypes>
 #include <regex>
 #include <array>
+#include <tuple>
 
 #include "../templates/range.hpp"
 #include "../strings/strings.hpp"
+#include "../types.hpp"
 
 
 namespace ansi {
@@ -232,7 +234,7 @@ namespace ansi {
 
             const auto seq = std::string(sequence);
             const std::string sequenceWithNoEscKey = seq.substr(1);
-            templates::Range<char> range{0x20, 0x7E };
+            templates::Range<char> range{0x20, 0x7E};
             const auto isInANSIRange = strings::CheckRange(sequenceWithNoEscKey, range);
 
             if (!isInANSIRange) {
@@ -280,9 +282,151 @@ namespace ansi {
 
     };
 
-    // TODO: CSISequencer, SGRSequence -> Sequencer
-    // Sequencer.moveCursor(Direction, cells) -> CSISequencer{ CUU, CUD, CUF, CUB }...
-    // for SGR → std::string reset() → "ESC[0m"
+    struct DisplayAttribute {
+        enum class SGRDisplayAttribute : uint8_t {
+            Reset = 0,                            ///< or normal
+            Bold = 1,                             ///< or increased intensity
+            Faint = 2,                            ///< or decreased intensity
+            Italic = 3,
+            NormalIntensity = 22,                 ///< neither bold nor faint
+            Underline = 4,
+            DoublyUnderlined = 21,                ///< or not bold
+            NotUnderlined = 24,                   ///< neither singly or doubly underlined
+            Overlined = 53,
+            NotOverlined = 55,
+            Strikeout = 9,                        ///< or cross out
+            NotStrikeout = 29,                    ///< or not crossed out
+            Blink = 5,                            ///< or slow blink
+            NotBlinking = 25,
+            Invert = 7,                           ///< or reverse video (swaps foreground and background colors)
+            NotInverted = 27,                     ///< or not reversed
+            Conceal = 8,                          ///< or hide
+            Reveal = 28,                          ///< or not concealed
+            /*
+            Handled by standalone functions:
+            ForegroundColor = 38,                 // followed by "5;n" or "2;r;g;b"
+            BackgroundColor = 48,                 // followed by "5;n" or "2;r;g;b"
+            */
+        };
+
+        inline static std::string ToString(SGRDisplayAttribute attr) noexcept {
+            return std::to_string(static_cast<uint8_t>(attr));
+        }
+
+    };
+
+
+    struct SGRNamedColor {
+        enum class Foreground : uint8_t {
+            Black = 30,
+            Red = 31,
+            Green = 32,
+            Yellow = 33,
+            Blue = 34,
+            Magenta = 35,
+            Cyan = 36,
+            White = 37,
+            Default = 39,
+            Gray = 90,
+            BrightRed = 91,
+            BrightGreen = 92,
+            BrightYellow = 93,
+            BrightBlue = 94,
+            BrightMagenta = 95,
+            BrightCyan = 96,
+            BrightWhite = 97
+        };
+
+        enum class Background : uint8_t {
+            Black = 40,
+            Red = 41,
+            Green = 42,
+            Yellow = 43,
+            Blue = 44,
+            Magenta = 45,
+            Cyan = 46,
+            White = 47,
+            Default = 49,
+            Gray = 100,
+            BrightRed = 101,
+            BrightGreen = 102,
+            BrightYellow = 103,
+            BrightBlue = 104,
+            BrightMagenta = 105,
+            BrightCyan = 106,
+            BrightWhite = 107
+        };
+
+        inline static std::string ToString(Foreground fg) noexcept {
+            return std::to_string(static_cast<uint8_t>(fg));
+        }
+
+        inline static std::string ToString(Background bg) noexcept {
+            return std::to_string(static_cast<uint8_t>(bg));
+        }
+
+    };
+
+
+    class SGRSequencer {
+    private:
+        const char endChar = Enclose{Enclose::SGR}();
+        CSI csi{CSI::EscapeType::Octal};
+
+    public:
+        /// Sets only one display attribute.
+        [[nodiscard]] std::string getDisplayAttribute(DisplayAttribute::SGRDisplayAttribute param) const noexcept {
+            // "ESC[ $n m"
+            return csi() + DisplayAttribute::ToString(param) + endChar;
+        }
+
+        /// Sets foreground and background color to defaults.
+        [[nodiscard]] std::string getColorsReset() const noexcept {
+            // "ESC[39;49m"
+            return csi() + "39;49" + endChar;
+        }
+
+        /// Sets 4-bit color (16 colors mode).
+        [[nodiscard]] std::string getColor(SGRNamedColor::Foreground fg, SGRNamedColor::Background bg) const noexcept {
+            // "ESC[ $n;$m m"
+            return csi() + SGRNamedColor::ToString(fg) + ';' + SGRNamedColor::ToString(bg) + endChar;
+        }
+
+        /// Sets 8-bit color (256 colors mode).
+        [[nodiscard]] std::string getColor(uint8_t color) const noexcept {
+            // "ESC[38;5; $n m"
+            return csi() + "38;5;" + std::to_string(color) + endChar;
+        }
+
+        /// Sets 24-bit foreground color (true color).
+        [[nodiscard]] std::string getForegroundColor(libs::types::RGBColor color, bool useColons = true) const noexcept {
+            // "ESC[38;2; $r;$g;$b m" or "ESC[38:2:: $r:$g:$b m"
+            const auto groundColors = getGroundColor(color, true);
+            return useColons ? std::get<0>(groundColors) : std::get<1>(groundColors);
+        }
+
+        /// Sets 24-bit background color (true color).
+        [[nodiscard]] std::string getBackgroundColor(libs::types::RGBColor color, bool useColons = true) const noexcept {
+            // "ESC[48;2; $r;$g;$b m" or "ESC[48:2:: $r:$g:$b m"
+            const auto groundColors = getGroundColor(color, false);
+            return useColons ? std::get<0>(groundColors) : std::get<1>(groundColors);
+        }
+
+    private:
+        using GroundColor = std::tuple<std::string, std::string>;
+
+        [[nodiscard]] GroundColor getGroundColor(libs::types::RGBColor color, bool isFG = true) const noexcept {
+            const std::string r = std::to_string(color.red);
+            const std::string g = std::to_string(color.green);
+            const std::string b = std::to_string(color.blue);
+            const std::string code = isFG ? "38" : "48";
+            const std::string withColons = csi() + code + ":2::" + r + ':' + g + ':' + b + endChar;
+            const std::string withSemicolons = csi() + code + ";2;" + r + ';' + g + ';' + b + endChar;
+            return std::make_tuple<>(withColons, withSemicolons);
+        }
+
+    };
+
 
     // TODO: SGR sequence check in SGRSequencer
     // 04-bit color "ESC[ $n m"                                     → single byte with 'm' ending (one param)
@@ -294,6 +438,17 @@ namespace ansi {
     // 24-bit color "ESC[ [38|48]:2::$r:$g:$g m"                    → true color only (colons)
     // 24-bit color "ESC[ [$a;]* [38|48];2; $r;$g;$g [;$z]* m"      → true color with other params
     // 24-bit color "ESC[ [$a;]* [38|48]:2::$r:$g:$g [;$z]* m"      → true color with other params (colons)
+
+
+    class ANSISequencer {
+    private:
+        CSISequencer csiSequencer{};
+        SGRSequencer sgrSequencer{};
+
+    public:
+        // TODO: more meaningful names from both sequencers
+        // std::string moveCursor() const noexcept;
+    };
 
 }
 

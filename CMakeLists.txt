@@ -29,6 +29,8 @@ add_executable(
         src/templates/object_counter.hpp
         src/templates/range.hpp
 
+        src/types.hpp
+
 )
 
 enable_testing()

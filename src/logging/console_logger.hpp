@@ -40,15 +40,13 @@ namespace logging {
         void printToConsole() const {
             for (const auto&[msgTarget, message] : elicitStdOutMessages()) {
                 if (msgTarget == MessageTarget::StdOut) {
-                    std::cout << "\033[38:2::0:128:128m" << message << "\033[0m";
+                    std::cout << message;
                     continue;
                 }
 
                 std::clog << message;
+                // TODO: remove setting_skip, disable base StdOutLogger, build own messages list
             }
-
-            // Defaults FG & BG
-            std::cout << "\033[39m\033[49m";
         }
 
         // TODO: set colors methods, use ::ansi facilities
