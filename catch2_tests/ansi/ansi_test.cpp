@@ -120,6 +120,8 @@ TEST_CASE("ansi", "[ansi]") {
                 "\033[1;2 222m",
                 "\033[38;2; ; ;0;0;0;0;1111m",
                 "\033[38;2;;;0;0;0;0;m",
+                "\033[u\r\f",
+                "\033[\nu",
         };
 
         for (const auto& sequence : trueSequences) {

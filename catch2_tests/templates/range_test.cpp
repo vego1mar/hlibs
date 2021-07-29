@@ -27,4 +27,18 @@ TEST_CASE("Range", "[templates]") {
         REQUIRE_THAT(str, Catch::Equals("(-2,5)"));
     }
 
+    SECTION("[-2,0,2] -> Range(-2,0).isIn()", "[functional_requirements]") {
+        Range<long> range(-2L, 0L);
+        const auto length = range.getLength();
+
+        bool isNegative2InRange = range.isIn(-2L);
+        bool is0InRange = range.isIn(0);
+        bool is2InRange = range.isIn(2L);
+
+        CHECK(length == 2);
+        REQUIRE(isNegative2InRange);
+        REQUIRE(is0InRange);
+        REQUIRE(!is2InRange);
+    }
+
 }

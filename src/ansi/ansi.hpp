@@ -7,6 +7,9 @@
 #include <regex>
 #include <array>
 
+#include "../templates/range.hpp"
+#include "../strings/strings.hpp"
+
 
 namespace ansi {
 
@@ -223,14 +226,21 @@ namespace ansi {
 
         /// Check if custom ANSI CSI escape sequence is well-formed.
         static bool IsValid(const std::string_view sequence) {
-            // TODO: range check of 0x20-0x7E → ::strings, std::range_error
-            // RangeCheck(str, Range(a,b));
-            // RangeCheck(str, RangeCheckType::Letters | Digits | Alphanumerics | Special | ControlChars | ASCII);
-            // OrderCheck(str, OrderCheckType::Lexicographical | ASCIbetical | Alphabetical_Unicode | Subsequent);
+            if (sequence.empty()) {
+                return false;
+            }
 
             const auto seq = std::string(sequence);
-            const bool isRegexMatchFound = IsMatchFound(seq);
-            return isRegexMatchFound;
+            const std::string sequenceWithNoEscKey = seq.substr(1);
+            templates::Range<char> range{0x20, 0x7E };
+            const auto isInANSIRange = strings::CheckRange(sequenceWithNoEscKey, range);
+
+            if (!isInANSIRange) {
+                return false;
+            }
+
+            const bool isMatchedSequence = IsMatchFound(seq);
+            return isMatchedSequence;
         }
 
     private:

@@ -6,6 +6,8 @@
 #include <ranges>
 #include <algorithm>
 
+#include "../templates/range.hpp"
+
 
 namespace strings {
 
@@ -23,7 +25,20 @@ namespace strings {
         return source.find(what) != std::string::npos;
     }
 
+    template<typename T>
+    static bool CheckRange(const std::string_view source, const templates::Range<T>& range) {
+        for (const auto& character : source) {
+            if (!range.isIn(character)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     // TODO: ::string -> Split(), Contains(); check LM project
+    // RangeCheck(str, RangeCheckType::Letters | Digits | Alphanumerics | Special | ControlChars | ASCII);
+    // OrderCheck(str, OrderCheckType::Lexicographical | ASCIbetical | Alphabetical_Unicode | Subsequent);
 
 }
 
