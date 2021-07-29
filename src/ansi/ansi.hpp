@@ -5,6 +5,7 @@
 #include <string_view>
 #include <cinttypes>
 #include <regex>
+#include <array>
 
 
 namespace ansi {
@@ -222,44 +223,55 @@ namespace ansi {
 
         /// Check if custom ANSI CSI escape sequence is well-formed.
         static bool IsValid(const std::string_view sequence) {
-            // ANSISequenceCheckType::CSICheck: (SingleByte, TwoBytes, MultiBytes, Any)
-
             // TODO: range check of 0x20-0x7E → ::strings, std::range_error
             // RangeCheck(str, Range(a,b));
             // RangeCheck(str, RangeCheckType::Letters | Digits | Alphanumerics | Special | ControlChars | ASCII);
-            // OrderCheck(str, OrderCheckType::Lexicographical | ASCIbetical | Alphabetical_Unicode);
-
-            // no byte "ESC[ E"
-            // single byte "ESC[ $n E"
-            // double byte "ESC[ $n; $m E"
-            // multi byte "ESC[ $a [;]+ $b [;]+ (…) E"
+            // OrderCheck(str, OrderCheckType::Lexicographical | ASCIbetical | Alphabetical_Unicode | Subsequent);
 
             const auto seq = std::string(sequence);
+            const bool isRegexMatchFound = IsMatchFound(seq);
+            return isRegexMatchFound;
+        }
+
+    private:
+        static bool IsMatchFound(const std::string& seq) {
+            const std::size_t CHECKS = 4U;
+            const auto grammar = std::regex_constants::ECMAScript;
             std::smatch csiMatch;
 
-            const std::string singleByte("^\033\\[[0-9]+[a-zA-Z]{1}$");
-            const std::regex singleByteRegex(singleByte, std::regex_constants::ECMAScript);
-            bool isSingleByte = std::regex_match(seq, csiMatch, singleByteRegex);
+            const std::array<std::string, CHECKS> patterns = {
+                    std::string("^\033\\[[a-zA-Z]{1}$"),
+                    std::string("^\033\\[[0-9]+[a-zA-Z]{1}$"),
+                    std::string("^\033\\[[0-9]+;[0-9]+[a-zA-Z]{1}$"),
+                    std::string("^\033\\[([0-9]+(;)+)+[0-9]+[a-zA-Z]{1}$"),
+            };
 
-            const std::string csiSequence("^\033\\[[0-9]+[a-zA-Z]{1}$");
-            const std::regex csiRegex(csiSequence, std::regex_constants::ECMAScript);
+            const std::array<std::regex, CHECKS> regexes = {
+                    std::regex(*(patterns.begin() + 0), grammar),              // no byte
+                    std::regex(*(patterns.begin() + 1), grammar),              // single byte
+                    std::regex(*(patterns.begin() + 2), grammar),              // double byte
+                    std::regex(*(patterns.begin() + 3), grammar),              // multi byte
+            };
 
-            if (std::regex_search(seq, csiMatch, csiRegex)) {
-                const auto prefix = csiMatch.prefix();
-                const auto str = csiMatch.str();
-                const auto suffix = csiMatch.suffix();
-                return false;
-            }
+            const std::array<bool, CHECKS> matches = {
+                    std::regex_match(seq, csiMatch, *(regexes.begin() + 0)),   // "ESC[ E"
+                    std::regex_match(seq, csiMatch, *(regexes.begin() + 1)),   // "ESC[ $n E"
+                    std::regex_match(seq, csiMatch, *(regexes.begin() + 2)),   // "ESC[ $n; $m E"
+                    std::regex_match(seq, csiMatch, *(regexes.begin() + 3)),   // "ESC[ $a[;]+ … $z[;]+  E"
+            };
 
-            // change return clause
-            return true;
+            bool isNoByte = *matches.begin();
+            bool isSingleByte = *(matches.begin() + 1);
+            bool isDoubleByte = *(matches.begin() + 2);
+            bool isMultiByte = *(matches.begin() + 3);
+            bool isFound = isNoByte || isSingleByte || isDoubleByte || isMultiByte;
+            return isFound;
         }
 
     };
 
     // TODO: CSISequencer, SGRSequence -> Sequencer
     // Sequencer.moveCursor(Direction, cells) -> CSISequencer{ CUU, CUD, CUF, CUB }...
-    // TODO: range check
     // for SGR → std::string reset() → "ESC[0m"
 
     // TODO: SGR sequence check in SGRSequencer

@@ -1,3 +1,6 @@
+#include <vector>
+#include <string>
+
 #include "../catch.hpp"
 #include "../../src/ansi/ansi.hpp"
 
@@ -101,12 +104,35 @@ TEST_CASE("ansi", "[ansi]") {
         REQUIRE_THAT(scrollDown, Catch::Equals("\033[44T"));
     }
 
-    SECTION("CSISequencer.IsValid() -> RE", "[functional_requirements]") {
-        const std::string sequence = "\033[11;2A";
-        const bool isValid = CSISequencer::IsValid(sequence);
+    SECTION("CSISequencer.IsValid() -> OK", "[functional_requirements]") {
+        const std::vector<std::string> trueSequences = {
+                std::string("\033[s"),
+                std::string("\033[0m"),
+                std::string("\033[23;24f"),
+                std::string("\033[38;2;;;0;0;0;0;1111m"),
+        };
 
-        // TODO: unfinished
-        REQUIRE(isValid);
+        const std::vector<std::string> falseSequences = {
+                "\033[!",
+                "\033[_A",
+                "\033[-1C",
+                "\033[2;;F",
+                "\033[1;2 222m",
+                "\033[38;2; ; ;0;0;0;0;1111m",
+                "\033[38;2;;;0;0;0;0;m",
+        };
+
+        for (const auto& sequence : trueSequences) {
+            const bool isValid = CSISequencer::IsValid(sequence);
+            std::cout << std::endl;
+            REQUIRE(isValid);
+        }
+
+        for (const auto& sequence : falseSequences) {
+            const bool isValid = CSISequencer::IsValid(sequence);
+            std::cout << std::endl;
+            REQUIRE(!isValid);
+        }
     }
 
 }
