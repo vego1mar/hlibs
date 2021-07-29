@@ -124,13 +124,11 @@ TEST_CASE("ansi", "[ansi]") {
 
         for (const auto& sequence : trueSequences) {
             const bool isValid = CSISequencer::IsValid(sequence);
-            std::cout << std::endl;
             REQUIRE(isValid);
         }
 
         for (const auto& sequence : falseSequences) {
             const bool isValid = CSISequencer::IsValid(sequence);
-            std::cout << std::endl;
             REQUIRE(!isValid);
         }
     }

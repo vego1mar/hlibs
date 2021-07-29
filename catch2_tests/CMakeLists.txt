@@ -20,6 +20,7 @@ add_executable(
         strings/strings_test.cpp ../src/strings/strings.hpp
 
         templates/object_counter_test.cpp ../src/templates/object_counter.hpp
+        templates/range_test.cpp ../src/templates/range.hpp
 
 )
 

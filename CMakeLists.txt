@@ -27,6 +27,7 @@ add_executable(
         src/strings/strings.hpp
 
         src/templates/object_counter.hpp
+        src/templates/range.hpp
 
 )
 
