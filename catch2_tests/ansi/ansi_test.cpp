@@ -7,24 +7,9 @@
 
 TEST_CASE("ansi", "[ansi]") {
 
-    using ansi::CSI;
     using ansi::Enclose;
     using ansi::CSISequencer;
 
-
-    SECTION("CSI set/get -> OK", "[functional_requirements]") {
-        CSI csi{};
-        const auto octalCSI = csi();
-        REQUIRE_THAT(octalCSI, Catch::Equals("\033["));
-
-        csi.set(CSI::EscapeType::Hexadecimal);
-        const auto hexCSI = csi();
-        REQUIRE_THAT(hexCSI, Catch::Equals("\x1B["));
-
-        csi.set(CSI::EscapeType::Octal);
-        const auto result = csi();
-        REQUIRE_THAT(result, Catch::Equals(octalCSI));
-    }
 
     SECTION("CSIEndChar -> convertible to char", "[functional_requirements]") {
         const auto enclose = Enclose::SGR;
@@ -33,8 +18,7 @@ TEST_CASE("ansi", "[ansi]") {
     }
 
     SECTION("Enclose -> convertible to char", "[functional_requirements]") {
-        const auto enclose = ansi::Enclose{ Enclose::SD };
-        const char endChar = enclose();
+        const auto endChar = Enclose::ToChar(Enclose::SD);
         REQUIRE(endChar == 'T');
     }
 
@@ -51,13 +35,13 @@ TEST_CASE("ansi", "[ansi]") {
     }
 
     SECTION("CSISequencer.getCUF() -> \\x1B[2C", "[functional_requirements]") {
-        CSISequencer sequencer{ CSI::EscapeType::Hexadecimal };
+        CSISequencer sequencer{};
         const auto cursorForward = sequencer.getCUF(2);
         REQUIRE_THAT(cursorForward, Catch::Equals("\x1B[2C"));
     }
 
     SECTION("CSISequencer.getCUB() -> \\x1B[7D", "[functional_requirements]") {
-        CSISequencer sequencer{ CSI::EscapeType::Hexadecimal };
+        CSISequencer sequencer{};
         const auto cursorBack = sequencer.getCUB(7);
         REQUIRE_THAT(cursorBack, Catch::Equals("\x1B[7D"));
     }

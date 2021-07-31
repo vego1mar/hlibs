@@ -11,7 +11,8 @@
  */
 
 /// ANSI escape sequences
-domain ANSI {
+/// For Fe escape sequences ESC is followed by a byte in the range( 0x40-0x5F ) -> ( @A-Z[\]^_ )
+domain ANSI::Fe {
     // select a single character from an alternative character set
     (SS2, Single Shift Two,            "ESC N"),    # "\033N"
     (SS3, Single Shift Three,          "ESC 0"),    # "\0330"
@@ -29,6 +30,53 @@ domain ANSI {
     // starts most useful sequences
     (CSI, Control Sequence Introducer, "ESC ["),    # "\033["
     
+    // ...
+}
+
+/// followed by a byte in the range( 0x60-0x7E ) -> ( `a-z{|}~ )
+/// called 'independent control functions' by ECMA-48
+domain ANSI:Fs {
+    // triggers a full reset of the terminal to its original state
+    (RIS, Reset to Initial State,      "ESC c"),    # "\033c"
+
+    // ...
+}
+
+/// followed by a byte in the range( 0x30-0x3F ) -> ( 0-9:;<=>? )
+/// set apart for private-use control functions
+domain ANSI::Fp {
+    // cursor position + encoding shift state, formatting attributes
+    (DECSC, DEC Save Cursor,           "ESC 7"),    # "\0337"
+    (DECRC, DEC Restore Cursor,        "ESC 8"),    # "\0338"
+
+    // ...
+}
+
+/// followed by a byte in the range( 0x20-0x2F ) -> ( ! "#$%&'()*+,-./ )
+/// then any number of additional bytes in this range
+///     the final byte in the range( 0x30-0x7E ) -> ( 0-9:;<=>?@A-Z[\]^_`a-z{|}~ )
+///               private use range( 0x30-0x3F ) -> ( 0-9:;<=>? )
+/// they are mostly used for ANSI/ISO code-switching mechanisms such as those used by ISO-2022-JP, except "3F" sequences
+domain ANSI::nF {
+    // subcategorized further by the low 4 bits of the first byte
+    // "0Ft" - announcements
+    // "2F"  - the first byte is 0x22 (")
+    // "2Fp" - the final byte is in the private use range( 0x30-0x3F )
+    // "2Ft" - the final byte is in the regular use range( 0x40-0x7E )
+    // "3F"  - the first intermediate byte is 0x23 (#), used for individual control functions
+    // "3Ft" - reserved for additional ISO-IR registered individual control functions
+    // "3Fp" - for private-use control functions
+
+    // type "0Ft", ECMA-35, makes the function keys send C1 codes or ESC + letter
+    (ACS6/S7C1T, Announce Code Structure 6/Send 7-bit C1 Control Character to the Host, "ESC SP F"),   # "\033 F"
+    (ACS7/S8C1T, Announce Code Structure 7/Send 8-bit C1 Control Character to the Host, "ESC SP G"),   # "\033 G"
+
+    // type "3Fp", private sequences of category 3
+    (DECDHL, DEC Double-Height Letters Top Half,    "ESC # 3"),    # "\033#3"
+    (DECDHL, DEC Double-Height Letters Bottom Half, "ESC # 4"),    # "\033#4"
+    (DECSWL, DEC Single-Width Line,                 "ESC # 5"),    # "\033#5"
+    (DECDWL, DEC Double-Width Line,                 "ESC # 6"),    # "\033#6"
+
     // ...
 }
 
@@ -168,38 +216,24 @@ struct SGRNamedColor {
         BrightWhite = 107
     };       
 };
-   
 
+/* 8-bit color (256 colors mode):
+     0-  7 — standard colors ("ESC[ 30-37 m")
+     8- 15 — high intensity colors ("ESC[ 90-97 m")
+    16-231 — 6x6x6 color cube: 16 + 36r + 6g + b, 0 ≤ r,g,b ≤ 5
+   232-255 — grayscale (from black to white in 24 steps)
+
+   24-bit foreground color (true color) "ESC[ fg/bg : $n :: r:g:b m":
+    0 implementation details (no further parameters)
+    1 transparent (no further parameters)
+    2 red-green-blue format
+    3 cyan-magenta-yellow format
+    4 cyan-magenta-yellow-black format (position for K unused)
+    5 0-255 indexed format
+*/
 
 
 namespace ansi {
-    
-    struct RGBColor {
-        uint8_t red;
-        uint8_t green;
-        uint8_t blue;
-        
-        Color(uint8_t r, uint8_t g, uint8_t b) : red(r), green(g), blue(b);
-        
-        Color(const std::string_view htmlHex) {
-            // htmlHex := "0x008080" | "008080"
-            // convert from HTML/hex to RGB
-        }
-    };
-    
-    enum class CursorDirection : uint8_t {
-        Up,
-        Down,
-        Forward,
-        Backward
-    };
-
-    struct CursorPosition {
-        std::size_t line = 0;
-        std::size_t column = 0;
-        
-        CursorPosition(std::size_t hCells, std::size_t vCells) : line(hCells), column(vCells);
-    };
     
     class SGRSequence : public ANSISequence {
     public:
@@ -220,6 +254,7 @@ namespace ansi {
         void resetColors(bool force = false);                     // "ESC[39;49m"
         void reset();                                             // "ESC[0m"
 
+        // 24-bit color (true color)
         void setForegroundColor(RGBColor color, bool useColons = true);
         void setBackgroundColor(RGBColor color, bool useColons = true);
     
@@ -232,12 +267,16 @@ namespace ansi {
 }
 
 
-
 namespace console {
     void setCursorPosition(CursorPosition pos);
     void moveCursor(CursorDirection direction, std::size_t cells);
     void saveCursorPosition();
     void restoreCursorPosition();
+
+    void resetConsole();  // RIS
+    void resetDisplay();  // SGR, all attributes
+    void resetColors();   // SGR, FG & BG
+
 };
 
 
