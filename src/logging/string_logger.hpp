@@ -5,11 +5,11 @@
 #include <iostream>
 
 #include "logger.hpp"
-#include "../date_time/date_time.hpp"
-#include "../strings/strings.hpp"
+#include "../facilities/timestamp.hpp"
+#include "../facilities/strings.hpp"
 
 
-namespace logging {
+namespace libs::logging {
 
     class StringLogger : public Logger {
       public:
@@ -105,8 +105,8 @@ namespace logging {
 
         static std::string GetMessageHeader(const SeverityLevel::Level& level, const SourceLocation& source)
         {
-            const auto timestamp = date_time::GetDateAndTime();
-            const auto levelStr = strings::ToUpperCase(SeverityLevel::ToString(level));
+            const auto timestamp = libs::facilities::timestamp::GetDateAndTime();
+            const auto levelStr = libs::facilities::string::ToUpperCase(SeverityLevel::ToString(level));
             const std::string path = source.file_name();
             const auto sourceFile = path.substr(path.find_last_of("/\\") + 1);
             const auto line = source.line();

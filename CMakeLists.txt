@@ -7,29 +7,24 @@ add_executable(
         LIBS
         src/main.cpp
 
-        src/ansi/ansi.hpp
+        src/facilities/strings.hpp
+        src/facilities/timestamp.hpp
 
-        src/date_time/date_time.hpp
-
-        src/file/file_reader_base.hpp
-        src/file/file_reader_buffered.hpp
-        src/file/file_reader.hpp
-        src/file/file_info.hpp
-        src/file/stream_to_file.hpp
-
-        src/interfaces/i_stringify.hpp
+        src/io/file_reader/file_reader_base.hpp
+        src/io/file_reader/file_reader_buffered.hpp
+        src/io/file_reader/file_reader.hpp
+        src/io/file/file_info.hpp
+        src/io/file/stream_to_file.hpp
 
         src/logging/logger.hpp
         src/logging/string_logger.hpp
         src/logging/stdout_logger.hpp
         src/logging/console_logger.hpp
 
-        src/strings/strings.hpp
+        src/standard/ansi.hpp
 
-        src/templates/object_counter.hpp
-        src/templates/range.hpp
-
-        src/types.hpp
+        src/types/interfaces.hpp
+        src/types/types.hpp
 
 )
 

@@ -7,10 +7,10 @@
 #include <utility>
 
 #include "string_logger.hpp"
-#include "../strings/strings.hpp"
+#include "../facilities/strings.hpp"
 
 
-namespace logging {
+namespace libs::logging {
 
     class StdOutLogger : public StringLogger {
       public:
@@ -57,9 +57,11 @@ namespace logging {
             const auto lastMessage = buffer.substr(last_message_position);
             last_message_position += lastMessage.size();
 
-            const auto fatalLevel = strings::ToUpperCase(SeverityLevel::ToString(SeverityLevel::Level::Fatal));
-            bool isExceptionMsg = strings::Contains(lastMessage, "std::exception |");
-            bool isFatalMsg = strings::Contains(lastMessage, "[" + fatalLevel + "]");
+            using libs::facilities::string::ToUpperCase;
+            using libs::facilities::string::Contains;
+            const auto fatalLevel = ToUpperCase(SeverityLevel::ToString(SeverityLevel::Level::Fatal));
+            bool isExceptionMsg = Contains(lastMessage, "std::exception |");
+            bool isFatalMsg = Contains(lastMessage, "[" + fatalLevel + "]");
             bool isErrorMsg = isExceptionMsg || isFatalMsg;
             const auto key = isErrorMsg ? MessageTarget::StdErr : MessageTarget::StdOut;
             messages.emplace_back(std::make_pair<>(key, lastMessage));

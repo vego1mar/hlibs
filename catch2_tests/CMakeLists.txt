@@ -3,26 +3,21 @@ add_executable(
 
         main_test.cpp
 
-        ansi/ansi_test.cpp ../src/ansi/ansi.hpp
+        facilities/strings_test.cpp ../src/facilities/strings.hpp
+        facilities/timestamp_test.cpp ../src/facilities/timestamp.hpp
 
-        date_time/date_time_test.cpp ../src/date_time/date_time.hpp
-
-        file/file_info_test.cpp ../src/file/file_info.hpp
-        file/file_reader_base_test.cpp ../src/file/file_reader_base.hpp
-        file/stream_to_file_test.cpp ../src/file/stream_to_file.hpp
-
-        interfaces/i_stringify_test.cpp ../src/interfaces/i_stringify.hpp
+        io/file_reader/file_reader_base_test.cpp ../src/io/file_reader/file_reader_base.hpp
+        io/file/file_info_test.cpp ../src/io/file/file_info.hpp
+        io/file/stream_to_file_test.cpp ../src/io/file/stream_to_file.hpp
 
         logging/severity_level_test.cpp ../src/logging/logger.hpp
         logging/string_logger_test.cpp ../src/logging/string_logger.hpp
         logging/stdout_logger_test.cpp ../src/logging/stdout_logger.hpp
 
-        strings/strings_test.cpp ../src/strings/strings.hpp
+        standard/ansi_test.cpp ../src/standard/ansi.hpp
 
-        templates/object_counter_test.cpp ../src/templates/object_counter.hpp
-        templates/range_test.cpp ../src/templates/range.hpp
-
-        types_test.cpp ../src/types.hpp
+        types/interfaces_test.cpp ../src/types/interfaces.hpp
+        types/types_test.cpp ../src/types/types.hpp
 
 )
 

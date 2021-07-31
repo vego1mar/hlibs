@@ -9,10 +9,10 @@
 #include <unordered_map>
 #include <experimental/source_location>
 
-#include "../templates/object_counter.hpp"
+#include "../types/types.hpp"
 
 
-namespace logging {
+namespace libs::logging {
 
     struct SeverityLevel {
       public:
@@ -69,11 +69,11 @@ namespace logging {
     };
 
 
-    using SourceLocation = std::experimental::source_location;
-
-
-    class Logger : private templates::ObjectCounter<Logger> {
+    class Logger : private libs::types::ObjectCounter<Logger> {
       public:
+        using SourceLocation = std::experimental::source_location;
+
+
         Logger(const Logger& rhs) = delete;
 
         Logger(Logger&& rhs) noexcept = delete;
@@ -115,7 +115,7 @@ namespace logging {
       protected:
         Logger()
         {
-            id = templates::ObjectCounter<Logger>::created;
+            id = libs::types::ObjectCounter<Logger>::created;
         }
 
         ~Logger() noexcept override = default;

@@ -6,7 +6,7 @@
 #include "stdout_logger.hpp"
 
 
-namespace logging {
+namespace libs::logging {
 
     /// Uses ANSI escape characters to print colourful output.
     class ConsoleLogger : public StdOutLogger {

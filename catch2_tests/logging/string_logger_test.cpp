@@ -5,14 +5,17 @@
 
 TEST_CASE("StringLogger", "[logging]")
 {
+    using libs::logging::LoggerSettings;
+    using libs::logging::StringLogger;
+
 
     SECTION("info() -> flush=OK", "[functional_requirements]") {
         std::string target{};
-        logging::LoggerSettings settings{};
+        LoggerSettings settings{};
         settings.messages_before_flush = 2;
         settings.is_enabled = true;
 
-        logging::StringLogger logger{target};
+        StringLogger logger{target};
         logger.set(std::move(settings));
         logger.info("message1");
         logger.info("2message");
@@ -27,11 +30,11 @@ TEST_CASE("StringLogger", "[logging]")
 
     SECTION("info(), StringLogger=disabled -> flush=empty", "[functional_requirements]") {
         std::string target{};
-        logging::LoggerSettings settings{};
+        LoggerSettings settings{};
         settings.messages_before_flush = 1;
         settings.is_enabled = false;
 
-        logging::StringLogger logger{target};
+        StringLogger logger{target};
         logger.set(std::move(settings));
         logger.info("message that should not be buffered");
 
@@ -40,10 +43,10 @@ TEST_CASE("StringLogger", "[logging]")
 
     SECTION("exception() -> flush=OK", "[functional_requirements]") {
         std::string target{};
-        logging::LoggerSettings settings{};
+        LoggerSettings settings{};
         settings.messages_before_flush = 1;
 
-        logging::StringLogger logger{target};
+        StringLogger logger{target};
         logger.set(std::move(settings));
         const std::string exceptionMsg("Deliberately thrown runtime_exception!");
         const std::string msgToLog("std::runtime_error");
@@ -66,10 +69,10 @@ TEST_CASE("StringLogger", "[logging]")
         std::string target{};
 
         constexpr auto logOneMessage = [](std::string& target) {
-            logging::LoggerSettings settings{};
+            LoggerSettings settings{};
             settings.messages_before_flush = 2;
 
-            logging::StringLogger logger{target};
+            StringLogger logger{target};
             logger.set(std::move(settings));
             logger.debug("dtor_check");
 
