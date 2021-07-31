@@ -4,7 +4,7 @@
 #include "../../src/facilities/timestamp.hpp"
 
 
-TEST_CASE("date_time", "[date_time]")
+TEST_CASE("GetDateTime()", "[libs][facilities][timestamp]")
 {
     using libs::facilities::timestamp::GetDate;
     using libs::facilities::timestamp::GetTime;

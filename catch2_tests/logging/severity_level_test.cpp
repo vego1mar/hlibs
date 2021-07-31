@@ -2,7 +2,7 @@
 #include "../../src/logging/logger.hpp"
 
 
-TEST_CASE("SeverityLevel", "[logging]")
+TEST_CASE("SeverityLevel", "[libs][logging]")
 {
     using libs::logging::SeverityLevel;
 

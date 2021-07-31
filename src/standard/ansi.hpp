@@ -1,5 +1,5 @@
-#ifndef ANSI_HPP
-#define ANSI_HPP
+#ifndef LIBS_STANDARD_ANSI_HPP
+#define LIBS_STANDARD_ANSI_HPP
 
 #include <string>
 #include <string_view>
@@ -88,7 +88,6 @@ namespace libs::standard::ansi {
             {
                 return std::to_string(static_cast<uint8_t>(type));
             }
-
         };
 
         /// Cursor Up (editor function). Moves the cursor n $cells upward.
@@ -637,13 +636,13 @@ namespace libs::standard::ansi {
             return sgr.getDisplayAttribute(DisplayFormat::Reset);
         }
 
-        static std::string resetColors() noexcept
+        static std::string ResetColors() noexcept
         {
             SGRSequencer sgr{};
             return sgr.getColorsReset();
         }
 
-        static std::string resetTerminal() noexcept
+        static std::string ResetTerminal() noexcept
         {
             FsSequencer fs{};
             return fs.getRIS();
@@ -653,10 +652,9 @@ namespace libs::standard::ansi {
     };
 
     // TODO: realize plan
-    // * change namespaces to be preceded by libs::
     // * complete isValid() methods
     // * specialize ConsoleLogger from StdOutLogger, override 'event methods' to build own messages
     // * make another plan that will realize TODOs
 }
 
-#endif //ANSI_HPP
+#endif //LIBS_STANDARD_ANSI_HPP

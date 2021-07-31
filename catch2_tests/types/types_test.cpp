@@ -5,7 +5,7 @@
 #include "../../src/types/types.hpp"
 
 
-TEST_CASE("ObjectCounter", "[templates]")
+TEST_CASE("ObjectCounter", "[libs][types]")
 {
     using libs::types::ObjectCounter;
 
@@ -97,7 +97,7 @@ TEST_CASE("ObjectCounter", "[templates]")
 }
 
 
-TEST_CASE("Range", "[templates]")
+TEST_CASE("Range", "[libs][types]")
 {
     using libs::types::Range;
 

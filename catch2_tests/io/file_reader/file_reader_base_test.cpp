@@ -9,7 +9,7 @@
 #include "../../../src/io/file_reader/file_reader_buffered.hpp"
 
 
-SCENARIO("Comparing FileReader's speed", "[file][file_readers][!mayfail]")
+SCENARIO("Comparing FileReader's speed", "[libs][io][file_readers][!mayfail]")
 {
     using libs::io::file_reader::FileReader;
     using libs::io::file_reader::FileReaderBuffered;

@@ -1,5 +1,5 @@
-#ifndef STRINGS_HPP
-#define STRINGS_HPP
+#ifndef LIBS_FACILITIES_STRING_HPP
+#define LIBS_FACILITIES_STRING_HPP
 
 #include <string>
 #include <string_view>
@@ -44,4 +44,4 @@ namespace libs::facilities::string {
 
 }
 
-#endif //STRINGS_HPP
+#endif //LIBS_FACILITIES_STRING_HPP

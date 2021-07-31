@@ -1,5 +1,5 @@
-#ifndef OBJECT_COUNTER_HPP
-#define OBJECT_COUNTER_HPP
+#ifndef LIBS_TYPES_HPP
+#define LIBS_TYPES_HPP
 
 #include <concepts>
 #include <type_traits>
@@ -125,4 +125,4 @@ namespace libs::types {
 
 }
 
-#endif //OBJECT_COUNTER_HPP
+#endif //LIBS_TYPES_HPP

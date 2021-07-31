@@ -2,7 +2,7 @@
 #include "../../../src/io/file/file_info.hpp"
 
 
-TEST_CASE("GetFileSize()", "[file][file_info]")
+TEST_CASE("GetFileSize()", "[libs][io][file]")
 {
     using libs::io::file::GetFileSize;
 

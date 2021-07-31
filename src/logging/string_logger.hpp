@@ -1,5 +1,5 @@
-#ifndef STRING_LOGGER_HPP
-#define STRING_LOGGER_HPP
+#ifndef LIBS_LOGGING_STRING_LOGGER_HPP
+#define LIBS_LOGGING_STRING_LOGGER_HPP
 
 #include <sstream>
 #include <iostream>
@@ -140,4 +140,4 @@ namespace libs::logging {
 
 }
 
-#endif //STRING_LOGGER_HPP
+#endif //LIBS_LOGGING_STRING_LOGGER_HPP

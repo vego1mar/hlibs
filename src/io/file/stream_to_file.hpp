@@ -1,5 +1,5 @@
-#ifndef STREAM_TO_FILE_HPP
-#define STREAM_TO_FILE_HPP
+#ifndef LIBS_IO_FILE_STREAM_TO_FILE_HPP
+#define LIBS_IO_FILE_STREAM_TO_FILE_HPP
 
 #include <fstream>
 #include <streambuf>
@@ -37,4 +37,4 @@ namespace libs::io::file {
 
 }
 
-#endif //STREAM_TO_FILE_HPP
+#endif //LIBS_IO_FILE_STREAM_TO_FILE_HPP

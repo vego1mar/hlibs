@@ -1,5 +1,5 @@
-#ifndef DATE_TIME_HPP
-#define DATE_TIME_HPP
+#ifndef LIBS_FACILITIES_TIMESTAMP_HPP
+#define LIBS_FACILITIES_TIMESTAMP_HPP
 
 #include <string>
 #include <ctime>
@@ -36,4 +36,4 @@ namespace libs::facilities::timestamp {
 
 }
 
-#endif //DATE_TIME_HPP
+#endif //LIBS_FACILITIES_TIMESTAMP_HPP

@@ -2,7 +2,7 @@
 #include "../../src/types/interfaces.hpp"
 
 
-TEST_CASE("IStringify", "[interfaces]")
+TEST_CASE("IStringify", "[libs][interfaces]")
 {
     using libs::types::interfaces::IStringify;
 

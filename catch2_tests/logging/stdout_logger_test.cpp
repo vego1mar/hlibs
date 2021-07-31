@@ -4,7 +4,7 @@
 #include "../../src/io/file/file_info.hpp"
 
 
-TEST_CASE("StdOutLogger", "[logging]")
+TEST_CASE("StdOutLogger", "[libs][logging]")
 {
     using libs::logging::Logger;
     using libs::logging::StringLogger;

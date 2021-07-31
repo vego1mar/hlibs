@@ -1,5 +1,5 @@
-#ifndef I_STRINGIFY_HPP
-#define I_STRINGIFY_HPP
+#ifndef LIBS_INTERFACES_HPP
+#define LIBS_INTERFACES_HPP
 
 namespace libs::types::interfaces {
 
@@ -14,4 +14,4 @@ namespace libs::types::interfaces {
 
 }
 
-#endif //I_STRINGIFY_HPP
+#endif //LIBS_INTERFACES_HPP

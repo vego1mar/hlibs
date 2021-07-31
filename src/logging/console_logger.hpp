@@ -1,5 +1,5 @@
-#ifndef CONSOLE_LOGGER_HPP
-#define CONSOLE_LOGGER_HPP
+#ifndef LIBS_LOGGING_CONSOLE_LOGGER_HPP
+#define LIBS_LOGGING_CONSOLE_LOGGER_HPP
 
 #include <iostream>
 
@@ -61,4 +61,4 @@ namespace libs::logging {
 
 }
 
-#endif //CONSOLE_LOGGER_HPP
+#endif //LIBS_LOGGING_CONSOLE_LOGGER_HPP

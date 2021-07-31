@@ -3,7 +3,7 @@
 #include "../../src/logging/string_logger.hpp"
 
 
-TEST_CASE("StringLogger", "[logging]")
+TEST_CASE("StringLogger", "[libs][logging]")
 {
     using libs::logging::LoggerSettings;
     using libs::logging::StringLogger;

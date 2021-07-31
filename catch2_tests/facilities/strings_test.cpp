@@ -4,12 +4,9 @@
 #include "../../src/facilities/strings.hpp"
 
 
-TEST_CASE("strings", "[strings]")
+TEST_CASE("ToUpperCase", "[libs][facilities][string]")
 {
-    using libs::facilities::string::CheckRange;
     using libs::facilities::string::ToUpperCase;
-    using libs::facilities::string::Contains;
-    using libs::types::Range;
 
 
     SECTION("ToUpperCase(str::string) -> str(STR)", "[functional_requirements]") {
@@ -25,6 +22,12 @@ TEST_CASE("strings", "[strings]")
         const auto result = ToUpperCase(input);
         REQUIRE_THAT(result, Catch::Equals(expectedStr));
     }
+}
+
+TEST_CASE("Contains", "[libs][facilities][string]")
+{
+    using libs::facilities::string::Contains;
+
 
     SECTION("Contains(char) -> true", "[functional_requirements]") {
         std::string source("xXVvOfFvjW9zHyNAVzQL\n");
@@ -45,6 +48,14 @@ TEST_CASE("strings", "[strings]")
         bool isFound = Contains(source, strToFind);
         REQUIRE(!isFound);
     }
+}
+
+
+TEST_CASE("CheckRange", "[libs][facilities][string]")
+{
+    using libs::facilities::string::CheckRange;
+    using libs::types::Range;
+
 
     SECTION("CheckRange(97,122) -> OK", "[functional_requirements]") {
         Range<char> range1('a', 'z');
@@ -68,3 +79,4 @@ TEST_CASE("strings", "[strings]")
     }
 
 }
+

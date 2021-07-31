@@ -1,5 +1,5 @@
-#ifndef STDOUT_LOGGER_HPP
-#define STDOUT_LOGGER_HPP
+#ifndef LIBS_LOGGING_STDOUT_LOGGER_HPP
+#define LIBS_LOGGING_STDOUT_LOGGER_HPP
 
 #include <iostream>
 #include <vector>
@@ -112,4 +112,4 @@ namespace libs::logging {
 
 }
 
-#endif //STDOUT_LOGGER_HPP
+#endif //LIBS_LOGGING_STDOUT_LOGGER_HPP

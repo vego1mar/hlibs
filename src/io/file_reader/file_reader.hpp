@@ -1,5 +1,5 @@
-#ifndef FILE_READER_HPP
-#define FILE_READER_HPP
+#ifndef LIBS_IO_FILE_READER_FILE_READER_HPP
+#define LIBS_IO_FILE_READER_FILE_READER_HPP
 
 #include "file_reader_base.hpp"
 
@@ -30,4 +30,4 @@ namespace libs::io::file_reader {
 
 }
 
-#endif //FILE_READER_HPP
+#endif //LIBS_IO_FILE_READER_FILE_READER_HPP

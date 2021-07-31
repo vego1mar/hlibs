@@ -5,11 +5,10 @@
 #include "../../src/standard/ansi.hpp"
 
 
-TEST_CASE("ansi", "[ansi]")
+TEST_CASE("CSISequencer", "[libs][standard][ansi]")
 {
     using libs::standard::ansi::Enclose;
     using libs::standard::ansi::CSISequencer;
-    using libs::standard::ansi::ANSISequencer;
 
 
     SECTION("CSIEndChar -> convertible to char", "[functional_requirements]") {
@@ -120,9 +119,18 @@ TEST_CASE("ansi", "[ansi]")
         }
     }
 
+}
+
+
+TEST_CASE("ANSISequencer", "[libs][standard][ansi]") {
+
+    using libs::standard::ansi::ANSISequencer;
+
+
     SECTION("? -> ?", "[functional_requirements]") {
         ANSISequencer sequencer;
-        const auto clearScreen = ANSISequencer::ClearScreen();
+        const auto clearScreen = ANSISequencer::ResetTerminal();
+        REQUIRE_THAT(clearScreen, Catch::Equals("\033c"));
     }
 
 }

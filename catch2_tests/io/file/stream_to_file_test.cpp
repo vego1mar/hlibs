@@ -5,7 +5,7 @@
 #include "../../../src/io/file/file_info.hpp"
 
 
-TEST_CASE("StreamToFile", "[file]")
+TEST_CASE("StreamToFile", "[libs][io][file]")
 {
     using libs::io::file::StreamToFile;
     using libs::io::file::GetFileSize;
