@@ -12,12 +12,12 @@
 namespace file::reader {
 
     class FileReaderBase : public interfaces::IStringify {
-    private:
+      private:
         std::string path;
         std::ifstream stream;
         std::vector<char> content;
 
-    public:
+      public:
         FileReaderBase() = delete;
 
         FileReaderBase(const FileReaderBase& rhs) = delete;
@@ -31,37 +31,45 @@ namespace file::reader {
         ~FileReaderBase() noexcept override = default;
 
         explicit FileReaderBase(const std::string& filePath)
-                : path(filePath), stream(std::ifstream(filePath, std::ios::in)) {
+                : path(filePath), stream(std::ifstream(filePath, std::ios::in))
+        {
         }
 
-        inline auto& get() noexcept {
+        inline auto& get() noexcept
+        {
             return content;
         }
 
-        bool isReadClean() const {
+        bool isReadClean() const
+        {
             return static_cast<std::size_t>(info::GetFileSize(path)) == content.size();
         }
 
-        inline bool isOpened() const {
+        inline bool isOpened() const
+        {
             return !stream.fail() && stream.is_open();
         }
 
         std::string toString() const noexcept override = 0;
 
-    protected:
-        inline const std::string& elicitPath() const noexcept {
+      protected:
+        inline const std::string& elicitPath() const noexcept
+        {
             return path;
         }
 
-        inline std::ifstream& elicitStream() noexcept {
+        inline std::ifstream& elicitStream() noexcept
+        {
             return stream;
         }
 
-        inline std::vector<char>& elicitContent() noexcept {
+        inline std::vector<char>& elicitContent() noexcept
+        {
             return content;
         }
 
-        std::size_t elicitContentSize() const noexcept {
+        std::size_t elicitContentSize() const noexcept
+        {
             return content.size();
         }
     };

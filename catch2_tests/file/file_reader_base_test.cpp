@@ -3,18 +3,20 @@
 #include <vector>
 #include <string>
 
-#include "../catch.hpp"
+#include "../../externs/catch.hpp"
 #include "../../src/file/file_reader_base.hpp"
 #include "../../src/file/file_reader.hpp"
 #include "../../src/file/file_reader_buffered.hpp"
 
 
-SCENARIO("Comparing FileReader's speed", "[file][file_readers][!mayfail]") {
+SCENARIO("Comparing FileReader's speed", "[file][file_readers][!mayfail]")
+{
 
     struct Tasks {
-        using Runner = std::function<const std::string(const std::string &)>;
+        using Runner = std::function<const std::string(const std::string&)>;
 
-        static auto RunFileReader(const std::string &path) {
+        static auto RunFileReader(const std::string& path)
+        {
             file::reader::FileReader reader{path};
 
             if (!reader.isOpened()) {
@@ -30,7 +32,8 @@ SCENARIO("Comparing FileReader's speed", "[file][file_readers][!mayfail]") {
             return reader.toString();
         }
 
-        static auto RunFileReaderBuffered(const std::string &path) {
+        static auto RunFileReaderBuffered(const std::string& path)
+        {
             std::vector<std::string> lines{};
             file::reader::FileReaderBuffered reader{path};
 
@@ -46,7 +49,8 @@ SCENARIO("Comparing FileReader's speed", "[file][file_readers][!mayfail]") {
             return reader.toString();
         }
 
-        static auto CountDuration(const Runner &procedure, const std::string &path) {
+        static auto CountDuration(const Runner& procedure, const std::string& path)
+        {
             auto start = std::chrono::system_clock::now();
             procedure(path);
             auto end = std::chrono::system_clock::now();
@@ -54,21 +58,24 @@ SCENARIO("Comparing FileReader's speed", "[file][file_readers][!mayfail]") {
             return duration;
         }
 
-        static void RunSimulationStep(const std::size_t &it, const Runner &runner, std::vector<long> &times, const std::string &path) {
+        static void RunSimulationStep(const std::size_t& it, const Runner& runner, std::vector<long>& times, const std::string& path)
+        {
             for (std::size_t i = 0; i < it; i++) {
                 auto duration = CountDuration(runner, path);
                 times.push_back(duration);
             }
         }
 
-        static auto ComputeMeanTimes(const std::vector<long> &times, const std::size_t &it) {
+        static auto ComputeMeanTimes(const std::vector<long>& times, const std::size_t& it)
+        {
             auto avg = static_cast<double>(std::accumulate(times.begin() + 1, times.end(), 0L)) / static_cast<double>(it);
             auto min = *std::min_element(times.begin() + 1, times.end());
             auto max = *std::max_element(times.begin() + 1, times.end());
             return std::array<double, 3>{static_cast<double>(min), avg, static_cast<double>(max)};
         }
 
-        static auto RunMonteCarloSimulation(const std::size_t &sim, const std::size_t &it, const std::string &path) {
+        static auto RunMonteCarloSimulation(const std::size_t& sim, const std::size_t& it, const std::string& path)
+        {
             std::vector<long> file_reader_times{};
             std::vector<long> file_reader_buffered_times{};
             std::vector<long> time_ratios{};
@@ -98,7 +105,8 @@ SCENARIO("Comparing FileReader's speed", "[file][file_readers][!mayfail]") {
             THEN("ratio is in range of (1.45, 1.65)") {
                 const auto speed = speedRatio * 100;
                 const bool isInRange = speed > 1.45 && speed < 1.65;
-                std::cout << std::setprecision(4) << speed << std::endl;
+                std::cout << std::setprecision(4) << speed <<
+                          std::endl;
                 CHECK(isInRange);
             }
         }

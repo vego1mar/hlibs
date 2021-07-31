@@ -1,15 +1,17 @@
-#include "../catch.hpp"
+#include "../../externs/catch.hpp"
 #include "../../src/logging/stdout_logger.hpp"
 #include "../../src/file/stream_to_file.hpp"
 #include "../../src/file/file_info.hpp"
 
 
-TEST_CASE("StdOutLogger", "[logging]") {
+TEST_CASE("StdOutLogger", "[logging]")
+{
 
     struct Before {
         using LoggerCounter = templates::ObjectCounter<logging::Logger>;
 
-        static void CleanStaticStorage() {
+        static void CleanStaticStorage()
+        {
             LoggerCounter::created = 0;
             LoggerCounter::alive = 0;
         }

@@ -10,12 +10,13 @@
 namespace file {
 
     class StreamToFile final : std::filebuf {
-    private:
+      private:
         std::ostream& ref_stream;
         std::any ptr_buffer;
 
-    public:
-        StreamToFile(std::ostream& stream, const std::string& path) : ref_stream(stream), ptr_buffer(stream.rdbuf()) {
+      public:
+        StreamToFile(std::ostream& stream, const std::string& path) : ref_stream(stream), ptr_buffer(stream.rdbuf())
+        {
             open(path.c_str(), std::ios_base::out);
 
             if (!is_open()) {
@@ -25,7 +26,8 @@ namespace file {
             stream.rdbuf(this);
         }
 
-        ~StreamToFile() noexcept override {
+        ~StreamToFile() noexcept override
+        {
             auto buffer = std::any_cast<decltype(ref_stream.rdbuf())>(ptr_buffer);
             ref_stream.rdbuf(buffer);
             ptr_buffer.reset();

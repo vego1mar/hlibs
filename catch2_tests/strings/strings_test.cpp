@@ -1,10 +1,11 @@
 #include <string>
 
-#include "../catch.hpp"
+#include "../../externs/catch.hpp"
 #include "../../src/strings/strings.hpp"
 
 
-TEST_CASE("strings", "[strings]") {
+TEST_CASE("strings", "[strings]")
+{
 
     using strings::CheckRange;
     using templates::Range;
@@ -45,7 +46,7 @@ TEST_CASE("strings", "[strings]") {
     }
 
     SECTION("CheckRange(97,122) -> OK", "[functional_requirements]") {
-        Range<char> range1('a','z');
+        Range<char> range1('a', 'z');
         Range<int> range2(range1);
         const std::string source1("abcdefghijklmnopqrstuvwxyz");
         const std::string source2("abcdefghijKlmnopqrstuvwxyz");

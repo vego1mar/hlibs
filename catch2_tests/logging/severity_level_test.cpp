@@ -1,8 +1,9 @@
-#include "../catch.hpp"
+#include "../../externs/catch.hpp"
 #include "../../src/logging/logger.hpp"
 
 
-TEST_CASE("SeverityLevel", "[logging]") {
+TEST_CASE("SeverityLevel", "[logging]")
+{
 
     SECTION("Level::Info -> str(Info)", "[functional_requirements]") {
         const std::string expectedStr = "Info";

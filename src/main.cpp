@@ -4,7 +4,8 @@
 #include "ansi/ansi.hpp"
 
 
-int main() {
+int main()
+{
     using logging::ConsoleLogger;
     using ansi::SGRSequencer;
     using SGRDisplayAttribute = ansi::DisplayAttribute::SGRDisplayAttribute;

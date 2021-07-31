@@ -44,15 +44,18 @@ namespace ansi {
             DECRC = '8',                ///< DEC Restore Cursor
         };
 
-        inline static char ToChar(CSIEndChar endChar) noexcept {
+        inline static char ToChar(CSIEndChar endChar) noexcept
+        {
             return static_cast<char>(endChar);
         }
 
-        inline static char ToChar(FsEndChar endChar) noexcept {
+        inline static char ToChar(FsEndChar endChar) noexcept
+        {
             return static_cast<char>(endChar);
         }
 
-        inline static char ToChar(FpEndChar endChar) noexcept {
+        inline static char ToChar(FpEndChar endChar) noexcept
+        {
             return static_cast<char>(endChar);
         }
 
@@ -77,123 +80,141 @@ namespace ansi {
                 EntireLine = 2,                 ///< Clear entire line.
             };
 
-            inline static std::string ToString(EDType type) noexcept {
+            inline static std::string ToString(EDType type) noexcept
+            {
                 return std::to_string(static_cast<uint8_t>(type));
             }
 
-            inline static std::string ToString(ELType type) noexcept {
+            inline static std::string ToString(ELType type) noexcept
+            {
                 return std::to_string(static_cast<uint8_t>(type));
             }
 
         };
 
         /// Cursor Up (editor function). Moves the cursor n $cells upward.
-        [[nodiscard]] std::string getCUU(std::size_t cells = 1U) const noexcept {
+        [[nodiscard]] std::string getCUU(std::size_t cells = 1U) const noexcept
+        {
             // "\033[ $n A"
             const char endChar = Enclose::ToChar(Enclose::CUU);
             return CSI + std::to_string(cells) + endChar;
         }
 
         /// Cursor Down (editor function). Moves the cursor n $cells down.
-        [[nodiscard]] std::string getCUD(std::size_t cells = 1U) const noexcept {
+        [[nodiscard]] std::string getCUD(std::size_t cells = 1U) const noexcept
+        {
             // "\033[ $n B"
             const char endChar = Enclose::ToChar(Enclose::CUD);
             return CSI + std::to_string(cells) + endChar;
         }
 
         /// Cursor Forward (editor function). Moves the cursor n $cells forward.
-        [[nodiscard]] std::string getCUF(std::size_t cells = 1U) const noexcept {
+        [[nodiscard]] std::string getCUF(std::size_t cells = 1U) const noexcept
+        {
             // "\033[ $n C"
             const char endChar = Enclose::ToChar(Enclose::CUF);
             return CSI + std::to_string(cells) + endChar;
         }
 
         /// Cursor Back (editor function). Moves the cursor n $cells backward.
-        [[nodiscard]] std::string getCUB(std::size_t cells = 1U) const noexcept {
+        [[nodiscard]] std::string getCUB(std::size_t cells = 1U) const noexcept
+        {
             // "\033[ $n D"
             const char endChar = Enclose::ToChar(Enclose::CUB);
             return CSI + std::to_string(cells) + endChar;
         }
 
         /// Cursor Next Line (editor function). Moves cursor to beginning of the line $cells lines down.
-        [[nodiscard]] std::string getCNL(std::size_t cells = 1U) const noexcept {
+        [[nodiscard]] std::string getCNL(std::size_t cells = 1U) const noexcept
+        {
             // "\033[ $n E"
             const char endChar = Enclose::ToChar(Enclose::CNL);
             return CSI + std::to_string(cells) + endChar;
         }
 
         /// Cursor Previous Line (editor function). Moves cursor to beginning of the line $cells lines up.
-        [[nodiscard]] std::string getCPL(std::size_t cells = 1U) const noexcept {
+        [[nodiscard]] std::string getCPL(std::size_t cells = 1U) const noexcept
+        {
             // "\033[ $n F"
             const char endChar = Enclose::ToChar(Enclose::CPL);
             return CSI + std::to_string(cells) + endChar;
         }
 
         /// Cursor Horizontal Absolute (editor function). Moves the cursor to column $n.
-        [[nodiscard]] std::string getCHA(std::size_t n = 1U) const noexcept {
+        [[nodiscard]] std::string getCHA(std::size_t n = 1U) const noexcept
+        {
             // "\033[ $n G"
             const char endChar = Enclose::ToChar(Enclose::CHA);
             return CSI + std::to_string(n) + endChar;
         }
 
         /// Cursor Position (editor function). Moves the cursor to ($row, $column).
-        [[nodiscard]] std::string getCUP(std::size_t row = 1U, std::size_t column = 1U) const noexcept {
+        [[nodiscard]] std::string getCUP(std::size_t row = 1U, std::size_t column = 1U) const noexcept
+        {
             // "ESC[ $n ; $m H"
             const char endChar = Enclose::ToChar(Enclose::CUP);
             return CSI + std::to_string(row) + ';' + std::to_string(column) + endChar;
         }
 
         /// Horizontal Vertical Position (format effector function). Moves the cursor to ($row, $column).
-        [[nodiscard]] std::string getHVP(std::size_t row = 1U, std::size_t column = 1U) const noexcept {
+        [[nodiscard]] std::string getHVP(std::size_t row = 1U, std::size_t column = 1U) const noexcept
+        {
             // "ESC[ $n ; $m f"
             const char endChar = Enclose::ToChar(Enclose::HVP);
             return CSI + std::to_string(row) + ';' + std::to_string(column) + endChar;
         }
 
         /// Scroll Up (editor function). Scroll whole page up by n $lines.
-        [[nodiscard]] std::string getSU(std::size_t lines = 1U) const noexcept {
+        [[nodiscard]] std::string getSU(std::size_t lines = 1U) const noexcept
+        {
             // "ESC[ $n S"
             const char endChar = Enclose::ToChar(Enclose::SU);
             return CSI + std::to_string(lines) + endChar;
         }
 
         /// Scroll Down (editor function). Scroll whole page down by n $lines.
-        [[nodiscard]] std::string getSD(std::size_t lines = 1U) const noexcept {
+        [[nodiscard]] std::string getSD(std::size_t lines = 1U) const noexcept
+        {
             // "ESC[ $n T"
             const char endChar = Enclose::ToChar(Enclose::SD);
             return CSI + std::to_string(lines) + endChar;
         }
 
         /// Erase in Display (editor function). Clears part of the screen.
-        [[nodiscard]] std::string getED(ParamType::EDType type = ParamType::EDType::ToEndOfScreen) const noexcept {
+        [[nodiscard]] std::string getED(ParamType::EDType type = ParamType::EDType::ToEndOfScreen) const noexcept
+        {
             // "ESC[ $n J"
             const char endChar = Enclose::ToChar(Enclose::ED);
             return CSI + ParamType::ToString(type) + endChar;
         }
 
         /// Erase in Line (editor function). Erases part of the line (do not change cursor position).
-        [[nodiscard]] std::string getEL(ParamType::ELType type = ParamType::ELType::ToEndOfLine) const noexcept {
+        [[nodiscard]] std::string getEL(ParamType::ELType type = ParamType::ELType::ToEndOfLine) const noexcept
+        {
             // "ESC[ $n K"
             const char endChar = Enclose::ToChar(Enclose::EL);
             return CSI + ParamType::ToString(type) + endChar;
         }
 
         /// Save Current Cursor Position (private sequence). Saves the cursor state in SCO console mode.
-        [[nodiscard]] std::string getSCP() const noexcept {
+        [[nodiscard]] std::string getSCP() const noexcept
+        {
             // "ESC[s"
             const char endChar = Enclose::ToChar(Enclose::SCP);
             return CSI + endChar;
         }
 
         /// Restore Saved Cursor Position (private sequence). Restores the cursor state in SCO console mode.
-        [[nodiscard]] std::string getRCP() const noexcept {
+        [[nodiscard]] std::string getRCP() const noexcept
+        {
             // "ESC[u"
             const char endChar = Enclose::ToChar(Enclose::RCP);
             return CSI + endChar;
         }
 
         /// Check if custom ANSI CSI escape sequence is well-formed.
-        static bool IsValid(const std::string_view sequence) {
+        static bool IsValid(const std::string_view sequence)
+        {
             if (sequence.empty()) {
                 return false;
             }
@@ -211,8 +232,9 @@ namespace ansi {
             return isMatchedSequence;
         }
 
-    private:
-        static bool IsMatchFound(const std::string& seq) {
+      private:
+        static bool IsMatchFound(const std::string& seq)
+        {
             const std::size_t CHECKS = 4U;
             const auto grammar = std::regex_constants::ECMAScript;
             std::smatch csiMatch;
@@ -275,7 +297,8 @@ namespace ansi {
             */
         };
 
-        inline static std::string ToString(SGRDisplayAttribute attr) noexcept {
+        inline static std::string ToString(SGRDisplayAttribute attr) noexcept
+        {
             return std::to_string(static_cast<uint8_t>(attr));
         }
 
@@ -323,11 +346,13 @@ namespace ansi {
             BrightWhite = 107
         };
 
-        inline static std::string ToString(Foreground fg) noexcept {
+        inline static std::string ToString(Foreground fg) noexcept
+        {
             return std::to_string(static_cast<uint8_t>(fg));
         }
 
-        inline static std::string ToString(Background bg) noexcept {
+        inline static std::string ToString(Background bg) noexcept
+        {
             return std::to_string(static_cast<uint8_t>(bg));
         }
 
@@ -336,32 +361,35 @@ namespace ansi {
 
     /// Produces Select Graphics Rendition control sequences (Fe sequences).
     struct SGRSequencer {
-    private:
+      private:
         const char END_CHAR = Enclose::ToChar(Enclose::SGR);
         const std::string FG = std::string("38", 2);
         const std::string BG = std::string("48", 2);
         const std::string CSI = std::string("\033[", 2);
 
-    public:
+      public:
         enum class ColorType : bool {
             Foreground,
             Background
         };
 
         /// Sets only one display attribute.
-        [[nodiscard]] std::string getDisplayAttribute(DisplayAttribute::SGRDisplayAttribute param) const noexcept {
+        [[nodiscard]] std::string getDisplayAttribute(DisplayAttribute::SGRDisplayAttribute param) const noexcept
+        {
             // "ESC[ $n m"
             return CSI + DisplayAttribute::ToString(param) + END_CHAR;
         }
 
         /// Sets foreground and background colors to defaults.
-        [[nodiscard]] std::string getColorsReset() const noexcept {
+        [[nodiscard]] std::string getColorsReset() const noexcept
+        {
             // "ESC[39;49m"
             return CSI + "39;49" + END_CHAR;
         }
 
         /// Sets 4-bit color (16 colors mode).
-        [[nodiscard]] std::string getColor(SGRNamedColor::Foreground fg, SGRNamedColor::Background bg) const noexcept {
+        [[nodiscard]] std::string getColor(SGRNamedColor::Foreground fg, SGRNamedColor::Background bg) const noexcept
+        {
             // "ESC[ $n;$m m"
             return CSI + SGRNamedColor::ToString(fg) + ';' + SGRNamedColor::ToString(bg) + END_CHAR;
         }
@@ -371,7 +399,8 @@ namespace ansi {
         /// @details 8-15 — high intensity colors ("ESC[ 90-97 m")
         /// @details 16-231 — 6x6x6 color cube: 16 + 36r + 6g + b, 0 ≤ r,g,b ≤ 5
         /// @details 232-255 — grayscale (from black to white in 24 steps)
-        [[nodiscard]] std::string getColor(uint8_t color, ColorType type, bool useColons = true) const noexcept {
+        [[nodiscard]] std::string getColor(uint8_t color, ColorType type, bool useColons = true) const noexcept
+        {
             // "ESC[38;5; $n m" or "ESC[38:5: $n m"
             const auto& code = static_cast<bool>(type) ? FG : BG;
             const auto withColons = CSI + code + ":5:" + std::to_string(color) + END_CHAR;
@@ -381,7 +410,8 @@ namespace ansi {
 
         /// Sets 24-bit foreground or background color (true color).
         /// @details 2 — red-green-blue format - "ESC[g:2::r:g:bm"
-        [[nodiscard]] std::string getColor(libs::types::RGBColor color, ColorType type, bool useColons = true) const noexcept {
+        [[nodiscard]] std::string getColor(libs::types::RGBColor color, ColorType type, bool useColons = true) const noexcept
+        {
             const auto fg = getGroundColor(color, true);
             const auto bg = getGroundColor(color, false);
 
@@ -395,7 +425,8 @@ namespace ansi {
         }
 
         /// Check if custom ANSI SGR escape sequence is well-formed.
-        static bool IsValid(const std::string_view sequence) {
+        static bool IsValid(const std::string_view sequence)
+        {
             // TODO: implement
             // 04-bit color "ESC[ $n m"                                     → single byte with 'm' ending (one param)
             //  4-bit color "ESC[ $n;$m m"                                  → double byte with 'm' ending (two params)
@@ -409,10 +440,11 @@ namespace ansi {
             return false;
         }
 
-    private:
+      private:
         using GroundColor = std::tuple<std::string, std::string>;
 
-        [[nodiscard]] GroundColor getGroundColor(libs::types::RGBColor color, bool isFG = true) const noexcept {
+        [[nodiscard]] GroundColor getGroundColor(libs::types::RGBColor color, bool isFG = true) const noexcept
+        {
             const std::string r = std::to_string(color.red);
             const std::string g = std::to_string(color.green);
             const std::string b = std::to_string(color.blue);
@@ -430,7 +462,8 @@ namespace ansi {
         const std::string ESC = std::string("\033", 1);
 
         /// Triggers a full reset of the terminal to its original state.
-        [[nodiscard]] std::string getRIS() const noexcept {
+        [[nodiscard]] std::string getRIS() const noexcept
+        {
             // "ESC c"
             return ESC + Enclose::ToChar(Enclose::RIS);
         }
@@ -445,13 +478,15 @@ namespace ansi {
         const std::string ESC = std::string("\033", 1);
 
         /// Saves the cursor position, encoding shift state and formatting attributes.
-        [[nodiscard]] std::string getDECSC() const noexcept {
+        [[nodiscard]] std::string getDECSC() const noexcept
+        {
             // "ESC 7"
             return ESC + Enclose::ToChar(Enclose::DECSC);
         }
 
         /// Restores the cursor position with settings saved by DECSC, otherwise resets them all to their defaults.
-        [[nodiscard]] std::string getDECRC() const noexcept {
+        [[nodiscard]] std::string getDECRC() const noexcept
+        {
             // "ESC 8"
             return ESC + Enclose::ToChar(Enclose::DECRC);
         }
@@ -465,7 +500,7 @@ namespace ansi {
         FsSequencer fs{};
         FpSequencer fp{};
 
-    public:
+      public:
         // TODO: more meaningful names from both sequencers
         /*
          moveCursor(std::size_t cells = 1U) const noexcept

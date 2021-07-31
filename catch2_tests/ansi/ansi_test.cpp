@@ -1,12 +1,12 @@
 #include <vector>
 #include <string>
 
-#include "../catch.hpp"
+#include "../../externs/catch.hpp"
 #include "../../src/ansi/ansi.hpp"
 
 
-TEST_CASE("ansi", "[ansi]") {
-
+TEST_CASE("ansi", "[ansi]")
+{
     using ansi::Enclose;
     using ansi::CSISequencer;
 

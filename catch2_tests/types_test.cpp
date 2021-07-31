@@ -1,11 +1,11 @@
 #include <cinttypes>
 
-#include "catch.hpp"
+#include "../externs/catch.hpp"
 #include "../src/types.hpp"
 
 
-TEST_CASE("RGBColor", "[libs][types]") {
-
+TEST_CASE("RGBColor", "[libs][types]")
+{
     using libs::types::RGBColor;
     using libs::types::ColorName;
 

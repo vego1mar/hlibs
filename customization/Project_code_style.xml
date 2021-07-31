@@ -1,0 +1,30 @@
+<code_scheme name="Project" version="173">
+  <option name="RIGHT_MARGIN" value="140" />
+  <Objective-C>
+    <option name="INDENT_VISIBILITY_KEYWORDS" value="2" />
+    <option name="KEEP_CASE_EXPRESSIONS_IN_ONE_LINE" value="true" />
+    <option name="FUNCTION_BRACE_PLACEMENT" value="2" />
+    <option name="CLASS_CONSTRUCTOR_INIT_LIST_COMMA_ON_NEXT_LINE" value="true" />
+    <option name="SPACE_BEFORE_POINTER_IN_DECLARATION" value="false" />
+    <option name="SPACE_AFTER_POINTER_IN_DECLARATION" value="true" />
+    <option name="SPACE_BEFORE_REFERENCE_IN_DECLARATION" value="false" />
+    <option name="SPACE_AFTER_REFERENCE_IN_DECLARATION" value="true" />
+    <option name="SPACE_BEFORE_DICTIONARY_LITERAL_COLON" value="true" />
+  </Objective-C>
+  <Objective-C-extensions>
+    <extensions>
+      <pair source="cpp" header="hpp" fileNamingConvention="NONE" />
+      <pair source="c" header="h" fileNamingConvention="NONE" />
+      <pair source="cu" header="cuh" fileNamingConvention="NONE" />
+    </extensions>
+  </Objective-C-extensions>
+  <codeStyleSettings language="ObjectiveC">
+    <option name="BLANK_LINES_AFTER_IMPORTS" value="2" />
+    <option name="BLANK_LINES_AROUND_METHOD_IN_INTERFACE" value="0" />
+    <option name="CATCH_ON_NEW_LINE" value="true" />
+    <option name="DOWHILE_BRACE_FORCE" value="1" />
+    <option name="WHILE_BRACE_FORCE" value="1" />
+    <option name="FOR_BRACE_FORCE" value="1" />
+    <option name="WRAP_ON_TYPING" value="1" />
+  </codeStyleSettings>
+</code_scheme>

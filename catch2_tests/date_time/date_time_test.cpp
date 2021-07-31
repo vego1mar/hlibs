@@ -1,9 +1,11 @@
 #include <cctype>
 
-#include "../catch.hpp"
+#include "../../externs/catch.hpp"
 #include "../../src/date_time/date_time.hpp"
 
-TEST_CASE("date_time", "[date_time]") {
+
+TEST_CASE("date_time", "[date_time]")
+{
 
     SECTION("GetDateTime() -> date=YYYY-MM-DD, time=HH:MM:SS", "[functional_requirements]") {
         const auto& date = date_time::GetDate();

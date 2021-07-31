@@ -8,7 +8,8 @@
 
 namespace date_time {
 
-    static std::string GetDateAndTime() {
+    static std::string GetDateAndTime()
+    {
         time_t now = std::time(nullptr);
         struct tm timeStruct{};
         std::array<char, 40> buffer{};
@@ -18,14 +19,16 @@ namespace date_time {
         return result;
     }
 
-    static std::string GetDate() {
+    static std::string GetDate()
+    {
         const auto dateTime = GetDateAndTime();
         const auto delimiterPos = dateTime.find(' ');
         auto date = dateTime.substr(0, delimiterPos);
         return date;
     }
 
-    static std::string GetTime() {
+    static std::string GetTime()
+    {
         const auto dateTime = GetDateAndTime();
         auto time = dateTime.substr(dateTime.find(' ') + 1);
         return time;

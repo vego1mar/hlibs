@@ -1,14 +1,14 @@
-#include "../catch.hpp"
+#include "../../externs/catch.hpp"
 #include "../../src/templates/range.hpp"
 
 
-TEST_CASE("Range", "[templates]") {
-
+TEST_CASE("Range", "[templates]")
+{
     using templates::Range;
 
 
     SECTION("Range(5,-2) -> Range(-2,5)", "[functional_requirements]") {
-        const Range<int> range{ 5, -2 };
+        const Range<int> range{5, -2};
         const auto length = range.getLength();
         const auto str = range.toString();
 

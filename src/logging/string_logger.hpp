@@ -12,16 +12,17 @@
 namespace logging {
 
     class StringLogger : public Logger {
-    private:
+      private:
         std::string& target;
         std::ostringstream str_buffer{};
         unsigned short buffered_messages = 0;
         unsigned long flushed_messages = 0;
 
-    public:
+      public:
         StringLogger() = delete;
 
-        explicit StringLogger(std::string& strTarget) : target(strTarget) {
+        explicit StringLogger(std::string& strTarget) : target(strTarget)
+        {
         }
 
         StringLogger(const StringLogger& rhs) = delete;
@@ -32,7 +33,8 @@ namespace logging {
 
         StringLogger& operator=(StringLogger&& rhs) noexcept = delete;
 
-        ~StringLogger() noexcept override {
+        ~StringLogger() noexcept override
+        {
             if (!elicitSettings().is_enabled) {
                 return;
             }
@@ -42,7 +44,8 @@ namespace logging {
             target.append(str_buffer.str());
         }
 
-        void exception(const std::string& msg, const std::exception& e, SourceLocation source = SourceLocation::current()) {
+        void exception(const std::string& msg, const std::exception& e, SourceLocation source = SourceLocation::current())
+        {
             if (!elicitSettings().is_enabled) {
                 return;
             }
@@ -56,8 +59,9 @@ namespace logging {
             checkFlush();
         }
 
-    private:
-        static std::string GetMessageHeader(const SeverityLevel::Level& level, const SourceLocation& source) {
+      private:
+        static std::string GetMessageHeader(const SeverityLevel::Level& level, const SourceLocation& source)
+        {
             const auto timestamp = date_time::GetDateAndTime();
             const auto levelStr = strings::ToUpperCase(SeverityLevel::ToString(level));
             const std::string path = source.file_name();
@@ -72,7 +76,8 @@ namespace logging {
             return result;
         }
 
-        void flush() {
+        void flush()
+        {
             target.append(str_buffer.str());
             str_buffer.str("");
             str_buffer.clear();
@@ -80,15 +85,17 @@ namespace logging {
             buffered_messages = 0;
         }
 
-        void checkFlush() {
+        void checkFlush()
+        {
             if (buffered_messages >= elicitSettings().messages_before_flush) {
                 onFlush();
                 flush();
             }
         }
 
-    protected:
-        void log(SeverityLevel::Level level, const std::string& msg, SourceLocation source) override {
+      protected:
+        void log(SeverityLevel::Level level, const std::string& msg, SourceLocation source) override
+        {
             if (!elicitSettings().is_enabled) {
                 return;
             }
@@ -102,25 +109,30 @@ namespace logging {
         }
 
         /// An event for flushing logged messages in derived classes before clearing the buffer.
-        virtual void onFlush() {
+        virtual void onFlush()
+        {
             // It will be invoked before flush() that will clear str_buffer.
         }
 
         /// An event indicating that another message has been logged into buffer.
-        virtual void onBufferedMessage() {
+        virtual void onBufferedMessage()
+        {
             // Used after message addition to str_buffer with log() or exception() but before checkFlush().
         }
 
         /// An event to use only in derived destructors to force flush from buffer to str_target.
-        void onFlushInDerivedDestructor() {
+        void onFlushInDerivedDestructor()
+        {
             flush();
         }
 
-        inline const std::ostringstream& elicitStringBuffer() const noexcept {
+        inline const std::ostringstream& elicitStringBuffer() const noexcept
+        {
             return str_buffer;
         }
 
-        inline const unsigned long& elicitFlushedMessages() const noexcept {
+        inline const unsigned long& elicitFlushedMessages() const noexcept
+        {
             return flushed_messages;
         }
 

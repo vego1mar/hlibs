@@ -1,10 +1,11 @@
 #include <memory>
 
-#include "../catch.hpp"
+#include "../../externs/catch.hpp"
 #include "../../src/templates/object_counter.hpp"
 
 
-TEST_CASE("ObjectCounter", "[templates]") {
+TEST_CASE("ObjectCounter", "[templates]")
+{
 
     struct Implementer1 : templates::ObjectCounter<Implementer1> {
     };
@@ -12,7 +13,8 @@ TEST_CASE("ObjectCounter", "[templates]") {
     struct Implementer2 : templates::ObjectCounter<Implementer2> {
         char field;
 
-        explicit Implementer2(char v) : field(v) {
+        explicit Implementer2(char v) : field(v)
+        {
         }
     };
 
@@ -24,7 +26,8 @@ TEST_CASE("ObjectCounter", "[templates]") {
 
 
     struct Before {
-        static void CleanStaticStorage() {
+        static void CleanStaticStorage()
+        {
             CounterA::created = 0;
             CounterA::alive = 0;
             CounterB::created = 0;

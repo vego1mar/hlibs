@@ -6,15 +6,17 @@ namespace templates {
 
     template<typename T>
     struct ObjectCounter {
-    public:
+      public:
         static unsigned int created;
         static unsigned int alive;
 
-        ObjectCounter() {
+        ObjectCounter()
+        {
             increment();
         }
 
-        ObjectCounter(const ObjectCounter&) {
+        ObjectCounter(const ObjectCounter&)
+        {
             increment();
         }
 
@@ -24,12 +26,14 @@ namespace templates {
 
         ObjectCounter& operator=(ObjectCounter&&) noexcept = delete;
 
-    protected:
-        virtual ~ObjectCounter() noexcept {
+      protected:
+        virtual ~ObjectCounter() noexcept
+        {
             --alive;
         }
 
-        inline void increment() const {
+        inline void increment() const
+        {
             ++created;
             ++alive;
         }

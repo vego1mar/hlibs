@@ -11,22 +11,26 @@
 
 namespace strings {
 
-    static std::string ToUpperCase(const std::string_view source) {
+    static std::string ToUpperCase(const std::string_view source)
+    {
         std::string str{source};
         std::ranges::transform(str.begin(), str.end(), str.begin(), ::toupper);
         return str;
     }
 
-    static bool Contains(const std::string_view source, const char what) {
+    static bool Contains(const std::string_view source, const char what)
+    {
         return source.find(what) != std::string::npos;
     }
 
-    static bool Contains(const std::string_view source, const std::string_view what) {
+    static bool Contains(const std::string_view source, const std::string_view what)
+    {
         return source.find(what) != std::string::npos;
     }
 
     template<typename T>
-    static bool CheckRange(const std::string_view source, const templates::Range<T>& range) {
+    static bool CheckRange(const std::string_view source, const templates::Range<T>& range)
+    {
         for (const auto& character : source) {
             if (!range.isIn(character)) {
                 return false;

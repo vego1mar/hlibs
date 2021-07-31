@@ -7,16 +7,18 @@
 namespace file::reader {
 
     class FileReader : public FileReaderBase {
-    public:
+      public:
         using FileReaderBase::FileReaderBase;
 
-        void readFile() {
+        void readFile()
+        {
             auto first = (std::istreambuf_iterator<char>(elicitStream()));
             auto last = (std::istreambuf_iterator<char>());
             elicitContent() = std::vector<char>(first, last);
         }
 
-        std::string toString() const noexcept override {
+        std::string toString() const noexcept override
+        {
             auto mangledName = std::string(typeid(this).name());
             mangledName.append("{ ");
             mangledName.append("path=\"" + elicitPath() + "\", ");

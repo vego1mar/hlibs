@@ -15,7 +15,7 @@
 namespace logging {
 
     struct SeverityLevel {
-    public:
+      public:
         enum class Level : uint8_t {
             Fatal = 1,
             Warning = 2,
@@ -23,7 +23,8 @@ namespace logging {
             Debug = 8,
         };
 
-        static std::string ToString(const Level& level) {
+        static std::string ToString(const Level& level)
+        {
             const std::unordered_map<Level, std::string> mapping = {
                     {Level::Fatal,   "Fatal"},
                     {Level::Warning, "Warning"},
@@ -34,19 +35,22 @@ namespace logging {
             return mapping.at(level);
         }
 
-        static const Level& Begin() noexcept {
+        static const Level& Begin() noexcept
+        {
             return *all_items.begin();
         }
 
-        static const Level& Next(int position) {
+        static const Level& Next(int position)
+        {
             return *(all_items.begin() + position);
         }
 
-        static const Level& End() noexcept {
+        static const Level& End() noexcept
+        {
             return *all_items.end();
         }
 
-    private:
+      private:
         static constexpr std::array<Level, 4> all_items = {
                 Level::Fatal, Level::Warning, Level::Info, Level::Debug
         };
@@ -69,11 +73,11 @@ namespace logging {
 
 
     class Logger : private templates::ObjectCounter<Logger> {
-    private:
+      private:
         LoggerSettings settings{};
         unsigned int id = 0;
 
-    public:
+      public:
         Logger(const Logger& rhs) = delete;
 
         Logger(Logger&& rhs) noexcept = delete;
@@ -82,32 +86,39 @@ namespace logging {
 
         Logger& operator=(Logger&& rhs) noexcept = delete;
 
-        void fatal(const std::string& msg, SourceLocation source = SourceLocation::current()) {
+        void fatal(const std::string& msg, SourceLocation source = SourceLocation::current())
+        {
             log(SeverityLevel::Level::Fatal, msg, source);
         }
 
-        void warning(const std::string& msg, SourceLocation source = SourceLocation::current()) {
+        void warning(const std::string& msg, SourceLocation source = SourceLocation::current())
+        {
             log(SeverityLevel::Level::Warning, msg, source);
         }
 
-        void info(const std::string& msg, SourceLocation source = SourceLocation::current()) {
+        void info(const std::string& msg, SourceLocation source = SourceLocation::current())
+        {
             log(SeverityLevel::Level::Info, msg, source);
         }
 
-        void debug(const std::string& msg, SourceLocation source = SourceLocation::current()) {
+        void debug(const std::string& msg, SourceLocation source = SourceLocation::current())
+        {
             log(SeverityLevel::Level::Debug, msg, source);
         }
 
-        void set(LoggerSettings&& newSettings) noexcept {
+        void set(LoggerSettings&& newSettings) noexcept
+        {
             settings = std::move(newSettings);
         }
 
-        [[nodiscard]] inline const unsigned int& getID() const noexcept {
+        [[nodiscard]] inline const unsigned int& getID() const noexcept
+        {
             return id;
         }
 
-    protected:
-        Logger() {
+      protected:
+        Logger()
+        {
             id = templates::ObjectCounter<Logger>::created;
         }
 
@@ -115,7 +126,8 @@ namespace logging {
 
         virtual void log(SeverityLevel::Level level, const std::string& msg, std::experimental::source_location source) = 0;
 
-        inline LoggerSettings& elicitSettings() noexcept {
+        inline LoggerSettings& elicitSettings() noexcept
+        {
             return settings;
         }
 

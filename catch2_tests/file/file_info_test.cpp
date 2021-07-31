@@ -1,8 +1,9 @@
-#include "../catch.hpp"
+#include "../../externs/catch.hpp"
 #include "../../src/file/file_info.hpp"
 
 
-TEST_CASE("GetFileSize()", "[file][file_info]") {
+TEST_CASE("GetFileSize()", "[file][file_info]")
+{
 
     SECTION("f(literal) -> 1213 B", "[functional_requirements]") {
         constexpr long LICENSE_MD_SIZE = 1213;

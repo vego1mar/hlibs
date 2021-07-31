@@ -1,9 +1,10 @@
-#include "../catch.hpp"
+#include "../../externs/catch.hpp"
 #include "../../src/logging/logger.hpp"
 #include "../../src/logging/string_logger.hpp"
 
 
-TEST_CASE("StringLogger", "[logging]") {
+TEST_CASE("StringLogger", "[logging]")
+{
 
     SECTION("info() -> flush=OK", "[functional_requirements]") {
         std::string target{};

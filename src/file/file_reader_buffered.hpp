@@ -8,24 +8,27 @@
 namespace file::reader {
 
     class FileReaderBuffered : public FileReaderBase {
-    private:
+      private:
         std::string line;
         std::size_t lines = 0;
 
-    public:
+      public:
         using FileReaderBase::FileReaderBase;
 
-        const auto& getNextLine() {
+        const auto& getNextLine()
+        {
             std::getline(elicitStream(), line);
             ++lines;
             return line;
         }
 
-        bool hasNextLine() {
+        bool hasNextLine()
+        {
             return !info::IsEOF(elicitStream());
         }
 
-        std::string toString() const noexcept override {
+        std::string toString() const noexcept override
+        {
             auto mangledName = std::string(typeid(this).name());
             mangledName.append("{ ");
             mangledName.append("path=\"" + elicitPath() + "\", ");

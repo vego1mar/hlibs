@@ -10,8 +10,9 @@ namespace logging {
 
     /// Uses ANSI escape characters to print colourful output.
     class ConsoleLogger : public StdOutLogger {
-    public:
-        ConsoleLogger() : StdOutLogger(true, 1) {
+      public:
+        ConsoleLogger() : StdOutLogger(true, 1)
+        {
             elicitSettings().skip_print_to_stdout = true;
         }
 
@@ -23,7 +24,8 @@ namespace logging {
 
         ConsoleLogger& operator=(ConsoleLogger&&) noexcept = delete;
 
-        ~ConsoleLogger() noexcept override {
+        ~ConsoleLogger() noexcept override
+        {
             if (elicitSettings().messages_before_flush != 1) {
                 onFlushInDerivedDestructor();
                 printToConsole();
@@ -32,12 +34,14 @@ namespace logging {
             std::cout << "~ConsoleLogger(" << elicitFlushedMessages() << ")\n";
         }
 
-    protected:
-        void onFlush() override {
+      protected:
+        void onFlush() override
+        {
             printToConsole();
         }
 
-        void printToConsole() const {
+        void printToConsole() const
+        {
             for (const auto&[msgTarget, message] : elicitStdOutMessages()) {
                 if (msgTarget == MessageTarget::StdOut) {
                     std::cout << message;

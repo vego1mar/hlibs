@@ -1,26 +1,31 @@
-#include "../catch.hpp"
+#include "../../externs/catch.hpp"
 #include "../../src/interfaces/i_stringify.hpp"
 
 
-TEST_CASE("IStringify", "[interfaces]") {
+TEST_CASE("IStringify", "[interfaces]")
+{
 
     class Implementer0 : public interfaces::IStringify {
-    private:
+      private:
         uint8_t value;
 
-    public:
-        explicit Implementer0(const uint8_t &v) : value(v) {
+      public:
+        explicit Implementer0(const uint8_t& v) : value(v)
+        {
         }
 
-        [[nodiscard]] std::string toString() const noexcept override {
+        [[nodiscard]] std::string toString() const noexcept override
+        {
             return "Implementer0(" + std::to_string(value) + ')';
         }
 
-        [[nodiscard]] inline const uint8_t &get() const noexcept {
+        [[nodiscard]] inline const uint8_t& get() const noexcept
+        {
             return value;
         }
 
-        inline void set(const uint8_t &v) noexcept {
+        inline void set(const uint8_t& v) noexcept
+        {
             value = v;
         }
     };
@@ -58,41 +63,48 @@ TEST_CASE("IStringify", "[interfaces]") {
 
 
     struct Implementer1 : public interfaces::IStringify {
-    public:
+      public:
         std::vector<std::string> messages;
 
-        Implementer1() {
+        Implementer1()
+        {
             messages.emplace_back("DefaultConstructor");
         }
 
-        [[maybe_unused]] Implementer1(const Implementer1 &rhs) : messages(rhs.messages) {
+        [[maybe_unused]] Implementer1(const Implementer1& rhs) : messages(rhs.messages)
+        {
             messages.emplace_back("CopyConstructor");
         }
 
-        [[maybe_unused]] Implementer1(Implementer1 &&rhs) noexcept: messages(std::move(rhs.messages)) {
+        [[maybe_unused]] Implementer1(Implementer1&& rhs) noexcept : messages(std::move(rhs.messages))
+        {
             messages.emplace_back("MoveConstructor");
         }
 
-        Implementer1 &operator=(const Implementer1 &rhs) {
+        Implementer1& operator=(const Implementer1& rhs)
+        {
             messages.emplace_back("CopyAssignmentOperator");
             return *this;
         }
 
-        Implementer1 &operator=(Implementer1 &&rhs) noexcept {
+        Implementer1& operator=(Implementer1&& rhs) noexcept
+        {
             messages.emplace_back("MoveAssignmentOperator");
             return *this;
         }
 
         ~Implementer1() noexcept override = default;
 
-        [[nodiscard]] std::string toString() const noexcept override {
+        [[nodiscard]] std::string toString() const noexcept override
+        {
             return "Implementer1(" + std::to_string(messages.size()) + ')';
         }
 
-        static std::string ToString(const std::vector<std::string> &messages) {
+        static std::string ToString(const std::vector<std::string>& messages)
+        {
             std::string result{};
 
-            for (const auto &msg : messages) {
+            for (const auto& msg : messages) {
                 result.append(msg + ',');
             }
 

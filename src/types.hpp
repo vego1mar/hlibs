@@ -19,14 +19,17 @@ namespace libs::types {
         const uint8_t green = 0;
         const uint8_t blue = 0;
 
-        RGBColor(uint8_t r, uint8_t g, uint8_t b) : red(r), green(g), blue(b) {
+        RGBColor(uint8_t r, uint8_t g, uint8_t b) : red(r), green(g), blue(b)
+        {
         }
 
-        explicit RGBColor(ColorName color = ColorName::Black) : red(Get(color)), green(Get(color, 1)), blue(Get(color, 2)) {
+        explicit RGBColor(ColorName color = ColorName::Black) : red(Get(color)), green(Get(color, 1)), blue(Get(color, 2))
+        {
         }
 
-    private:
-        static uint8_t Get(ColorName color, int shift = 0) {
+      private:
+        static uint8_t Get(ColorName color, int shift = 0)
+        {
             static const std::unordered_map<ColorName, std::array<uint8_t, 3>> colorCodes = {
                     {ColorName::Black, {0, 0,   0}},
                     {ColorName::Teal,  {0, 128, 128}},

@@ -16,22 +16,27 @@ namespace templates {
         const T left{};
         const T right{};
 
-        Range(T a, T b) : left(a < b ? a : b), right(a < b ? b : a) {
+        Range(T a, T b) : left(a < b ? a : b), right(a < b ? b : a)
+        {
         }
 
         template<typename R>
-        explicit Range(const Range<R>& rhs) : left(static_cast<T>(rhs.left)), right(static_cast<T>(rhs.right)) {
+        explicit Range(const Range<R>& rhs) : left(static_cast<T>(rhs.left)), right(static_cast<T>(rhs.right))
+        {
         }
 
-        [[nodiscard]] inline unsigned getLength() const noexcept {
+        [[nodiscard]] inline unsigned getLength() const noexcept
+        {
             return right - left;
         }
 
-        [[nodiscard]] inline std::string toString() const noexcept {
+        [[nodiscard]] inline std::string toString() const noexcept
+        {
             return '(' + std::to_string(left) + ',' + std::to_string(right) + ')';
         }
 
-        inline bool isIn(const T& value) const noexcept {
+        inline bool isIn(const T& value) const noexcept
+        {
             return value >= left && value <= right;
         }
 
