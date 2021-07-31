@@ -73,10 +73,6 @@ namespace logging {
 
 
     class Logger : private templates::ObjectCounter<Logger> {
-      private:
-        LoggerSettings settings{};
-        unsigned int id = 0;
-
       public:
         Logger(const Logger& rhs) = delete;
 
@@ -131,6 +127,9 @@ namespace logging {
             return settings;
         }
 
+      private:
+        LoggerSettings settings{};
+        unsigned int id = 0;
     };
 
 }

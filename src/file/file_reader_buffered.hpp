@@ -8,12 +8,9 @@
 namespace file::reader {
 
     class FileReaderBuffered : public FileReaderBase {
-      private:
-        std::string line;
-        std::size_t lines = 0;
-
       public:
         using FileReaderBase::FileReaderBase;
+
 
         const auto& getNextLine()
         {
@@ -36,6 +33,10 @@ namespace file::reader {
             mangledName.append(" }");
             return mangledName;
         }
+
+      private:
+        std::string line;
+        std::size_t lines = 0;
     };
 
 }

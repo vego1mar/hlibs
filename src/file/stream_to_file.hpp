@@ -10,10 +10,6 @@
 namespace file {
 
     class StreamToFile final : std::filebuf {
-      private:
-        std::ostream& ref_stream;
-        std::any ptr_buffer;
-
       public:
         StreamToFile(std::ostream& stream, const std::string& path) : ref_stream(stream), ptr_buffer(stream.rdbuf())
         {
@@ -33,6 +29,10 @@ namespace file {
             ptr_buffer.reset();
             close();
         }
+
+      private:
+        std::ostream& ref_stream;
+        std::any ptr_buffer;
     };
 
 }

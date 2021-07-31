@@ -15,6 +15,7 @@ namespace libs::types {
 
 
     struct RGBColor {
+      public:
         const uint8_t red = 0;
         const uint8_t green = 0;
         const uint8_t blue = 0;

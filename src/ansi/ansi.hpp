@@ -58,12 +58,12 @@ namespace ansi {
         {
             return static_cast<char>(endChar);
         }
-
     };
 
 
     /// Produces CSI control sequences "ESC[" (Control Sequence Introducer) except SGR sequences (Fe sequences).
     struct CSISequencer {
+      public:
         const std::string CSI = std::string("\033[", 2);
 
         struct ParamType {
@@ -188,7 +188,7 @@ namespace ansi {
             return CSI + ParamType::ToString(type) + endChar;
         }
 
-        /// Erase in Line (editor function). Erases part of the line (do not change cursor position).
+        /// Erase in Line (editor function). Erases part of the line (do not changes cursor position).
         [[nodiscard]] std::string getEL(ParamType::ELType type = ParamType::ELType::ToEndOfLine) const noexcept
         {
             // "ESC[ $n K"
@@ -222,9 +222,8 @@ namespace ansi {
             const auto seq = std::string(sequence);
             const std::string sequenceWithNoEscKey = seq.substr(1);
             templates::Range<char> range{0x20, 0x7E};
-            const auto isInANSIRange = strings::CheckRange(sequenceWithNoEscKey, range);
 
-            if (!isInANSIRange) {
+            if (bool isInANSIRange = strings::CheckRange(sequenceWithNoEscKey, range); !isInANSIRange) {
                 return false;
             }
 
@@ -267,8 +266,8 @@ namespace ansi {
             bool isFound = isNoByte || isSingleByte || isDoubleByte || isMultiByte;
             return isFound;
         }
-
     };
+
 
     struct DisplayAttribute {
         enum class SGRDisplayAttribute : uint8_t {
@@ -292,8 +291,8 @@ namespace ansi {
             Reveal = 28,                          ///< or not concealed
             /*
             Handled by standalone functions:
-            ForegroundColor = 38,                 // followed by "5;n" or "2;r;g;b"
-            BackgroundColor = 48,                 // followed by "5;n" or "2;r;g;b"
+            ForegroundColor = 38,                 followed by "5;n" or "2;r;g;b"
+            BackgroundColor = 48,                 followed by "5;n" or "2;r;g;b"
             */
         };
 
@@ -301,7 +300,6 @@ namespace ansi {
         {
             return std::to_string(static_cast<uint8_t>(attr));
         }
-
     };
 
 
@@ -355,18 +353,11 @@ namespace ansi {
         {
             return std::to_string(static_cast<uint8_t>(bg));
         }
-
     };
 
 
     /// Produces Select Graphics Rendition control sequences (Fe sequences).
     struct SGRSequencer {
-      private:
-        const char END_CHAR = Enclose::ToChar(Enclose::SGR);
-        const std::string FG = std::string("38", 2);
-        const std::string BG = std::string("48", 2);
-        const std::string CSI = std::string("\033[", 2);
-
       public:
         enum class ColorType : bool {
             Foreground,
@@ -412,20 +403,20 @@ namespace ansi {
         /// @details 2 — red-green-blue format - "ESC[g:2::r:g:bm"
         [[nodiscard]] std::string getColor(libs::types::RGBColor color, ColorType type, bool useColons = true) const noexcept
         {
-            const auto fg = getGroundColor(color, true);
-            const auto bg = getGroundColor(color, false);
+            const auto[colonsFG, semicolonsFG] = getGroundColor(color, true);
+            const auto[colonsBG, semicolonsBG] = getGroundColor(color, false);
 
             if (type == ColorType::Foreground) {
                 // "ESC[38;2; $r;$g;$b m" or "ESC[38:2:: $r:$g:$b m"
-                return useColons ? std::get<0>(fg) : std::get<1>(fg);
+                return useColons ? colonsFG : semicolonsFG;
             }
 
             // "ESC[48;2; $r;$g;$b m" or "ESC[48:2:: $r:$g:$b m"
-            return useColons ? std::get<0>(bg) : std::get<1>(bg);
+            return useColons ? colonsBG : semicolonsBG;
         }
 
         /// Check if custom ANSI SGR escape sequence is well-formed.
-        static bool IsValid(const std::string_view sequence)
+        static bool IsValid(const std::string_view)
         {
             // TODO: implement
             // 04-bit color "ESC[ $n m"                                     → single byte with 'm' ending (one param)
@@ -443,6 +434,11 @@ namespace ansi {
       private:
         using GroundColor = std::tuple<std::string, std::string>;
 
+        const char END_CHAR = Enclose::ToChar(Enclose::SGR);
+        const std::string FG = std::string("38", 2);
+        const std::string BG = std::string("48", 2);
+        const std::string CSI = std::string("\033[", 2);
+
         [[nodiscard]] GroundColor getGroundColor(libs::types::RGBColor color, bool isFG = true) const noexcept
         {
             const std::string r = std::to_string(color.red);
@@ -453,7 +449,6 @@ namespace ansi {
             const std::string withSemicolons = CSI + code + ";2;" + r + ';' + g + ';' + b + END_CHAR;
             return std::make_tuple<>(withColons, withSemicolons);
         }
-
     };
 
 
@@ -491,34 +486,174 @@ namespace ansi {
             return ESC + Enclose::ToChar(Enclose::DECRC);
         }
 
+        // TODO: isValid
+        // followed by a byte in the range( 0x30-0x3F ) -> ( 0-9:;<=>? )
     };
 
 
-    class ANSISequencer {
-        CSISequencer csi{};
-        SGRSequencer sgr{};
-        FsSequencer fs{};
-        FpSequencer fp{};
-
+    struct ANSISequencer {
       public:
-        // TODO: more meaningful names from both sequencers
-        /*
-         moveCursor(std::size_t cells = 1U) const noexcept
-         moveCursor(std::size_t row = 1U, std::size_t column = 1U)
-         saveCursor(type = FeSeq_CSIPrivate | FpSequence)  // Fe::CSI::Private or Fp::DEC
-         restoreCursor(type = FeSeq_CSIPrivate | FpSequence)
-         scrollPage(std::size_t lines = 1U)
-         getDisplayAttribute(DisplayAttribute::SGRDisplayAttribute param)
-         getColor(SGRNamedColor::Foreground fg, SGRNamedColor::Background bg)
-         getColor(uint8_t color, ColorType type, bool useColons = true)
-         getColor(libs::types::RGBColor color, ColorType type, bool useColons = true)
-         resetDisplay()  // SGR, all attributes
-         resetColors()   // SGR, FG & BG
-         resetConsole()  // Fs::RIS
-        */
+        using ClearScreenType = CSISequencer::ParamType::EDType;
+        using EraseLineType = CSISequencer::ParamType::ELType;
+        using DisplayFormat = DisplayAttribute::SGRDisplayAttribute;
+        using ForegroundColor = SGRNamedColor::Foreground;
+        using BackgroundColor = SGRNamedColor::Background;
+        using ColorPlan = SGRSequencer::ColorType;
+        using RGB = libs::types::RGBColor;
 
+        enum class CursorDirection : uint8_t {
+            Up,
+            Down,
+            Forward,
+            Backward,
+            NextLine,
+            PreviousLine,
+            Column,
+        };
+
+        enum class CursorMoveType : bool {
+            EditorFunction,                     ///< CUP (Cursor Position)
+            FormatEffector,                     ///< HVP (Horizontal Vertical Position)
+        };
+
+        enum class CursorSequenceType : bool {
+            Fe,                                 ///< SCP, RCP
+            Fp,                                 ///< DECSC, DECRC
+        };
+
+        enum class ScrollPageType : bool {
+            Up,
+            Down,
+        };
+
+        bool use_colons_for_color = true;
+        CursorMoveType cursor_move_type = CursorMoveType::EditorFunction;
+        CursorSequenceType cursor_memory_sequence_type = CursorSequenceType::Fp;
+
+
+        static std::string MoveCursor(CursorDirection direction, const std::size_t cells = 1U) noexcept
+        {
+            switch (CSISequencer csi{}; direction) {
+                case CursorDirection::Up:
+                    return csi.getCUU(cells);
+                case CursorDirection::Down:
+                    return csi.getCUD(cells);
+                case CursorDirection::Forward:
+                    return csi.getCUF(cells);
+                case CursorDirection::Backward:
+                    return csi.getCUB(cells);
+                case CursorDirection::PreviousLine:
+                    return csi.getCPL(cells);
+                case CursorDirection::Column:
+                    return csi.getCHA(cells);
+                case CursorDirection::NextLine:
+                    return csi.getCNL(cells);
+            }
+        }
+
+        [[nodiscard]] std::string moveCursor(const std::size_t row = 1U, const std::size_t column = 1U) const noexcept
+        {
+            CSISequencer csi{};
+
+            if (cursor_move_type == CursorMoveType::FormatEffector) {
+                return csi.getHVP(row, column);
+            }
+
+            return csi.getCUP(row, column);
+        }
+
+        [[nodiscard]] std::string saveCursor() const noexcept
+        {
+            if (CSISequencer csi{}; cursor_memory_sequence_type == CursorSequenceType::Fe) {
+                return csi.getSCP();
+            }
+
+            FpSequencer fp{};
+            return fp.getDECSC();
+        }
+
+        [[nodiscard]] std::string restoreCursor() const noexcept
+        {
+            if (CSISequencer csi{}; cursor_memory_sequence_type == CursorSequenceType::Fe) {
+                return csi.getRCP();
+            }
+
+            FpSequencer fp{};
+            return fp.getDECRC();
+        }
+
+        static std::string ScrollPage(ScrollPageType type, const std::size_t lines = 1U) noexcept
+        {
+            CSISequencer csi{};
+
+            if (type == ScrollPageType::Down) {
+                return csi.getSU(lines);
+            }
+
+            return csi.getSD(lines);
+        }
+
+        static std::string ClearScreen(ClearScreenType type = ClearScreenType::EntireScreen) noexcept
+        {
+            CSISequencer csi{};
+            return csi.getED(type);
+        }
+
+        static std::string EraseLine(EraseLineType type = EraseLineType::EntireLine) noexcept
+        {
+            CSISequencer csi{};
+            return csi.getEL(type);
+        }
+
+        static std::string SetDisplay(DisplayFormat attribute) noexcept
+        {
+            SGRSequencer sgr{};
+            return sgr.getDisplayAttribute(attribute);
+        }
+
+        static std::string SetColor(ForegroundColor fg, BackgroundColor bg) noexcept
+        {
+            SGRSequencer sgr{};
+            return sgr.getColor(fg, bg);
+        }
+
+        [[nodiscard]] std::string setColor(const uint8_t color, ColorPlan type = ColorPlan::Background) const noexcept
+        {
+            SGRSequencer sgr{};
+            return sgr.getColor(color, type, use_colons_for_color);
+        }
+
+        [[nodiscard]] std::string setColor(RGB color, ColorPlan type = ColorPlan::Foreground) const noexcept
+        {
+            SGRSequencer sgr{};
+            return sgr.getColor(color, type, use_colons_for_color);
+        }
+
+        static std::string ResetDisplay() noexcept
+        {
+            SGRSequencer sgr{};
+            return sgr.getDisplayAttribute(DisplayFormat::Reset);
+        }
+
+        static std::string resetColors() noexcept
+        {
+            SGRSequencer sgr{};
+            return sgr.getColorsReset();
+        }
+
+        static std::string resetTerminal() noexcept
+        {
+            FsSequencer fs{};
+            return fs.getRIS();
+        }
+
+        // TODO: isValid(sequenceStrView, validationType)
     };
 
+    // TODO: realize plan
+    // * change namespaces to be preceded by libs::
+    // * specialize ConsoleLogger from StdOutLogger, override 'event methods' to build own messages
+    // * make another plan that will realize TODOs
 }
 
 #endif //ANSI_HPP

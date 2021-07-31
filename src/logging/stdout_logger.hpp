@@ -13,17 +13,6 @@
 namespace logging {
 
     class StdOutLogger : public StringLogger {
-      protected:
-        enum class MessageTarget : bool {
-            StdOut,
-            StdErr
-        };
-
-      private:
-        std::vector<std::pair<MessageTarget, std::string>> messages{};
-        std::size_t last_message_position = 0;
-        std::string str_target{};
-
       public:
         StdOutLogger() = delete;
 
@@ -49,7 +38,44 @@ namespace logging {
             printDestructorMessage();
         }
 
+      protected:
+        enum class MessageTarget : bool {
+            StdOut,
+            StdErr
+        };
+
+        void onFlush() override
+        {
+            print();
+            last_message_position = 0;
+            messages.clear();
+        }
+
+        void onBufferedMessage() override
+        {
+            const auto buffer = elicitStringBuffer().str();
+            const auto lastMessage = buffer.substr(last_message_position);
+            last_message_position += lastMessage.size();
+
+            const auto fatalLevel = strings::ToUpperCase(SeverityLevel::ToString(SeverityLevel::Level::Fatal));
+            bool isExceptionMsg = strings::Contains(lastMessage, "std::exception |");
+            bool isFatalMsg = strings::Contains(lastMessage, "[" + fatalLevel + "]");
+            bool isErrorMsg = isExceptionMsg || isFatalMsg;
+            const auto key = isErrorMsg ? MessageTarget::StdErr : MessageTarget::StdOut;
+            messages.emplace_back(std::make_pair<>(key, lastMessage));
+        }
+
+        inline const auto& elicitStdOutMessages() const noexcept
+        {
+            return messages;
+        }
+
       private:
+        std::vector<std::pair<MessageTarget, std::string>> messages{};
+        std::size_t last_message_position = 0;
+        std::string str_target{};
+
+
         void print()
         {
             if (elicitSettings().skip_print_to_stdout) {
@@ -78,33 +104,6 @@ namespace logging {
             }
 
             std::cout << "~StdOutLogger(" << elicitFlushedMessages() << ")\n";
-        }
-
-      protected:
-        void onFlush() override
-        {
-            print();
-            last_message_position = 0;
-            messages.clear();
-        }
-
-        void onBufferedMessage() override
-        {
-            const auto buffer = elicitStringBuffer().str();
-            const auto lastMessage = buffer.substr(last_message_position);
-            last_message_position += lastMessage.size();
-
-            const auto fatalLevel = strings::ToUpperCase(SeverityLevel::ToString(SeverityLevel::Level::Fatal));
-            bool isExceptionMsg = strings::Contains(lastMessage, "std::exception |");
-            bool isFatalMsg = strings::Contains(lastMessage, "[" + fatalLevel + "]");
-            bool isErrorMsg = isExceptionMsg || isFatalMsg;
-            const auto key = isErrorMsg ? MessageTarget::StdErr : MessageTarget::StdOut;
-            messages.emplace_back(std::make_pair<>(key, lastMessage));
-        }
-
-        inline const auto& elicitStdOutMessages() const noexcept
-        {
-            return messages;
         }
 
     };

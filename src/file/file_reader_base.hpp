@@ -12,11 +12,6 @@
 namespace file::reader {
 
     class FileReaderBase : public interfaces::IStringify {
-      private:
-        std::string path;
-        std::ifstream stream;
-        std::vector<char> content;
-
       public:
         FileReaderBase() = delete;
 
@@ -30,8 +25,7 @@ namespace file::reader {
 
         ~FileReaderBase() noexcept override = default;
 
-        explicit FileReaderBase(const std::string& filePath)
-                : path(filePath), stream(std::ifstream(filePath, std::ios::in))
+        explicit FileReaderBase(const std::string& filePath) : path(filePath), stream(std::ifstream(filePath, std::ios::in))
         {
         }
 
@@ -72,6 +66,11 @@ namespace file::reader {
         {
             return content.size();
         }
+
+      private:
+        std::string path;
+        std::ifstream stream;
+        std::vector<char> content;
     };
 
 }

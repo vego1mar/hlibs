@@ -31,18 +31,16 @@ namespace strings {
     template<typename T>
     static bool CheckRange(const std::string_view source, const templates::Range<T>& range)
     {
-        for (const auto& character : source) {
-            if (!range.isIn(character)) {
-                return false;
-            }
-        }
+        const auto isInRange = [&range](const char& ch) {
+            return range.isIn(ch);
+        };
 
-        return true;
+        return std::ranges::all_of(source.begin(), source.end(), isInRange);
     }
 
     // TODO: ::string -> Split(), Contains(); check LM project
-    // RangeCheck(str, RangeCheckType::Letters | Digits | Alphanumerics | Special | ControlChars | ASCII);
-    // OrderCheck(str, OrderCheckType::Lexicographical | ASCIbetical | Alphabetical_Unicode | Subsequent);
+    // RangeCheck(str, RangeCheckType::Letters | Digits | Alphanumerics | Special | ControlChars | ASCII)
+    // OrderCheck(str, OrderCheckType::Lexicographical | ASCIbetical | Alphabetical_Unicode | Subsequent)
 
 }
 

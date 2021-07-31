@@ -12,12 +12,6 @@
 namespace logging {
 
     class StringLogger : public Logger {
-      private:
-        std::string& target;
-        std::ostringstream str_buffer{};
-        unsigned short buffered_messages = 0;
-        unsigned long flushed_messages = 0;
-
       public:
         StringLogger() = delete;
 
@@ -57,40 +51,6 @@ namespace logging {
             ++buffered_messages;
             onBufferedMessage();
             checkFlush();
-        }
-
-      private:
-        static std::string GetMessageHeader(const SeverityLevel::Level& level, const SourceLocation& source)
-        {
-            const auto timestamp = date_time::GetDateAndTime();
-            const auto levelStr = strings::ToUpperCase(SeverityLevel::ToString(level));
-            const std::string path = source.file_name();
-            const auto sourceFile = path.substr(path.find_last_of("/\\") + 1);
-            const auto line = source.line();
-            const std::string prototype = source.function_name();
-
-            // $Date $Time [$Level] $SourceFile($Line) @"$FunctionPrototype": ${Message}
-            std::string result{};
-            result.append(timestamp + " [" + levelStr + "] ");
-            result.append(sourceFile + '(' + std::to_string(line) + ") @\"" + prototype + "\": ");
-            return result;
-        }
-
-        void flush()
-        {
-            target.append(str_buffer.str());
-            str_buffer.str("");
-            str_buffer.clear();
-            flushed_messages += buffered_messages;
-            buffered_messages = 0;
-        }
-
-        void checkFlush()
-        {
-            if (buffered_messages >= elicitSettings().messages_before_flush) {
-                onFlush();
-                flush();
-            }
         }
 
       protected:
@@ -134,6 +94,46 @@ namespace logging {
         inline const unsigned long& elicitFlushedMessages() const noexcept
         {
             return flushed_messages;
+        }
+
+      private:
+        std::string& target;
+        std::ostringstream str_buffer{};
+        unsigned short buffered_messages = 0;
+        unsigned long flushed_messages = 0;
+
+
+        static std::string GetMessageHeader(const SeverityLevel::Level& level, const SourceLocation& source)
+        {
+            const auto timestamp = date_time::GetDateAndTime();
+            const auto levelStr = strings::ToUpperCase(SeverityLevel::ToString(level));
+            const std::string path = source.file_name();
+            const auto sourceFile = path.substr(path.find_last_of("/\\") + 1);
+            const auto line = source.line();
+            const std::string prototype = source.function_name();
+
+            // $Date $Time [$Level] $SourceFile($Line) @"$FunctionPrototype": ${Message}
+            std::string result{};
+            result.append(timestamp + " [" + levelStr + "] ");
+            result.append(sourceFile + '(' + std::to_string(line) + ") @\"" + prototype + "\": ");
+            return result;
+        }
+
+        void flush()
+        {
+            target.append(str_buffer.str());
+            str_buffer.str("");
+            str_buffer.clear();
+            flushed_messages += buffered_messages;
+            buffered_messages = 0;
+        }
+
+        void checkFlush()
+        {
+            if (buffered_messages >= elicitSettings().messages_before_flush) {
+                onFlush();
+                flush();
+            }
         }
 
     };

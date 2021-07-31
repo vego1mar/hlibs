@@ -4,6 +4,7 @@
 namespace interfaces {
 
     struct IStringify {
+      public:
         [[nodiscard]] virtual std::string toString() const noexcept = 0;
 
       protected:

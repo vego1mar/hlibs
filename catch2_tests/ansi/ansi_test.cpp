@@ -9,6 +9,7 @@ TEST_CASE("ansi", "[ansi]")
 {
     using ansi::Enclose;
     using ansi::CSISequencer;
+    using ansi::ANSISequencer;
 
 
     SECTION("CSIEndChar -> convertible to char", "[functional_requirements]") {
@@ -117,6 +118,11 @@ TEST_CASE("ansi", "[ansi]")
             const bool isValid = CSISequencer::IsValid(sequence);
             REQUIRE(!isValid);
         }
+    }
+
+    SECTION("? -> ?", "[functional_requirements]") {
+        ANSISequencer sequencer;
+        const auto clearScreen = ANSISequencer::ClearScreen();
     }
 
 }
