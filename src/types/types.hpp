@@ -84,8 +84,6 @@ namespace libs::types {
 
     };
 
-    // TODO: non-contiguous Range
-
     enum class ColorName : uint8_t {
         Black,
         Teal,
@@ -117,10 +115,6 @@ namespace libs::types {
             const auto& codes = colorCodes.at(color);
             return *(codes.begin() + shift);
         }
-
-        // TODO: provide named colors
-        // TODO: convert from hex to rgb
-        // TODO: RGBColor from/to hex, CMY, CMYK, 256 color set
     };
 
 }

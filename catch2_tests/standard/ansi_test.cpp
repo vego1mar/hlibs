@@ -22,73 +22,73 @@ TEST_CASE("CSISequencer", "[libs][standard][ansi]")
         REQUIRE(endChar == 'T');
     }
 
-    SECTION("CSISequencer.getCUU() -> \\033[3A", "[functional_requirements]") {
+    SECTION("getCUU() -> \\033[3A", "[functional_requirements]") {
         CSISequencer sequencer{};
         const auto cursorUp = sequencer.getCUU(3);
         REQUIRE_THAT(cursorUp, Catch::Equals("\033[3A"));
     }
 
-    SECTION("CSISequencer.getCUD() -> \\033[5B", "[functional_requirements]") {
+    SECTION("getCUD() -> \\033[5B", "[functional_requirements]") {
         CSISequencer sequencer{};
         const auto cursorDown = sequencer.getCUD(5);
         REQUIRE_THAT(cursorDown, Catch::Equals("\033[5B"));
     }
 
-    SECTION("CSISequencer.getCUF() -> \\x1B[2C", "[functional_requirements]") {
+    SECTION("getCUF() -> \\x1B[2C", "[functional_requirements]") {
         CSISequencer sequencer{};
         const auto cursorForward = sequencer.getCUF(2);
         REQUIRE_THAT(cursorForward, Catch::Equals("\x1B[2C"));
     }
 
-    SECTION("CSISequencer.getCUB() -> \\x1B[7D", "[functional_requirements]") {
+    SECTION("getCUB() -> \\x1B[7D", "[functional_requirements]") {
         CSISequencer sequencer{};
         const auto cursorBack = sequencer.getCUB(7);
         REQUIRE_THAT(cursorBack, Catch::Equals("\x1B[7D"));
     }
 
-    SECTION("CSISequencer.getCNL() -> \\033[5E", "[functional_requirements]") {
+    SECTION("getCNL() -> \\033[5E", "[functional_requirements]") {
         CSISequencer sequencer;
         const auto cursorNextLine = sequencer.getCNL(5);
         REQUIRE_THAT(cursorNextLine, Catch::Equals("\033[5E"));
     }
 
-    SECTION("CSISequencer.getCPL() -> \\033[55F", "[functional_requirements]") {
+    SECTION("getCPL() -> \\033[55F", "[functional_requirements]") {
         CSISequencer sequencer;
         const auto cursorNextLine = sequencer.getCPL(55);
         REQUIRE_THAT(cursorNextLine, Catch::Equals("\033[55F"));
     }
 
-    SECTION("CSISequencer.getCHA() -> \\033[8G", "[functional_requirements]") {
+    SECTION("getCHA() -> \\033[8G", "[functional_requirements]") {
         CSISequencer sequencer;
         const auto cursorNextLine = sequencer.getCHA(8);
         REQUIRE_THAT(cursorNextLine, Catch::Equals("\033[8G"));
     }
 
-    SECTION("CSISequencer.getCUP() -> \\033[11;23H", "[functional_requirements]") {
+    SECTION("getCUP() -> \\033[11;23H", "[functional_requirements]") {
         CSISequencer sequencer;
         const auto cursorPosition = sequencer.getCUP(11, 23);
         REQUIRE_THAT(cursorPosition, Catch::Equals("\033[11;23H"));
     }
 
-    SECTION("CSISequencer.getHVP() -> \\033[13;32f", "[functional_requirements]") {
+    SECTION("getHVP() -> \\033[13;32f", "[functional_requirements]") {
         CSISequencer sequencer;
         const auto cursorPosition = sequencer.getHVP(13, 32);
         REQUIRE_THAT(cursorPosition, Catch::Equals("\033[13;32f"));
     }
 
-    SECTION("CSISequencer.getSU() -> \\033[33S", "[functional_requirements]") {
+    SECTION("getSU() -> \\033[33S", "[functional_requirements]") {
         CSISequencer sequencer;
         const auto scrollUp = sequencer.getSU(33);
         REQUIRE_THAT(scrollUp, Catch::Equals("\033[33S"));
     }
 
-    SECTION("CSISequencer.getSD() -> \\033[44T", "[functional_requirements]") {
+    SECTION("getSD() -> \\033[44T", "[functional_requirements]") {
         CSISequencer sequencer;
         const auto scrollDown = sequencer.getSD(44);
         REQUIRE_THAT(scrollDown, Catch::Equals("\033[44T"));
     }
 
-    SECTION("CSISequencer.IsValid() -> OK", "[functional_requirements]") {
+    SECTION("IsValid() -> OK", "[functional_requirements]") {
         const std::vector<std::string> trueSequences = {
                 std::string("\033[s"),
                 std::string("\033[0m"),
@@ -122,10 +122,9 @@ TEST_CASE("CSISequencer", "[libs][standard][ansi]")
 }
 
 
-TEST_CASE("ANSISequencer", "[libs][standard][ansi]") {
-
+TEST_CASE("ANSISequencer", "[libs][standard][ansi]")
+{
     using libs::standard::ansi::ANSISequencer;
-
 
     SECTION("? -> ?", "[functional_requirements]") {
         ANSISequencer sequencer;

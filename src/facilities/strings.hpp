@@ -38,10 +38,6 @@ namespace libs::facilities::string {
         return std::ranges::all_of(source.begin(), source.end(), isInRange);
     }
 
-    // TODO: ::string -> Split(), Contains(); check LM project
-    // RangeCheck(str, RangeCheckType::Letters | Digits | Alphanumerics | Special | ControlChars | ASCII)
-    // OrderCheck(str, OrderCheckType::Lexicographical | ASCIbetical | Alphabetical_Unicode | Subsequent)
-
 }
 
 #endif //LIBS_FACILITIES_STRING_HPP

@@ -7,6 +7,7 @@
 #include <regex>
 #include <array>
 #include <tuple>
+#include <numeric>
 
 #include "../types/types.hpp"
 #include "../facilities/strings.hpp"
@@ -224,47 +225,36 @@ namespace libs::standard::ansi {
             const std::string sequenceWithNoEscKey = seq.substr(1);
             Range<char> range{0x20, 0x7E};
 
-            if (bool isInANSIRange = CheckRange(sequenceWithNoEscKey, range); !isInANSIRange) {
+            if (bool isInCSIRange = CheckRange(sequenceWithNoEscKey, range); !isInCSIRange) {
                 return false;
             }
 
-            const bool isMatchedSequence = IsMatchFound(seq);
-            return isMatchedSequence;
+            const bool isCSIMatchedSequence = IsCSIMatchFound(seq);
+            return isCSIMatchedSequence;
         }
 
       private:
-        static bool IsMatchFound(const std::string& seq)
+        static bool IsCSIMatchFound(const std::string& seq)
         {
             const std::size_t CHECKS = 4U;
             const auto grammar = std::regex_constants::ECMAScript;
             std::smatch csiMatch;
+            std::array<std::regex, CHECKS> regexes{};
+            std::array<bool, CHECKS> matches{};
 
             const std::array<std::string, CHECKS> patterns = {
-                    std::string("^\033\\[[a-zA-Z]{1}$"),
-                    std::string("^\033\\[[0-9]+[a-zA-Z]{1}$"),
-                    std::string("^\033\\[[0-9]+;[0-9]+[a-zA-Z]{1}$"),
-                    std::string("^\033\\[([0-9]+(;)+)+[0-9]+[a-zA-Z]{1}$"),
+                    std::string("^\033\\[[a-zA-Z]{1}$"),                     // no byte,      "ESC[ E"
+                    std::string("^\033\\[[0-9]+[a-zA-Z]{1}$"),               // single byte,  "ESC[ $n E"
+                    std::string("^\033\\[[0-9]+;[0-9]+[a-zA-Z]{1}$"),        // double byte,  "ESC[ $n; $m E"
+                    std::string("^\033\\[([0-9]+(;)+)+[0-9]+[a-zA-Z]{1}$"),  // multi byte,   "ESC[ $a[;]+ … $z[;]+  E"
             };
 
-            const std::array<std::regex, CHECKS> regexes = {
-                    std::regex(*(patterns.begin() + 0), grammar),              // no byte
-                    std::regex(*(patterns.begin() + 1), grammar),              // single byte
-                    std::regex(*(patterns.begin() + 2), grammar),              // double byte
-                    std::regex(*(patterns.begin() + 3), grammar),              // multi byte
-            };
+            for (std::size_t i = 0; i < CHECKS; i++) {
+                regexes[i] = std::regex(*(patterns.begin() + i), grammar);
+                matches[i] = std::regex_match(seq, csiMatch, *(regexes.begin() + i));
+            }
 
-            const std::array<bool, CHECKS> matches = {
-                    std::regex_match(seq, csiMatch, *(regexes.begin() + 0)),   // "ESC[ E"
-                    std::regex_match(seq, csiMatch, *(regexes.begin() + 1)),   // "ESC[ $n E"
-                    std::regex_match(seq, csiMatch, *(regexes.begin() + 2)),   // "ESC[ $n; $m E"
-                    std::regex_match(seq, csiMatch, *(regexes.begin() + 3)),   // "ESC[ $a[;]+ … $z[;]+  E"
-            };
-
-            bool isNoByte = *matches.begin();
-            bool isSingleByte = *(matches.begin() + 1);
-            bool isDoubleByte = *(matches.begin() + 2);
-            bool isMultiByte = *(matches.begin() + 3);
-            bool isFound = isNoByte || isSingleByte || isDoubleByte || isMultiByte;
+            bool isFound = std::accumulate(matches.begin(), matches.end(), false);
             return isFound;
         }
     };
@@ -416,22 +406,6 @@ namespace libs::standard::ansi {
             return useColons ? colonsBG : semicolonsBG;
         }
 
-        /// Check if custom ANSI SGR escape sequence is well-formed.
-        static bool IsValid(const std::string_view)
-        {
-            // TODO: implement
-            // 04-bit color "ESC[ $n m"                                     → single byte with 'm' ending (one param)
-            //  4-bit color "ESC[ $n;$m m"                                  → double byte with 'm' ending (two params)
-            //  attributes  "ESC[ $a; $b; … ;$z m"                          → multi byte with 'm' ending (many params)
-            //  8-bit color "ESC[ [38|48];5; $n m"                          → 8-bit color only
-            //  8-bit color "ESC[ [$a;]* [38|48];5; $n [;$z]* m"            → 8-bit color with other params
-            // 24-bit color "ESC[ [38|48];2; $r;$g;$g m"                    → true color only
-            // 24-bit color "ESC[ [38|48]:2::$r:$g:$g m"                    → true color only (colons)
-            // 24-bit color "ESC[ [$a;]* [38|48];2; $r;$g;$g [;$z]* m"      → true color with other params
-            // 24-bit color "ESC[ [$a;]* [38|48]:2::$r:$g:$g [;$z]* m"      → true color with other params (colons)
-            return false;
-        }
-
       private:
         using GroundColor = std::tuple<std::string, std::string>;
 
@@ -463,9 +437,6 @@ namespace libs::standard::ansi {
             // "ESC c"
             return ESC + Enclose::ToChar(Enclose::RIS);
         }
-
-        // TODO: isValid
-        // followed by a byte in the range( 0x60-0x7E ) -> ( `a-z{|}~ ), single byted
     };
 
 
@@ -486,9 +457,6 @@ namespace libs::standard::ansi {
             // "ESC 8"
             return ESC + Enclose::ToChar(Enclose::DECRC);
         }
-
-        // TODO: isValid
-        // followed by a byte in the range( 0x30-0x3F ) -> ( 0-9:;<=>? )
     };
 
 
@@ -647,14 +615,8 @@ namespace libs::standard::ansi {
             FsSequencer fs{};
             return fs.getRIS();
         }
-
-        // TODO: isValid(sequenceStrView, validationType)
     };
 
-    // TODO: realize plan
-    // * complete isValid() methods
-    // * specialize ConsoleLogger from StdOutLogger, override 'event methods' to build own messages
-    // * make another plan that will realize TODOs
 }
 
 #endif //LIBS_STANDARD_ANSI_HPP

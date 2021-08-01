@@ -49,14 +49,8 @@ namespace libs::logging {
                 }
 
                 std::clog << message;
-                // TODO: remove setting_skip, disable base StdOutLogger, build own messages list
             }
         }
-
-        // TODO: set colors methods, use ::ansi facilities
-        // TODO: query terminal for ANSI/TrueColor support
-        // https://gist.github.com/XVilka/8346728
-
     };
 
 }
