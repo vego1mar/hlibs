@@ -1,23 +1,27 @@
 #include <iostream>
+#include <exception>
 
 #include "logging/console_logger.hpp"
-#include "standard/ansi.hpp"
 
 
 namespace hello_world {
 
-    static void PrintColorful()
+    static void PrintColorfulHello()
     {
         using libs::logging::ConsoleLogger;
-        using Console = libs::standard::ansi::ANSISequencer;
-        using Format = libs::standard::ansi::ANSISequencer::DisplayFormat;
 
         ConsoleLogger logger{};
-        logger.debug("Hello World!");
+        logger.debug("Hello Debug!");
+        logger.info("Hello Info!");
+        logger.warning("Hello Warning!");
+        logger.fatal("Hello Fatal!");
 
-        std::cout << Console::SetDisplay(Format::Invert);
-        std::cout << "Colorful Hello World!" << '\n';
-        std::cout << Console::SetDisplay(Format::NotInverted);
+        try {
+            throw std::runtime_error("Deliberately thrown!");
+        }
+        catch (std::exception& e) {
+            logger.exception("Hello exception!", e);
+        }
     }
 
 }
@@ -25,21 +29,19 @@ namespace hello_world {
 
 int main()
 {
-    hello_world::PrintColorful();
+    hello_world::PrintColorfulHello();
     return EXIT_SUCCESS;
 }
 
 // TODO: logging plan
-// * specialize ConsoleLogger from StdOutLogger, override 'event methods' to build own messages
-// * make another plan that will realize TODOs
-// * remove setting_skip, disable base StdOutLogger, build own messages list
-// * use ::ansi to print colorful logs ({fatal, exception, info, debug} → {red, teal, black, bg clementine/reverse video})
 // * query terminal for ANSI/TrueColor support  # https://gist.github.com/XVilka/8346728
 
 // TODO: types plan
 // * non-contiguous Range
 // * RGBColor - provide named colors
 // * RGBColor - from/to hex, CMY, CMYK, 256 color set
+// * RGColor - complementary colors # https://www.sessions.edu/color-calculator/
+// * RGBColor - contrast colors # https://coolors.co/contrast-checker/008080-acc8e5
 
 // TODO: string plan
 // * Split(), Contains(); check LM project for more ideas

@@ -3,6 +3,7 @@
 
 #include <sstream>
 #include <iostream>
+#include <memory>
 
 #include "logger.hpp"
 #include "../facilities/timestamp.hpp"
@@ -13,10 +14,13 @@ namespace libs::logging {
 
     class StringLogger : public Logger {
       public:
-        StringLogger() = delete;
-
-        explicit StringLogger(std::string& strTarget) : target(strTarget)
+        StringLogger() : str_target(nullptr)
         {
+        }
+
+        explicit StringLogger(std::shared_ptr<std::string>& externalTarget)
+        {
+            str_target = externalTarget;
         }
 
         StringLogger(const StringLogger& rhs) = delete;
@@ -33,9 +37,19 @@ namespace libs::logging {
                 return;
             }
 
-            flushed_messages += buffered_messages;
-            str_buffer << "~StringLogger(" << flushed_messages << ")\n";
-            target.append(str_buffer.str());
+            str_messages_flushed += str_messages_buffered;
+            str_buffer << "~StringLogger(" << str_messages_flushed << ")\n";
+
+            if (str_target) {
+                str_target->append(str_buffer.str());
+            }
+        }
+
+        /// Retrieves the unbuffered messages.
+        friend std::ostream& operator<<(std::ostream& lhs, const StringLogger& rhs)
+        {
+            lhs << rhs.str_buffer.str();
+            return lhs;
         }
 
         void exception(const std::string& msg, const std::exception& e, SourceLocation source = SourceLocation::current())
@@ -48,7 +62,7 @@ namespace libs::logging {
             const auto header = GetMessageHeader(SeverityLevel::Level::Debug, source);
             const std::string message = "std::exception | " + msg + " | " + e.what();
             str_buffer << header << message << '\n';
-            ++buffered_messages;
+            ++str_messages_buffered;
             onBufferedMessage();
             checkFlush();
         }
@@ -63,7 +77,7 @@ namespace libs::logging {
             // ${Header}$Message$NewLine
             const auto header = GetMessageHeader(level, source);
             str_buffer << header << msg << '\n';
-            ++buffered_messages;
+            ++str_messages_buffered;
             onBufferedMessage();
             checkFlush();
         }
@@ -74,14 +88,14 @@ namespace libs::logging {
             // It will be invoked before flush() that will clear str_buffer.
         }
 
-        /// An event indicating that another message has been logged into buffer.
+        /// An event indicating that another message has been logged into str_buffer.
         virtual void onBufferedMessage()
         {
-            // Used after message addition to str_buffer with log() or exception() but before checkFlush().
+            // Used after message addition to str_buffer with log()/exception() but before checkFlush().
         }
 
-        /// An event to use only in derived destructors to force flush from buffer to str_target.
-        void onFlushInDerivedDestructor()
+        /// An event to use only in derived destructors to force flush from str_buffer to str_target.
+        void onDestructor()
         {
             flush();
         }
@@ -93,14 +107,14 @@ namespace libs::logging {
 
         inline const unsigned long& elicitFlushedMessages() const noexcept
         {
-            return flushed_messages;
+            return str_messages_flushed;
         }
 
       private:
-        std::string& target;
+        std::shared_ptr<std::string> str_target{};
         std::ostringstream str_buffer{};
-        unsigned short buffered_messages = 0;
-        unsigned long flushed_messages = 0;
+        unsigned short str_messages_buffered = 0;
+        unsigned long str_messages_flushed = 0;
 
 
         static std::string GetMessageHeader(const SeverityLevel::Level& level, const SourceLocation& source)
@@ -121,16 +135,19 @@ namespace libs::logging {
 
         void flush()
         {
-            target.append(str_buffer.str());
+            if (str_target) {
+                str_target->append(str_buffer.str());
+            }
+
             str_buffer.str("");
             str_buffer.clear();
-            flushed_messages += buffered_messages;
-            buffered_messages = 0;
+            str_messages_flushed += str_messages_buffered;
+            str_messages_buffered = 0;
         }
 
         void checkFlush()
         {
-            if (buffered_messages >= elicitSettings().messages_before_flush) {
+            if (str_messages_buffered >= elicitSettings().messages_before_flush) {
                 onFlush();
                 flush();
             }

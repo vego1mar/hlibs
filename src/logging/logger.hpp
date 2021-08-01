@@ -58,11 +58,14 @@ namespace libs::logging {
 
 
     struct LoggerSettings {
-        /// Number of messages that will go to buffer before placing them in the target output.
+        /// Number of messages that will go to buffer before placing them in the str_target output.
         unsigned short messages_before_flush = 11;
 
         /// On false, prevents processing of logged messages.
         bool is_enabled = true;
+
+        /// Skips printing the messages, but do not prevent from processing them (StdOutLogger/ConsoleLogger).
+        bool use_stdout = true;
     };
 
 

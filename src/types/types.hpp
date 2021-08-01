@@ -87,7 +87,10 @@ namespace libs::types {
     enum class ColorName : uint8_t {
         Black,
         Teal,
-        };
+        Crimson,
+        Lavender,
+        Isabelline,
+    };
 
 
     struct RGBColor {
@@ -108,9 +111,12 @@ namespace libs::types {
         static uint8_t Get(ColorName color, int shift = 0)
         {
             static const std::unordered_map<ColorName, std::array<uint8_t, 3>> colorCodes = {
-                    {ColorName::Black, {0, 0,   0}},
-                    {ColorName::Teal,  {0, 128, 128}},
-                    };
+                    {ColorName::Black,      {0,   0,   0}},
+                    {ColorName::Teal,       {0,   128, 128}},
+                    {ColorName::Crimson,    {220, 20,  60}},
+                    {ColorName::Lavender,   {230, 230, 250}},
+                    {ColorName::Isabelline, {244, 240, 236}},
+            };
 
             const auto& codes = colorCodes.at(color);
             return *(codes.begin() + shift);

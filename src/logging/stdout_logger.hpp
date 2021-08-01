@@ -14,12 +14,15 @@ namespace libs::logging {
 
     class StdOutLogger : public StringLogger {
       public:
-        StdOutLogger() = delete;
-
-        explicit StdOutLogger(bool isEnabled, unsigned short messagesBeforeFlush = 4) : StringLogger(str_target)
+        explicit StdOutLogger(bool isEnabled)
         {
             elicitSettings().is_enabled = isEnabled;
-            elicitSettings().messages_before_flush = messagesBeforeFlush;
+            elicitSettings().messages_before_flush = 4;
+            elicitSettings().use_stdout = true;
+        }
+
+        StdOutLogger() : StdOutLogger(true)
+        {
         }
 
         StdOutLogger(const StdOutLogger& rhs) = delete;
@@ -32,9 +35,8 @@ namespace libs::logging {
 
         ~StdOutLogger() noexcept override
         {
-            onFlushInDerivedDestructor();
+            onDestructor();
             print();
-            str_target.clear();
             printDestructorMessage();
         }
 
@@ -43,6 +45,9 @@ namespace libs::logging {
             StdOut,
             StdErr
         };
+
+        using ClassifiedMessage = std::pair<MessageTarget, std::string>;
+        using PositionedMessage = std::pair<std::size_t, std::string>;
 
         void onFlush() override
         {
@@ -53,33 +58,43 @@ namespace libs::logging {
 
         void onBufferedMessage() override
         {
-            const auto buffer = elicitStringBuffer().str();
-            const auto lastMessage = buffer.substr(last_message_position);
-            last_message_position += lastMessage.size();
+            const auto str = elicitStringBuffer().str();
+            auto[nextMessagePosition, lastMessage] = GetNextMessage(str, last_message_position);
+            last_message_position = nextMessagePosition;
+            messages.emplace_back(GetClassifiedMessage(lastMessage));
+        }
 
+        static PositionedMessage GetNextMessage(const std::string& bufferStr, const std::size_t& lastMsgPos)
+        {
+            const auto lastMessage = bufferStr.substr(lastMsgPos);
+            const auto nextMsgPos = lastMsgPos + lastMessage.size();
+            return std::make_pair<>(nextMsgPos, lastMessage);
+        }
+
+        static ClassifiedMessage GetClassifiedMessage(const std::string& lastMessage)
+        {
             using libs::facilities::string::ToUpperCase;
             using libs::facilities::string::Contains;
+
             const auto fatalLevel = ToUpperCase(SeverityLevel::ToString(SeverityLevel::Level::Fatal));
             bool isExceptionMsg = Contains(lastMessage, "std::exception |");
             bool isFatalMsg = Contains(lastMessage, "[" + fatalLevel + "]");
             bool isErrorMsg = isExceptionMsg || isFatalMsg;
             const auto key = isErrorMsg ? MessageTarget::StdErr : MessageTarget::StdOut;
-            messages.emplace_back(std::make_pair<>(key, lastMessage));
-        }
-
-        inline const auto& elicitStdOutMessages() const noexcept
-        {
-            return messages;
+            return std::make_pair<>(key, lastMessage);
         }
 
       private:
         std::vector<std::pair<MessageTarget, std::string>> messages{};
         std::size_t last_message_position = 0;
-        std::string str_target{};
 
 
         void print()
         {
+            if (!elicitSettings().use_stdout) {
+                return;
+            }
+
             printMessages();
         }
 
@@ -97,6 +112,10 @@ namespace libs::logging {
 
         void printDestructorMessage()
         {
+            if (!elicitSettings().use_stdout) {
+                return;
+            }
+
             std::cout << "~StdOutLogger(" << elicitFlushedMessages() << ")\n";
         }
 
