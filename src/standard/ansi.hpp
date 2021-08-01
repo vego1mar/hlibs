@@ -1,5 +1,5 @@
-#ifndef LIBS_STANDARD_ANSI_HPP
-#define LIBS_STANDARD_ANSI_HPP
+#ifndef LIBS_ANSI_HPP
+#define LIBS_ANSI_HPP
 
 #include <string>
 #include <string_view>
@@ -619,4 +619,4 @@ namespace libs::standard::ansi {
 
 }
 
-#endif //LIBS_STANDARD_ANSI_HPP
+#endif //LIBS_ANSI_HPP

@@ -1,5 +1,5 @@
-#ifndef LIBS_LOGGING_STDOUT_LOGGER_HPP
-#define LIBS_LOGGING_STDOUT_LOGGER_HPP
+#ifndef LIBS_STDOUT_LOGGER_HPP
+#define LIBS_STDOUT_LOGGER_HPP
 
 #include <iostream>
 #include <vector>
@@ -80,10 +80,6 @@ namespace libs::logging {
 
         void print()
         {
-            if (elicitSettings().skip_print_to_stdout) {
-                return;
-            }
-
             printMessages();
         }
 
@@ -101,10 +97,6 @@ namespace libs::logging {
 
         void printDestructorMessage()
         {
-            if (elicitSettings().skip_print_to_stdout) {
-                return;
-            }
-
             std::cout << "~StdOutLogger(" << elicitFlushedMessages() << ")\n";
         }
 
@@ -112,4 +104,4 @@ namespace libs::logging {
 
 }
 
-#endif //LIBS_LOGGING_STDOUT_LOGGER_HPP
+#endif //LIBS_STDOUT_LOGGER_HPP

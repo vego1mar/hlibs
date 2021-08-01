@@ -121,15 +121,3 @@ TEST_CASE("CSISequencer", "[libs][standard][ansi]")
 
 }
 
-
-TEST_CASE("ANSISequencer", "[libs][standard][ansi]")
-{
-    using libs::standard::ansi::ANSISequencer;
-
-    SECTION("? -> ?", "[functional_requirements]") {
-        ANSISequencer sequencer;
-        const auto clearScreen = ANSISequencer::ResetTerminal();
-        REQUIRE_THAT(clearScreen, Catch::Equals("\033c"));
-    }
-
-}

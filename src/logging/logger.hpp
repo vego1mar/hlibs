@@ -1,5 +1,5 @@
-#ifndef LIBS_LOGGING_LOGGER_HPP
-#define LIBS_LOGGING_LOGGER_HPP
+#ifndef LIBS_LOGGER_HPP
+#define LIBS_LOGGER_HPP
 
 #include <string>
 #include <sstream>
@@ -63,9 +63,6 @@ namespace libs::logging {
 
         /// On false, prevents processing of logged messages.
         bool is_enabled = true;
-
-        /// Used in StdOutLogger to prevent double output in ConsoleLogger.
-        bool skip_print_to_stdout = false;
     };
 
 
@@ -102,9 +99,9 @@ namespace libs::logging {
             log(SeverityLevel::Level::Debug, msg, source);
         }
 
-        void set(LoggerSettings&& newSettings) noexcept
+        void set(const LoggerSettings& newSettings) noexcept
         {
-            settings = std::move(newSettings);
+            settings = newSettings;
         }
 
         [[nodiscard]] inline const unsigned int& getID() const noexcept
@@ -120,7 +117,7 @@ namespace libs::logging {
 
         ~Logger() noexcept override = default;
 
-        virtual void log(SeverityLevel::Level level, const std::string& msg, std::experimental::source_location source) = 0;
+        virtual void log(SeverityLevel::Level level, const std::string& msg, SourceLocation source) = 0;
 
         inline LoggerSettings& elicitSettings() noexcept
         {
@@ -134,4 +131,4 @@ namespace libs::logging {
 
 }
 
-#endif //LIBS_LOGGING_LOGGER_HPP
+#endif //LIBS_LOGGER_HPP

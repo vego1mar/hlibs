@@ -1,5 +1,5 @@
-#ifndef LIBS_IO_FILE_FILE_INFO_HPP
-#define LIBS_IO_FILE_FILE_INFO_HPP
+#ifndef LIBS_FILE_INFO_HPP
+#define LIBS_FILE_INFO_HPP
 
 #include <fstream>
 #include <sys/stat.h>
@@ -22,4 +22,4 @@ namespace libs::io::file {
 
 }
 
-#endif //LIBS_IO_FILE_FILE_INFO_HPP
+#endif //LIBS_FILE_INFO_HPP

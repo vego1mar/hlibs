@@ -46,3 +46,6 @@ int main()
 // * CheckRange: type=[Letters, Digits, Alphanumerics, Special, ControlChars, ASCII]
 // * CheckOrder: type=[Lexicographical, ASCII-betical, Alphabetical_Unicode, Subsequent]
 
+// TODO: doc/README
+// * expected usage for functions from all namespaces
+// * ANSISequencer whole possibilities in action, beside ConsoleLogger

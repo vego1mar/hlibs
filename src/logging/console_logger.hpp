@@ -1,5 +1,5 @@
-#ifndef LIBS_LOGGING_CONSOLE_LOGGER_HPP
-#define LIBS_LOGGING_CONSOLE_LOGGER_HPP
+#ifndef LIBS_CONSOLE_LOGGER_HPP
+#define LIBS_CONSOLE_LOGGER_HPP
 
 #include <iostream>
 
@@ -13,7 +13,6 @@ namespace libs::logging {
       public:
         ConsoleLogger() : StdOutLogger(true, 1)
         {
-            elicitSettings().skip_print_to_stdout = true;
         }
 
         ConsoleLogger(const ConsoleLogger&) = delete;
@@ -55,4 +54,4 @@ namespace libs::logging {
 
 }
 
-#endif //LIBS_LOGGING_CONSOLE_LOGGER_HPP
+#endif //LIBS_CONSOLE_LOGGER_HPP
