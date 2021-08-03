@@ -92,28 +92,19 @@ namespace libs::logging {
 
         void printToConsole() const
         {
-            using libs::types::RGBColor;
-            using libs::types::ColorName;
-            using libs::standard::ansi::ANSISequencer;
-            using CP = libs::standard::ansi::SGRSequencer::ColorType;
-
-            const auto resetColors = ANSISequencer::ResetColors();
-            const auto crimson = con_ansi_sequencer.setColor(RGBColor(ColorName::Crimson), CP::Foreground);
-            const auto purple = con_ansi_sequencer.setColor(RGBColor(128, 0, 128), CP::Foreground);
-
             for (const auto&[level, message] : con_messages) {
                 switch (level) {
                     case SeverityLevel::Level::Debug:
                         printDebugMessage(message);
                         break;
                     case SeverityLevel::Level::Fatal:
-                        std::cout << crimson << message << resetColors;
+                        printFatalMessage(message);
                         break;
                     case SeverityLevel::Level::Warning:
-                        std::cout << purple << message << resetColors;
+                        printWarningMessage(message);
                         break;
                     case SeverityLevel::Level::Info:
-                        std::cout << message << resetColors;
+                        printInfoMessage(message);
                         break;
                 }
             }
@@ -123,8 +114,8 @@ namespace libs::logging {
         {
             using libs::facilities::string::Contains;
             using libs::types::RGBColor;
-            using libs::types::ColorName;
             using libs::standard::ansi::ANSISequencer;
+            using CN = libs::types::ColorName;
             using CP = libs::standard::ansi::SGRSequencer::ColorType;
             using Format = libs::standard::ansi::ANSISequencer::DisplayFormat;
 
@@ -133,14 +124,50 @@ namespace libs::logging {
             bool isExceptionMsg = isDebugMsg && mayLogException;
 
             if (isExceptionMsg) {
-                const auto greenFG = con_ansi_sequencer.setColor(RGBColor(0, 200, 0), CP::Foreground);
-                std::cout << greenFG << message << ANSISequencer::ResetColors();
+                const auto tealBG = con_ansi_sequencer.setColor(RGBColor(CN::Teal), CP::Background);
+                const auto whiteFG = con_ansi_sequencer.setColor(RGBColor(255, 255, 255), CP::Foreground);
+                const auto reset = ANSISequencer::ResetColors();
+                std::cout << tealBG << whiteFG << message << reset;
                 return;
             }
 
             const auto invert = ANSISequencer::SetDisplay(Format::Invert);
             const auto revert = ANSISequencer::SetDisplay(Format::NotInverted);
             std::cout << invert << message << revert;
+        }
+
+        void printFatalMessage(const std::string& message) const
+        {
+            using libs::types::RGBColor;
+            using libs::standard::ansi::ANSISequencer;
+            using CP = libs::standard::ansi::SGRSequencer::ColorType;
+            using Format = libs::standard::ansi::ANSISequencer::DisplayFormat;
+
+            const auto resetColors = ANSISequencer::ResetColors();
+            const auto bold = ANSISequencer::SetDisplay(Format::Bold);
+            const auto notBold = ANSISequencer::SetDisplay(Format::NormalIntensity);
+            const auto whiteFG = con_ansi_sequencer.setColor(RGBColor(255, 255, 255), CP::Foreground);
+            const auto redBG = con_ansi_sequencer.setColor(RGBColor(255, 0, 0), CP::Background);
+            std::cout << redBG << whiteFG << bold << message << notBold << resetColors;
+        }
+
+        void printWarningMessage(const std::string& message) const
+        {
+            using libs::types::RGBColor;
+            using libs::standard::ansi::ANSISequencer;
+            using CP = libs::standard::ansi::SGRSequencer::ColorType;
+
+            const auto resetColors = ANSISequencer::ResetColors();
+            const auto redFG = con_ansi_sequencer.setColor(RGBColor(255, 0, 0), CP::Foreground);
+            std::cout << redFG << message << resetColors;
+        }
+
+        void printInfoMessage(const std::string& message) const
+        {
+            using libs::standard::ansi::ANSISequencer;
+
+            const auto resetColors = ANSISequencer::ResetColors();
+            std::cout << message << resetColors;
         }
     };
 

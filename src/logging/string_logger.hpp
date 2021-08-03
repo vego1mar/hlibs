@@ -60,7 +60,8 @@ namespace libs::logging {
 
             // ${Header}std::exception | $Message | $What$NewLine
             const auto header = GetMessageHeader(SeverityLevel::Level::Debug, source);
-            const std::string message = "std::exception | " + msg + " | " + e.what();
+            const auto typeID = std::string(typeid(e).name());
+            const std::string message = "std::exception->" + typeID + " | what: " + e.what() + " | " + msg;
             str_buffer << header << message << '\n';
             ++str_messages_buffered;
             onBufferedMessage();

@@ -56,19 +56,20 @@ TEST_CASE("StringLogger", "[libs][logging]")
 
         StringLogger logger{target};
         logger.set(settings);
-        const std::string exceptionMsg("Deliberately thrown runtime_exception!");
+        const std::string exMsg("Deliberately thrown runtime_exception!");
         const std::string msgToLog("std::runtime_error");
 
         try {
-            throw std::runtime_error(exceptionMsg);
+            throw std::runtime_error(exMsg);
         }
         catch (std::runtime_error& e) {
             logger.exception(msgToLog, e);
         }
 
-        std::string expectedMsg(" [DEBUG] string_logger_test.cpp(");
+        const std::string expectedMsg(" [DEBUG] string_logger_test.cpp(");
+        const std::string exType = typeid(std::runtime_error).name();
         const std::string expectedEnding =
-                ") @\"____C_A_T_C_H____T_E_S_T____0\": std::exception | " + msgToLog + " | " + exceptionMsg + '\n';
+                ") @\"____C_A_T_C_H____T_E_S_T____0\": std::exception->" + exType + " | what: " + exMsg + " | " + msgToLog + '\n';
         REQUIRE_THAT(*target, Catch::Contains(expectedMsg));
         REQUIRE_THAT(*target, Catch::EndsWith(expectedEnding));
     }
