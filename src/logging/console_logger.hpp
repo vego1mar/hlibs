@@ -2,6 +2,10 @@
 #define LIBS_CONSOLE_LOGGER_HPP
 
 #include <iostream>
+#include <vector>
+#include <string>
+#include <unordered_map>
+#include <cinttypes>
 
 #include "stdout_logger.hpp"
 #include "../standard/ansi.hpp"
@@ -16,6 +20,7 @@ namespace libs::logging {
         {
             elicitSettings().messages_before_flush = 1;
             elicitSettings().use_stdout = true;
+            buildCache();
         }
 
         ConsoleLogger(const ConsoleLogger&) = delete;
@@ -62,8 +67,21 @@ namespace libs::logging {
         }
 
       private:
+        enum class Cache : uint8_t {
+            ResetColors,
+            RedFG,
+            WhiteFG,
+            RedBG,
+            Bold,
+            NotBold,
+            TealBG,
+            Invert,
+            Revert,
+            LevelDebug,
+        };
+
         std::vector<std::pair<SeverityLevel::Level, std::string>> con_messages{};
-        libs::standard::ansi::ANSISequencer con_ansi_sequencer{};
+        std::unordered_map<Cache, std::string> con_cache;
         std::size_t con_last_message_pos = 0;
 
 
@@ -113,62 +131,64 @@ namespace libs::logging {
         void printDebugMessage(const std::string& message) const
         {
             using libs::facilities::string::Contains;
-            using libs::types::RGBColor;
-            using libs::standard::ansi::ANSISequencer;
-            using CN = libs::types::ColorName;
-            using CP = libs::standard::ansi::SGRSequencer::ColorType;
-            using Format = libs::standard::ansi::ANSISequencer::DisplayFormat;
 
-            bool isDebugMsg = Contains(message, GetLevelStr(SeverityLevel::Level::Debug));
+            bool isDebugMsg = Contains(message, getCache(Cache::LevelDebug));
             bool mayLogException = Contains(message, "std::exception");
             bool isExceptionMsg = isDebugMsg && mayLogException;
 
             if (isExceptionMsg) {
-                const auto tealBG = con_ansi_sequencer.setColor(RGBColor(CN::Teal), CP::Background);
-                const auto whiteFG = con_ansi_sequencer.setColor(RGBColor(255, 255, 255), CP::Foreground);
-                const auto reset = ANSISequencer::ResetColors();
-                std::cout << tealBG << whiteFG << message << reset;
+                std::cout << getCache(Cache::TealBG) << getCache(Cache::WhiteFG) << message << getCache(Cache::ResetColors);
                 return;
             }
 
-            const auto invert = ANSISequencer::SetDisplay(Format::Invert);
-            const auto revert = ANSISequencer::SetDisplay(Format::NotInverted);
-            std::cout << invert << message << revert;
+            std::cout << getCache(Cache::Invert) << message << getCache(Cache::Revert);
         }
 
         void printFatalMessage(const std::string& message) const
         {
-            using libs::types::RGBColor;
-            using libs::standard::ansi::ANSISequencer;
-            using CP = libs::standard::ansi::SGRSequencer::ColorType;
-            using Format = libs::standard::ansi::ANSISequencer::DisplayFormat;
-
-            const auto resetColors = ANSISequencer::ResetColors();
-            const auto bold = ANSISequencer::SetDisplay(Format::Bold);
-            const auto notBold = ANSISequencer::SetDisplay(Format::NormalIntensity);
-            const auto whiteFG = con_ansi_sequencer.setColor(RGBColor(255, 255, 255), CP::Foreground);
-            const auto redBG = con_ansi_sequencer.setColor(RGBColor(255, 0, 0), CP::Background);
-            std::cout << redBG << whiteFG << bold << message << notBold << resetColors;
+            std::cout << getCache(Cache::RedBG) << getCache(Cache::WhiteFG) << getCache(Cache::Bold)
+                      << message << getCache(Cache::NotBold) << getCache(Cache::ResetColors);
         }
 
         void printWarningMessage(const std::string& message) const
         {
-            using libs::types::RGBColor;
-            using libs::standard::ansi::ANSISequencer;
-            using CP = libs::standard::ansi::SGRSequencer::ColorType;
-
-            const auto resetColors = ANSISequencer::ResetColors();
-            const auto redFG = con_ansi_sequencer.setColor(RGBColor(255, 0, 0), CP::Foreground);
-            std::cout << redFG << message << resetColors;
+            std::cout << getCache(Cache::RedFG) << message << getCache(Cache::ResetColors);
         }
 
         void printInfoMessage(const std::string& message) const
         {
-            using libs::standard::ansi::ANSISequencer;
-
-            const auto resetColors = ANSISequencer::ResetColors();
-            std::cout << message << resetColors;
+            std::cout << message << getCache(Cache::ResetColors);
         }
+
+        void buildCache()
+        {
+            using RGB = libs::types::RGBColor;
+            using CN = libs::types::ColorName;
+            using Seq = libs::standard::ansi::ANSISequencer;
+            using CP = libs::standard::ansi::SGRSequencer::ColorType;
+            using Fmt = libs::standard::ansi::ANSISequencer::DisplayFormat;
+
+            Seq seq{};
+
+            con_cache = {
+                    {Cache::ResetColors, Seq::ResetColors()},
+                    {Cache::RedFG,       seq.setColor(RGB(255, 0, 0), CP::Foreground)},
+                    {Cache::WhiteFG,     seq.setColor(RGB(255, 255, 255), CP::Foreground)},
+                    {Cache::RedBG,       seq.setColor(RGB(255, 0, 0), CP::Background)},
+                    {Cache::Bold,        Seq::SetDisplay(Fmt::Bold)},
+                    {Cache::NotBold,     Seq::SetDisplay(Fmt::NormalIntensity)},
+                    {Cache::TealBG,      seq.setColor(RGB(CN::Teal), CP::Background)},
+                    {Cache::Invert,      Seq::SetDisplay(Fmt::Invert)},
+                    {Cache::Revert,      Seq::SetDisplay(Fmt::NotInverted)},
+                    {Cache::LevelDebug,  GetLevelStr(SeverityLevel::Level::Debug)},
+            };
+        }
+
+        const std::string& getCache(Cache what) const
+        {
+            return con_cache.at(what);
+        }
+
     };
 
 }
