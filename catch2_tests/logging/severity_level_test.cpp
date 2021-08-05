@@ -1,4 +1,6 @@
-#include "../../externs/catch.hpp"
+#include <catch2/catch_test_macros.hpp>
+#include <catch2/matchers/catch_matchers_string.hpp>
+
 #include "../../src/logging/logger.hpp"
 
 
@@ -11,10 +13,10 @@ TEST_CASE("SeverityLevel", "[libs][logging]")
         const std::string expectedStr = "Info";
         const auto level = SeverityLevel::Level::Info;
         const auto levelStr = SeverityLevel::ToString(level);
-        CHECK_THAT(levelStr, Catch::Equals(expectedStr));
+        CHECK_THAT(levelStr, Catch::Matchers::Equals(expectedStr));
     }
 
-    SECTION("enum(Level) -> set_str(_1, _2, ...)", "[functional_requirements]") {
+    SECTION("enum(Level) -> iteration & toString OK", "[functional_requirements]") {
         using Level = SeverityLevel::Level;
 
         const std::unordered_map<Level, std::string> expectedStr{
@@ -46,7 +48,7 @@ TEST_CASE("SeverityLevel", "[libs][logging]")
             const auto& level = item.first;
             const auto& levelStr = item.second;
             const auto str = SeverityLevel::ToString(level);
-            REQUIRE_THAT(str, Catch::Equals(levelStr));
+            REQUIRE_THAT(str, Catch::Matchers::Equals(levelStr));
         }
     }
 

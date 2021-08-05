@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.20)
 project(LIBS)
 
+
 set(CMAKE_CXX_STANDARD 20)
 
 add_executable(
@@ -10,11 +11,12 @@ add_executable(
         src/facilities/strings.hpp
         src/facilities/timestamp.hpp
 
+        src/io/file/file_info.hpp
+        src/io/file/stream_to_file.hpp
         src/io/file_reader/file_reader_base.hpp
         src/io/file_reader/file_reader_buffered.hpp
         src/io/file_reader/file_reader.hpp
-        src/io/file/file_info.hpp
-        src/io/file/stream_to_file.hpp
+        src/io/file_writer/file_writer.hpp
 
         src/logging/logger.hpp
         src/logging/string_logger.hpp
@@ -30,4 +32,3 @@ add_executable(
 
 enable_testing()
 add_subdirectory(catch2_tests)
-

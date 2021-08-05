@@ -1,6 +1,7 @@
+#include <catch2/catch_test_macros.hpp>
+#include <catch2/matchers/catch_matchers_string.hpp>
 #include <string>
 
-#include "../../externs/catch.hpp"
 #include "../../src/logging/logger.hpp"
 #include "../../src/logging/string_logger.hpp"
 
@@ -27,9 +28,9 @@ TEST_CASE("StringLogger", "[libs][logging]")
         std::string expectedMsg("[INFO] string_logger_test.cpp(");
         std::string expectedMiddle(" @\"____C_A_T_C_H____T_E_S_T____0\": message1\n");
         std::string expectedEnding(" @\"____C_A_T_C_H____T_E_S_T____0\": 2message\n");
-        REQUIRE_THAT(*target, Catch::Contains(expectedMsg));
-        REQUIRE_THAT(*target, Catch::Contains(expectedMiddle));
-        REQUIRE_THAT(*target, Catch::EndsWith(expectedEnding));
+        REQUIRE_THAT(*target, Catch::Matchers::Contains(expectedMsg));
+        REQUIRE_THAT(*target, Catch::Matchers::Contains(expectedMiddle));
+        REQUIRE_THAT(*target, Catch::Matchers::EndsWith(expectedEnding));
     }
 
     SECTION("info(), StringLogger=disabled → flush=empty", "[functional_requirements]") {
@@ -44,7 +45,7 @@ TEST_CASE("StringLogger", "[libs][logging]")
         logger.set(settings);
         logger.info("message that should not be buffered");
 
-        REQUIRE_THAT(*target, Catch::Equals(""));
+        REQUIRE_THAT(*target, Catch::Matchers::Equals(""));
     }
 
     SECTION("exception() → flush=OK", "[functional_requirements]") {
@@ -70,8 +71,8 @@ TEST_CASE("StringLogger", "[libs][logging]")
         const std::string exType = typeid(std::runtime_error).name();
         const std::string expectedEnding =
                 ") @\"____C_A_T_C_H____T_E_S_T____0\": std::exception->" + exType + " | what: " + exMsg + " | " + msgToLog + '\n';
-        REQUIRE_THAT(*target, Catch::Contains(expectedMsg));
-        REQUIRE_THAT(*target, Catch::EndsWith(expectedEnding));
+        REQUIRE_THAT(*target, Catch::Matchers::Contains(expectedMsg));
+        REQUIRE_THAT(*target, Catch::Matchers::EndsWith(expectedEnding));
     }
 
     SECTION("~StringLogger() → buffer flushed", "[functional_requirements]") {
@@ -85,13 +86,13 @@ TEST_CASE("StringLogger", "[libs][logging]")
             settings.messages_before_flush = 2;
             logger.set(settings);
             logger.debug("dtor_check");
-            REQUIRE_THAT(*exTarget, Catch::Equals(""));
+            REQUIRE_THAT(*exTarget, Catch::Matchers::Equals(""));
         };
 
         logOneMessage(target);
         CHECK(target.use_count() == 1L);
         const std::string expectedEnding("dtor_check\n~StringLogger(1)\n");
-        REQUIRE_THAT(*target, Catch::EndsWith(expectedEnding));
+        REQUIRE_THAT(*target, Catch::Matchers::EndsWith(expectedEnding));
     }
 
     SECTION("disabled → OK", "functional_requirements") {
@@ -122,9 +123,9 @@ TEST_CASE("StringLogger", "[libs][logging]")
         const std::string msg = "Unbuffered messages retrieved!";
         logger.debug(msg);
         const auto unbufferedMsg = getUnbufferedMessages(logger);
-        REQUIRE_THAT(unbufferedMsg, Catch::Contains("[DEBUG] string_logger_test.cpp("));
-        REQUIRE_THAT(unbufferedMsg, Catch::Contains(") @\"____C_A_T_C_H____T_E_S_T____0\": "));
-        REQUIRE_THAT(unbufferedMsg, Catch::Contains(msg));
+        REQUIRE_THAT(unbufferedMsg, Catch::Matchers::Contains("[DEBUG] string_logger_test.cpp("));
+        REQUIRE_THAT(unbufferedMsg, Catch::Matchers::Contains(") @\"____C_A_T_C_H____T_E_S_T____0\": "));
+        REQUIRE_THAT(unbufferedMsg, Catch::Matchers::Contains(msg));
     }
 
 }

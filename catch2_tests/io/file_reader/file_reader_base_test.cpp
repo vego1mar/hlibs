@@ -1,9 +1,11 @@
+#include <catch2/catch_test_macros.hpp>
 #include <iostream>
 #include <iomanip>
 #include <vector>
 #include <string>
+#include <functional>
+#include <numeric>
 
-#include "../../../externs/catch.hpp"
 #include "../../../src/io/file_reader/file_reader_base.hpp"
 #include "../../../src/io/file_reader//file_reader.hpp"
 #include "../../../src/io/file_reader/file_reader_buffered.hpp"
@@ -13,7 +15,6 @@ SCENARIO("Comparing FileReader's speed", "[libs][io][file_readers][!mayfail]")
 {
     using libs::io::file_reader::FileReader;
     using libs::io::file_reader::FileReaderBuffered;
-
 
     struct Tasks {
         using Runner = std::function<const std::string(const std::string&)>;

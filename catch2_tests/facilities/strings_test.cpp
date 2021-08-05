@@ -1,6 +1,7 @@
+#include <catch2/catch_test_macros.hpp>
+#include <catch2/matchers/catch_matchers_string.hpp>
 #include <string>
 
-#include "../../externs/catch.hpp"
 #include "../../src/facilities/strings.hpp"
 
 
@@ -8,26 +9,24 @@ TEST_CASE("ToUpperCase", "[libs][facilities][string]")
 {
     using libs::facilities::string::ToUpperCase;
 
-
     SECTION("ToUpperCase(str::string) -> str(STR)", "[functional_requirements]") {
         const std::string input("camelCase");
         const std::string expectedStr("CAMELCASE");
         const auto result = ToUpperCase(input);
-        REQUIRE_THAT(result, Catch::Equals(expectedStr));
+        REQUIRE_THAT(result, Catch::Matchers::Equals(expectedStr));
     }
 
     SECTION("ToUpperCase(const char*) -> str(STR)", "[functional_requirements]") {
         const char* input = "camelCase with spaces and numbers 0123";
         const std::string expectedStr("CAMELCASE WITH SPACES AND NUMBERS 0123");
         const auto result = ToUpperCase(input);
-        REQUIRE_THAT(result, Catch::Equals(expectedStr));
+        REQUIRE_THAT(result, Catch::Matchers::Equals(expectedStr));
     }
 }
 
 TEST_CASE("Contains", "[libs][facilities][string]")
 {
     using libs::facilities::string::Contains;
-
 
     SECTION("Contains(char) -> true", "[functional_requirements]") {
         std::string source("xXVvOfFvjW9zHyNAVzQL\n");
@@ -55,7 +54,6 @@ TEST_CASE("CheckRange", "[libs][facilities][string]")
 {
     using libs::facilities::string::CheckRange;
     using libs::types::Range;
-
 
     SECTION("CheckRange(97,122) -> OK", "[functional_requirements]") {
         Range<char> range1('a', 'z');

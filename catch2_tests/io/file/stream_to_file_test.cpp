@@ -1,6 +1,6 @@
+#include <catch2/catch_test_macros.hpp>
 #include <iostream>
 
-#include "../../../externs/catch.hpp"
 #include "../../../src/io/file/stream_to_file.hpp"
 #include "../../../src/io/file/file_info.hpp"
 
@@ -9,7 +9,6 @@ TEST_CASE("StreamToFile", "[libs][io][file]")
 {
     using libs::io::file::StreamToFile;
     using libs::io::file::GetFileSize;
-
 
     SECTION("StreamToFile(path) -> read(path) OK", "[functional_requirements]") {
         const std::string stdoutFile("../../outputs/test_StreamToFile__stdout.txt");

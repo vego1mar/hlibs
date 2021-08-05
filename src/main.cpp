@@ -38,21 +38,4 @@ int main()
     return EXIT_SUCCESS;
 }
 
-// TODO: logging plan
-// * query terminal for ANSI/TrueColor support  # https://gist.github.com/XVilka/8346728
 
-// TODO: types plan
-// * non-contiguous Range
-// * RGBColor - provide named colors
-// * RGBColor - from/to hex, CMY, CMYK, 256 color set
-// * RGColor - complementary colors # https://www.sessions.edu/color-calculator/
-// * RGBColor - contrast colors # https://coolors.co/contrast-checker/008080-acc8e5
-
-// TODO: string plan
-// * Split(), Contains(); check LM project for more ideas
-// * CheckRange: type=[Letters, Digits, Alphanumerics, Special, ControlChars, ASCII]
-// * CheckOrder: type=[Lexicographical, ASCII-betical, Alphabetical_Unicode, Subsequent]
-
-// TODO: doc/README
-// * expected usage for functions from all namespaces
-// * ANSISequencer whole possibilities in action, beside ConsoleLogger

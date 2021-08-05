@@ -1,6 +1,6 @@
+#include <catch2/catch_test_macros.hpp>
 #include <cctype>
 
-#include "../../externs/catch.hpp"
 #include "../../src/facilities/timestamp.hpp"
 
 

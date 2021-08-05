@@ -1,7 +1,8 @@
+#include <catch2/catch_test_macros.hpp>
+#include <catch2/matchers/catch_matchers_string.hpp>
 #include <memory>
 #include <cinttypes>
 
-#include "../../externs/catch.hpp"
 #include "../../src/types/types.hpp"
 
 
@@ -119,7 +120,7 @@ TEST_CASE("Range", "[libs][types]")
         CHECK(isTheSameType);
         REQUIRE(length == 7);
         CHECK(isLengthUnsigned);
-        REQUIRE_THAT(str, Catch::Equals("(-2,5)"));
+        REQUIRE_THAT(str, Catch::Matchers::Equals("(-2,5)"));
     }
 
     SECTION("[-2,0,2] -> Range(-2,0).isIn()", "[functional_requirements]") {

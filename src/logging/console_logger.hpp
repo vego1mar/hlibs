@@ -80,11 +80,6 @@ namespace libs::logging {
             LevelDebug,
         };
 
-        std::vector<std::pair<SeverityLevel::Level, std::string>> con_messages{};
-        std::unordered_map<Cache, std::string> con_cache;
-        std::size_t con_last_message_pos = 0;
-
-
         void classifyMessageByLevel(const std::string& message)
         {
             using libs::facilities::string::Contains;
@@ -189,6 +184,9 @@ namespace libs::logging {
             return con_cache.at(what);
         }
 
+        std::vector<std::pair<SeverityLevel::Level, std::string>> con_messages{};
+        std::unordered_map<Cache, std::string> con_cache;
+        std::size_t con_last_message_pos = 0;
     };
 
 }

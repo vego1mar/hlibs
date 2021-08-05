@@ -1,4 +1,6 @@
-#include "../../externs/catch.hpp"
+#include <catch2/catch_test_macros.hpp>
+#include <catch2/matchers/catch_matchers_string.hpp>
+
 #include "../../src/types/interfaces.hpp"
 
 
@@ -36,7 +38,7 @@ TEST_CASE("IStringify", "[libs][interfaces]")
         Implementer0 obj{1};
         Implementer0 copy(obj);
         CHECK(copy.get() == obj.get());
-        REQUIRE_THAT(copy.toString(), Catch::Equals(obj.toString()));
+        REQUIRE_THAT(copy.toString(), Catch::Matchers::Equals(obj.toString()));
     }
 
     SECTION("copy assignment operator (impl0) -> OK", "[expected_usage]") {
@@ -44,14 +46,14 @@ TEST_CASE("IStringify", "[libs][interfaces]")
         Implementer0 copy{0};
         copy = obj;
         CHECK(copy.get() == obj.get());
-        REQUIRE_THAT(copy.toString(), Catch::Equals(obj.toString()));
+        REQUIRE_THAT(copy.toString(), Catch::Matchers::Equals(obj.toString()));
     }
 
     SECTION("move constructor (impl0) -> OK", "[expected_usage]") {
         Implementer0 obj{3};
         const auto objMsg = obj.toString();
         Implementer0 move(std::move(obj));
-        CHECK_THAT(objMsg, Catch::Equals(move.toString()));
+        CHECK_THAT(objMsg, Catch::Matchers::Equals(move.toString()));
     }
 
     SECTION("move assignment operator (impl0) -> OK", "[expected_usage]") {
@@ -59,7 +61,7 @@ TEST_CASE("IStringify", "[libs][interfaces]")
         const auto objMsg = obj.toString();
         Implementer0 move{41};
         move = std::move(obj);
-        CHECK_THAT(move.toString(), Catch::Equals(objMsg));
+        CHECK_THAT(move.toString(), Catch::Matchers::Equals(objMsg));
     }
 
 
@@ -118,9 +120,9 @@ TEST_CASE("IStringify", "[libs][interfaces]")
         Implementer1 copy(obj);
         CHECK(obj.messages.size() == 1);
         CHECK(copy.messages.size() == 2);
-        CHECK_THAT(obj.toString(), !Catch::Equals(copy.toString()));
-        REQUIRE_THAT(Implementer1::ToString(obj.messages), Catch::Equals("DefaultConstructor,"));
-        REQUIRE_THAT(Implementer1::ToString(copy.messages), Catch::Equals("DefaultConstructor,CopyConstructor,"));
+        CHECK_THAT(obj.toString(), !Catch::Matchers::Equals(copy.toString()));
+        REQUIRE_THAT(Implementer1::ToString(obj.messages), Catch::Matchers::Equals("DefaultConstructor,"));
+        REQUIRE_THAT(Implementer1::ToString(copy.messages), Catch::Matchers::Equals("DefaultConstructor,CopyConstructor,"));
     }
 
     SECTION("copy assignment operator (impl1) -> OK", "[ascertain_behaviour]") {
@@ -129,9 +131,9 @@ TEST_CASE("IStringify", "[libs][interfaces]")
         obj2 = obj1;
         CHECK(obj1.messages.size() == 1);
         CHECK(obj2.messages.size() == 2);
-        CHECK_THAT(obj1.toString(), !Catch::Equals(obj2.toString()));
-        REQUIRE_THAT(Implementer1::ToString(obj1.messages), Catch::Equals("DefaultConstructor,"));
-        REQUIRE_THAT(Implementer1::ToString(obj2.messages), Catch::Equals("DefaultConstructor,CopyAssignmentOperator,"));
+        CHECK_THAT(obj1.toString(), !Catch::Matchers::Equals(obj2.toString()));
+        REQUIRE_THAT(Implementer1::ToString(obj1.messages), Catch::Matchers::Equals("DefaultConstructor,"));
+        REQUIRE_THAT(Implementer1::ToString(obj2.messages), Catch::Matchers::Equals("DefaultConstructor,CopyAssignmentOperator,"));
     }
 
     SECTION("move constructor (impl1) -> OK", "[ascertain_behaviour]") {
@@ -142,9 +144,9 @@ TEST_CASE("IStringify", "[libs][interfaces]")
         Implementer1 obj(std::move(moved));
         CHECK(movedMessagesSize == 1);
         CHECK(obj.messages.size() == 2);
-        CHECK_THAT(movedStr, !Catch::Equals(obj.toString()));
-        REQUIRE_THAT(movedMessages, Catch::Equals("DefaultConstructor,"));
-        REQUIRE_THAT(Implementer1::ToString(obj.messages), Catch::Equals("DefaultConstructor,MoveConstructor,"));
+        CHECK_THAT(movedStr, !Catch::Matchers::Equals(obj.toString()));
+        REQUIRE_THAT(movedMessages, Catch::Matchers::Equals("DefaultConstructor,"));
+        REQUIRE_THAT(Implementer1::ToString(obj.messages), Catch::Matchers::Equals("DefaultConstructor,MoveConstructor,"));
     }
 
     SECTION("move assignment operator (impl1) -> OK", "[ascertain_behaviour]") {
@@ -156,9 +158,9 @@ TEST_CASE("IStringify", "[libs][interfaces]")
         obj = std::move(moved);
         CHECK(movedMsgSize == 1);
         CHECK(obj.messages.size() == 2);
-        CHECK_THAT(movedStr, !Catch::Equals(obj.toString()));
-        REQUIRE_THAT(movedMsg, Catch::Equals("DefaultConstructor,"));
-        REQUIRE_THAT(Implementer1::ToString(obj.messages), Catch::Equals("DefaultConstructor,MoveAssignmentOperator,"));
+        CHECK_THAT(movedStr, !Catch::Matchers::Equals(obj.toString()));
+        REQUIRE_THAT(movedMsg, Catch::Matchers::Equals("DefaultConstructor,"));
+        REQUIRE_THAT(Implementer1::ToString(obj.messages), Catch::Matchers::Equals("DefaultConstructor,MoveAssignmentOperator,"));
     }
 
 }

@@ -1,4 +1,5 @@
-#include "../../externs/catch.hpp"
+#include <catch2/catch_test_macros.hpp>
+
 #include "../../src/logging/stdout_logger.hpp"
 #include "../../src/io/file/stream_to_file.hpp"
 #include "../../src/io/file/file_info.hpp"

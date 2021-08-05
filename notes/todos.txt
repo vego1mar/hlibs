@@ -1,0 +1,95 @@
+/* TODO: logging plan
+ * ConsoleLogger - query terminal for ANSI/TrueColor support  # https://gist.github.com/XVilka/8346728
+ * FileLogger ← SplitterWriter
+ * FileLogger → thread-safeness: maybe a <flag>? ↑tests
+ * DatabaseLogger (MySQL)
+ * AsynchronousLogger → applying thread-safeness
+ */
+
+/* TODO: io plan
+ * FileWriter, FileWriterBuffered (uint buffered_msg_before_flush, bool act_on_thread)
+ * BinaryReader, BinaryWriter
+ * CSVReader, CSVWriter
+ * SplitterWriter → manage file names scheme e.g. log_LIBS_1.txt
+ * SplitterWriter → manage log split into files e.g. {$prefix}${app_name}{$suffix}_{$file_no}.{$ext}
+ * SplitterReader → read multiple files and be able to build a single one, SWriter::from(arg SReader)
+ * PDFReader, PDFWriter - embedding fonts
+ */
+
+/* TODO: types plan
+ * non-contiguous Range
+ * RGBColor → provide named colors
+ * RGBColor → from/to hex, CMY, CMYK, 256 color set
+ * RGBColor → complementary colors # https://www.sessions.edu/color-calculator/
+ * RGBColor → contrast colors # https://coolors.co/contrast-checker/008080-acc8e5
+ * templated type wrapper
+ * list of bools type (std::array with new/delete semantic or a linked_list)
+ * block-free queue → low block queue | BlockingQueue
+ * Binder<int>(const int& a, b, func(a,b,ret)): onChange() → if raise(a) then lambda(a,b)
+ * Binder → type_wrapper_event<const &>(a, b, f) | get(), onChange(func) → f(a, b)
+ * Enumerator that is Stringable and Iterable
+ * Money, Currency, Decimal
+ * Number with being aware of overflows and underflows
+ * array with both positive and negative indexing (arr[+x] → value f(x); arr[-x] → value g(x) )
+ * array with non-contiguous indexing
+ */
+
+/* TODO: string plan
+ * Split(), Contains(); check LM project for more ideas
+ * CheckRange: type=[Letters, Digits, Alphanumerics, Special, ControlChars, ASCII]
+ * CheckOrder: type=[Lexicographical, ASCII-betical, Alphabetical_Unicode, Subsequent]
+ */
+
+/* TODO: doc/README
+ * expected usage for functions from all namespaces → README with UMLs
+ * ANSISequencer whole possibilities in action, beside ConsoleLogger
+ */
+
+/* TODO: math plan
+ * ::concepts → hailstone numbers
+ * ::stat for scatterplot data builder, histogram ↑chart data producer
+ * ::means → usual (arithmetic, median), geometric, etc. from PI/LM
+ * ::algebra → Matrix from SMPD
+ * ::combinatorial → combinations, etc.
+ * ::series → Lucas and Fibonacci series
+ * ::general → factorial
+ * ::linguistic → automatons (DFA, NFA, Turing machine)
+ * ::optimization → Newton-Raphson, Lagrange, bisection, golden section, etc., from /MMO
+ * ::numerics → from /MN; Lagrange interpolation
+ * ::numerics → from /MO; Hooke-Jeeves, Cauchy's stepeest descent, polynomial roots
+ * ::numerics → from /MO; simulated annealing; 'Numerical Optimization', 'Numerical Recipes'
+ * ::distributions → from /MiSK; Box-Muller algorithm
+ * ::stat → from /PI, 'The Elements of Statistical Learning'
+ * from /ZMO → cellular automata, Fourier transforms, regressions
+ */
+ 
+/* TODO: facilities plan
+ * extend DateTime by timestamps, e.g. ISO format
+ * hashing.hpp → SHA checks, CRC, hashID, base64, Whirlpool, etc.; hash_table
+ * exceptions.hpp → ExceptionHandler, Lippincott functions
+ * strings.hpp → ideas from LM and other programming languages
+ * cmd_line_args.hpp → watch on Catch2 authors solution
+ * algorithms.hpp → ::search, line_search, binary_search; ::sort, bubble_sort, heap_sort
+ * ::graphs → MST Prim, Graham SJF
+ */
+ 
+/* TODO: standard plan
+ * .iso reader
+ * portable solution for UTF-8 encode/decode
+ * .ppm (graphics)
+ * ::compression::losless → Huffman, arithmetic, PPM, LZMA, etc.
+ * ::compression::lossy → JPG?, Vorbis OGG
+ * .obj (Wavefront), 3D objects
+ */
+ 
+ /* TODO: greater projects
+  * QR codes generation
+  * AppImage/.deb packaging
+  * incorporation of older ideas from LM/MN
+  * ::types::BigInteger
+  * neural networks (starting from perceptrons) → from /PSI
+  * ::graphics → from /PGK, /MMwGK
+  * ::os → IPC, processes algorithms
+  */
+  
+  

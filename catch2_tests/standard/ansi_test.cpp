@@ -1,7 +1,8 @@
+#include <catch2/catch_test_macros.hpp>
+#include <catch2/matchers/catch_matchers_string.hpp>
 #include <vector>
 #include <string>
 
-#include "../../externs/catch.hpp"
 #include "../../src/standard/ansi.hpp"
 
 
@@ -25,67 +26,67 @@ TEST_CASE("CSISequencer", "[libs][standard][ansi]")
     SECTION("getCUU() -> \\033[3A", "[functional_requirements]") {
         CSISequencer sequencer{};
         const auto cursorUp = sequencer.getCUU(3);
-        REQUIRE_THAT(cursorUp, Catch::Equals("\033[3A"));
+        REQUIRE_THAT(cursorUp, Catch::Matchers::Equals("\033[3A"));
     }
 
     SECTION("getCUD() -> \\033[5B", "[functional_requirements]") {
         CSISequencer sequencer{};
         const auto cursorDown = sequencer.getCUD(5);
-        REQUIRE_THAT(cursorDown, Catch::Equals("\033[5B"));
+        REQUIRE_THAT(cursorDown, Catch::Matchers::Equals("\033[5B"));
     }
 
     SECTION("getCUF() -> \\x1B[2C", "[functional_requirements]") {
         CSISequencer sequencer{};
         const auto cursorForward = sequencer.getCUF(2);
-        REQUIRE_THAT(cursorForward, Catch::Equals("\x1B[2C"));
+        REQUIRE_THAT(cursorForward, Catch::Matchers::Equals("\x1B[2C"));
     }
 
     SECTION("getCUB() -> \\x1B[7D", "[functional_requirements]") {
         CSISequencer sequencer{};
         const auto cursorBack = sequencer.getCUB(7);
-        REQUIRE_THAT(cursorBack, Catch::Equals("\x1B[7D"));
+        REQUIRE_THAT(cursorBack, Catch::Matchers::Equals("\x1B[7D"));
     }
 
     SECTION("getCNL() -> \\033[5E", "[functional_requirements]") {
         CSISequencer sequencer;
         const auto cursorNextLine = sequencer.getCNL(5);
-        REQUIRE_THAT(cursorNextLine, Catch::Equals("\033[5E"));
+        REQUIRE_THAT(cursorNextLine, Catch::Matchers::Equals("\033[5E"));
     }
 
     SECTION("getCPL() -> \\033[55F", "[functional_requirements]") {
         CSISequencer sequencer;
         const auto cursorNextLine = sequencer.getCPL(55);
-        REQUIRE_THAT(cursorNextLine, Catch::Equals("\033[55F"));
+        REQUIRE_THAT(cursorNextLine, Catch::Matchers::Equals("\033[55F"));
     }
 
     SECTION("getCHA() -> \\033[8G", "[functional_requirements]") {
         CSISequencer sequencer;
         const auto cursorNextLine = sequencer.getCHA(8);
-        REQUIRE_THAT(cursorNextLine, Catch::Equals("\033[8G"));
+        REQUIRE_THAT(cursorNextLine, Catch::Matchers::Equals("\033[8G"));
     }
 
     SECTION("getCUP() -> \\033[11;23H", "[functional_requirements]") {
         CSISequencer sequencer;
         const auto cursorPosition = sequencer.getCUP(11, 23);
-        REQUIRE_THAT(cursorPosition, Catch::Equals("\033[11;23H"));
+        REQUIRE_THAT(cursorPosition, Catch::Matchers::Equals("\033[11;23H"));
     }
 
     SECTION("getHVP() -> \\033[13;32f", "[functional_requirements]") {
         CSISequencer sequencer;
         const auto cursorPosition = sequencer.getHVP(13, 32);
-        REQUIRE_THAT(cursorPosition, Catch::Equals("\033[13;32f"));
+        REQUIRE_THAT(cursorPosition, Catch::Matchers::Equals("\033[13;32f"));
     }
 
     SECTION("getSU() -> \\033[33S", "[functional_requirements]") {
         CSISequencer sequencer;
         const auto scrollUp = sequencer.getSU(33);
-        REQUIRE_THAT(scrollUp, Catch::Equals("\033[33S"));
+        REQUIRE_THAT(scrollUp, Catch::Matchers::Equals("\033[33S"));
     }
 
     SECTION("getSD() -> \\033[44T", "[functional_requirements]") {
         CSISequencer sequencer;
         const auto scrollDown = sequencer.getSD(44);
-        REQUIRE_THAT(scrollDown, Catch::Equals("\033[44T"));
+        REQUIRE_THAT(scrollDown, Catch::Matchers::Equals("\033[44T"));
     }
 
     SECTION("IsValid() -> OK", "[functional_requirements]") {

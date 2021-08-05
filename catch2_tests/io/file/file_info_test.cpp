@@ -1,11 +1,11 @@
-#include "../../../externs/catch.hpp"
+#include <catch2/catch_test_macros.hpp>
+
 #include "../../../src/io/file/file_info.hpp"
 
 
 TEST_CASE("GetFileSize()", "[libs][io][file]")
 {
     using libs::io::file::GetFileSize;
-
 
     SECTION("f(literal) -> 1213 B", "[functional_requirements]") {
         constexpr long LICENSE_MD_SIZE = 1213;
