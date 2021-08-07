@@ -5,6 +5,7 @@
 #include <vector>
 #include <cinttypes>
 #include <utility>
+#include <string_view>
 
 #include "string_logger.hpp"
 #include "../facilities/strings.hpp"
@@ -64,9 +65,9 @@ namespace libs::logging {
             messages.emplace_back(GetClassifiedMessage(lastMessage));
         }
 
-        static PositionedMessage GetNextMessage(const std::string& bufferStr, const std::size_t& lastMsgPos)
+        static PositionedMessage GetNextMessage(std::string_view bufferStr, const std::size_t& lastMsgPos)
         {
-            const auto lastMessage = bufferStr.substr(lastMsgPos);
+            const auto lastMessage = std::string(bufferStr.substr(lastMsgPos));
             const auto nextMsgPos = lastMsgPos + lastMessage.size();
             return std::make_pair<>(nextMsgPos, lastMessage);
         }

@@ -12,6 +12,13 @@
 namespace libs::types {
 
     template<typename T>
+    concept Character = std::is_same_v<T, char> || std::is_same_v<T, signed char> || std::is_same_v<T, unsigned char>;
+
+    template<typename T>
+    concept Numeric = std::is_integral_v<T> || std::is_floating_point_v<T>;
+
+
+    template<typename T>
     struct ObjectCounter {
       public:
         static unsigned int created;
@@ -50,8 +57,6 @@ namespace libs::types {
     template<typename T> unsigned int ObjectCounter<T>::alive(0);
     template<typename T> unsigned int ObjectCounter<T>::created(0);
 
-
-    template<typename T> concept Numeric = std::is_integral_v<T> || std::is_floating_point_v<T>;
 
     template<typename T> requires Numeric<T>
     struct Range {

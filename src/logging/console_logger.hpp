@@ -129,9 +129,8 @@ namespace libs::logging {
 
             bool isDebugMsg = Contains(message, getCache(Cache::LevelDebug));
             bool mayLogException = Contains(message, "std::exception");
-            bool isExceptionMsg = isDebugMsg && mayLogException;
 
-            if (isExceptionMsg) {
+            if (bool isExceptionMsg = isDebugMsg && mayLogException; isExceptionMsg) {
                 std::cout << getCache(Cache::TealBG) << getCache(Cache::WhiteFG) << message << getCache(Cache::ResetColors);
                 return;
             }

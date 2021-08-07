@@ -12,5 +12,9 @@ BW_OUTPUT="bw_outputs"
 SONAR_BUILD="sonar-build.sh"
 
 
-$BUILD_WRAPPER --out-dir $BW_OUTPUT ./$SONAR_BUILD
+if ! $BUILD_WRAPPER --out-dir $BW_OUTPUT ./$SONAR_BUILD; then
+    echo "BUILD FAILED, SCANNER SKIPPED"
+    exit 1
+fi
+
 $SONAR_SCANNER

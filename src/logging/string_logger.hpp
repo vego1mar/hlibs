@@ -18,9 +18,8 @@ namespace libs::logging {
         {
         }
 
-        explicit StringLogger(std::shared_ptr<std::string>& externalTarget)
+        explicit StringLogger(std::shared_ptr<std::string>& externalTarget) : str_target(externalTarget)
         {
-            str_target = externalTarget;
         }
 
         StringLogger(const StringLogger& rhs) = delete;

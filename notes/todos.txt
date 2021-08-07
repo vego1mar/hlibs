@@ -7,9 +7,10 @@
  */
 
 /* TODO: io plan
- * FileWriter, FileWriterBuffered (uint buffered_msg_before_flush, bool act_on_thread)
+ * FileWriter - set/get locale (imbue, widen, …)
+ * FileWriterBuffered (uint buffered_msg_before_flush, bool act_on_thread)
  * BinaryReader, BinaryWriter
- * CSVReader, CSVWriter
+ * CSVReader, CSVWriter - skip header
  * SplitterWriter → manage file names scheme e.g. log_LIBS_1.txt
  * SplitterWriter → manage log split into files e.g. {$prefix}${app_name}{$suffix}_{$file_no}.{$ext}
  * SplitterReader → read multiple files and be able to build a single one, SWriter::from(arg SReader)
@@ -23,7 +24,7 @@
  * RGBColor → complementary colors # https://www.sessions.edu/color-calculator/
  * RGBColor → contrast colors # https://coolors.co/contrast-checker/008080-acc8e5
  * templated type wrapper
- * list of bools type (std::array with new/delete semantic or a linked_list)
+ * list of bools type (std::array with new/delete semantic or a linked_list) - struct Boolean
  * block-free queue → low block queue | BlockingQueue
  * Binder<int>(const int& a, b, func(a,b,ret)): onChange() → if raise(a) then lambda(a,b)
  * Binder → type_wrapper_event<const &>(a, b, f) | get(), onChange(func) → f(a, b)

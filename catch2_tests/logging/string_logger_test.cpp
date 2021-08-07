@@ -26,8 +26,8 @@ TEST_CASE("StringLogger", "[libs][logging]")
         logger.info("2message");
 
         std::string expectedMsg("[INFO] string_logger_test.cpp(");
-        std::string expectedMiddle(" @\"____C_A_T_C_H____T_E_S_T____0\": message1\n");
-        std::string expectedEnding(" @\"____C_A_T_C_H____T_E_S_T____0\": 2message\n");
+        std::string expectedMiddle(" @\"CATCH2_INTERNAL_TEST_0\": message1\n");
+        std::string expectedEnding(" @\"CATCH2_INTERNAL_TEST_0\": 2message\n");
         REQUIRE_THAT(*target, Catch::Matchers::Contains(expectedMsg));
         REQUIRE_THAT(*target, Catch::Matchers::Contains(expectedMiddle));
         REQUIRE_THAT(*target, Catch::Matchers::EndsWith(expectedEnding));
@@ -70,7 +70,7 @@ TEST_CASE("StringLogger", "[libs][logging]")
         const std::string expectedMsg(" [DEBUG] string_logger_test.cpp(");
         const std::string exType = typeid(std::runtime_error).name();
         const std::string expectedEnding =
-                ") @\"____C_A_T_C_H____T_E_S_T____0\": std::exception->" + exType + " | what: " + exMsg + " | " + msgToLog + '\n';
+                ") @\"CATCH2_INTERNAL_TEST_0\": std::exception->" + exType + " | what: " + exMsg + " | " + msgToLog + '\n';
         REQUIRE_THAT(*target, Catch::Matchers::Contains(expectedMsg));
         REQUIRE_THAT(*target, Catch::Matchers::EndsWith(expectedEnding));
     }
@@ -124,7 +124,7 @@ TEST_CASE("StringLogger", "[libs][logging]")
         logger.debug(msg);
         const auto unbufferedMsg = getUnbufferedMessages(logger);
         REQUIRE_THAT(unbufferedMsg, Catch::Matchers::Contains("[DEBUG] string_logger_test.cpp("));
-        REQUIRE_THAT(unbufferedMsg, Catch::Matchers::Contains(") @\"____C_A_T_C_H____T_E_S_T____0\": "));
+        REQUIRE_THAT(unbufferedMsg, Catch::Matchers::Contains(") @\"CATCH2_INTERNAL_TEST_0\": "));
         REQUIRE_THAT(unbufferedMsg, Catch::Matchers::Contains(msg));
     }
 

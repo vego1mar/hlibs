@@ -1,5 +1,4 @@
 #include <iostream>
-#include <exception>
 
 #include "logging/console_logger.hpp"
 
@@ -22,9 +21,9 @@ namespace hello_world {
         logger.fatal("Hello Fatal!");
 
         try {
-            throw std::runtime_error("Deliberately thrown!");
+            throw std::domain_error("Deliberately thrown!");
         }
-        catch (std::exception& e) {
+        catch (const std::domain_error& e) {
             logger.exception("Hello exception!", e);
         }
     }
