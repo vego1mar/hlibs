@@ -1,7 +1,9 @@
 /* TODO: logging plan
  * ConsoleLogger - query terminal for ANSI/TrueColor support  # https://gist.github.com/XVilka/8346728
+ * FileLogger → move construction: if (this == &rhs) return *this; std::exchange
  * FileLogger ← SplitterWriter
- * FileLogger → thread-safeness: maybe a <flag>? ↑tests
+ * FileLogger → thread-safeness: no!; this should be synchronous - add a comment!
+ * logging → handling exceptions with Lippincott functions, inserter operator<<?
  * DatabaseLogger (MySQL)
  * AsynchronousLogger → applying thread-safeness
  */
@@ -33,6 +35,8 @@
  * Number with being aware of overflows and underflows
  * array with both positive and negative indexing (arr[+x] → value f(x); arr[-x] → value g(x) )
  * array with non-contiguous indexing
+ * Broker as equivalent to Java/Apache ActiveMQ
+ * pipes and FIFOs from C as Adapter in C++ (PipeAdapter, PipeWrapper?)
  */
 
 /* TODO: string plan
