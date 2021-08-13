@@ -9,9 +9,9 @@
 #include "../../types/interfaces.hpp"
 
 
-namespace libs::io::file_reader {
+namespace hlibs::io::file_reader {
 
-  class FileReaderBase : public libs::types::interfaces::IStringify {
+  class FileReaderBase : public hlibs::types::interfaces::IStringify {
       public:
         FileReaderBase() = delete;
 
@@ -36,7 +36,7 @@ namespace libs::io::file_reader {
 
         bool isReadClean() const
         {
-            return static_cast<std::size_t>(libs::io::file::GetFileSize(path)) == content.size();
+            return static_cast<std::size_t>(hlibs::io::file::GetFileSize(path)) == content.size();
         }
 
         inline bool isOpened() const

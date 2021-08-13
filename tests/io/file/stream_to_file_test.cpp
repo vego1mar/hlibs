@@ -7,8 +7,8 @@
 
 TEST_CASE("StreamToFile", "[libs][io][file]")
 {
-    using libs::io::file::StreamToFile;
-    using libs::io::file::GetFileSize;
+    using hlibs::io::file::StreamToFile;
+    using hlibs::io::file::GetFileSize;
 
     SECTION("StreamToFile(path) -> read(path) OK", "[functional_requirements]") {
         const std::string stdoutFile("../../outputs/test_StreamToFile__stdout.txt");

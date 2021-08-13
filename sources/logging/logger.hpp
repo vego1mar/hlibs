@@ -12,7 +12,7 @@
 #include "../types/types.hpp"
 
 
-namespace libs::logging {
+namespace hlibs::logging {
 
     struct SeverityLevel {
       public:
@@ -69,7 +69,7 @@ namespace libs::logging {
     };
 
 
-    class Logger : private libs::types::ObjectCounter<Logger> {
+    class Logger : private hlibs::types::ObjectCounter<Logger> {
       public:
         using SourceLocation = std::experimental::source_location;
 
@@ -115,7 +115,7 @@ namespace libs::logging {
       protected:
         Logger()
         {
-            id = libs::types::ObjectCounter<Logger>::created;
+            id = hlibs::types::ObjectCounter<Logger>::created;
         }
 
         ~Logger() noexcept override = default;

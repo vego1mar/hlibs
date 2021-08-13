@@ -8,8 +8,8 @@
 
 TEST_CASE("FileWriter", "[libs][io][file_writer]")
 {
-    using libs::io::file_writer::FileWriter;
-    using libs::io::file::GetFileSize;
+    using hlibs::io::file_writer::FileWriter;
+    using hlibs::io::file::GetFileSize;
 
     struct Paths {
         static std::string GetNext()

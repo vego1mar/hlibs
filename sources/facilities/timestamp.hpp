@@ -6,7 +6,7 @@
 #include <array>
 
 
-namespace libs::facilities::timestamp {
+namespace hlibs::facilities::timestamp {
 
     static std::string GetDateAndTime()
     {

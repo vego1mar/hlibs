@@ -5,7 +5,7 @@
 #include "../file/file_info.hpp"
 
 
-namespace libs::io::file_reader {
+namespace hlibs::io::file_reader {
 
     class FileReaderBuffered : public FileReaderBase {
       public:
@@ -21,7 +21,7 @@ namespace libs::io::file_reader {
 
         bool hasNextLine()
         {
-            return !libs::io::file::IsEOF(elicitStream());
+            return !hlibs::io::file::IsEOF(elicitStream());
         }
 
         std::string toString() const noexcept override

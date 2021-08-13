@@ -5,7 +5,7 @@
 #include <sys/stat.h>
 
 
-namespace libs::io::file {
+namespace hlibs::io::file {
 
     static bool IsEOF(std::ifstream& file)
     {

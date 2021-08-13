@@ -6,8 +6,8 @@
 
 TEST_CASE("GetDateTime()", "[libs][facilities][timestamp]")
 {
-    using libs::facilities::timestamp::GetDate;
-    using libs::facilities::timestamp::GetTime;
+    using hlibs::facilities::timestamp::GetDate;
+    using hlibs::facilities::timestamp::GetTime;
 
 
     SECTION("GetDateTime() -> date=YYYY-MM-DD, time=HH:MM:SS", "[functional_requirements]") {

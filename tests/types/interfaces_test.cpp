@@ -6,7 +6,7 @@
 
 TEST_CASE("IStringify", "[libs][interfaces]")
 {
-    using libs::types::interfaces::IStringify;
+    using hlibs::types::interfaces::IStringify;
 
 
     class Implementer0 : public IStringify {

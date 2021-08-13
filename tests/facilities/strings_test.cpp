@@ -7,7 +7,7 @@
 
 TEST_CASE("ToUpperCase", "[libs][facilities][string]")
 {
-    using libs::facilities::string::ToUpperCase;
+    using hlibs::facilities::string::ToUpperCase;
 
     SECTION("ToUpperCase(str::string) -> str(STR)", "[functional_requirements]") {
         const std::string input("camelCase");
@@ -26,7 +26,7 @@ TEST_CASE("ToUpperCase", "[libs][facilities][string]")
 
 TEST_CASE("Contains", "[libs][facilities][string]")
 {
-    using libs::facilities::string::Contains;
+    using hlibs::facilities::string::Contains;
 
     SECTION("Contains(char) -> true", "[functional_requirements]") {
         std::string source("xXVvOfFvjW9zHyNAVzQL\n");
@@ -52,8 +52,8 @@ TEST_CASE("Contains", "[libs][facilities][string]")
 
 TEST_CASE("CheckRange", "[libs][facilities][string]")
 {
-    using libs::facilities::string::CheckRange;
-    using libs::types::Range;
+    using hlibs::facilities::string::CheckRange;
+    using hlibs::types::Range;
 
     SECTION("CheckRange(97,122) -> OK", "[functional_requirements]") {
         Range<char> range1('a', 'z');

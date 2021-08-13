@@ -10,7 +10,7 @@
 #include "../facilities/strings.hpp"
 
 
-namespace libs::logging {
+namespace hlibs::logging {
 
     class StringLogger : public Logger {
       public:
@@ -119,8 +119,8 @@ namespace libs::logging {
 
         static std::string GetMessageHeader(const SeverityLevel::Level& level, const SourceLocation& source)
         {
-            const auto timestamp = libs::facilities::timestamp::GetDateAndTime();
-            const auto levelStr = libs::facilities::string::ToUpperCase(SeverityLevel::ToString(level));
+            const auto timestamp = hlibs::facilities::timestamp::GetDateAndTime();
+            const auto levelStr = hlibs::facilities::string::ToUpperCase(SeverityLevel::ToString(level));
             const std::string path = source.file_name();
             const auto sourceFile = path.substr(path.find_last_of("/\\") + 1);
             const auto line = source.line();

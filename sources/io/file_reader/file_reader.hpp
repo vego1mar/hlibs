@@ -4,7 +4,7 @@
 #include "file_reader_base.hpp"
 
 
-namespace libs::io::file_reader {
+namespace hlibs::io::file_reader {
 
     class FileReader : public FileReaderBase {
       public:

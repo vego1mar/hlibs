@@ -1,7 +1,7 @@
 #ifndef LIBS_INTERFACES_HPP
 #define LIBS_INTERFACES_HPP
 
-namespace libs::types::interfaces {
+namespace hlibs::types::interfaces {
 
     struct IStringify {
       public:

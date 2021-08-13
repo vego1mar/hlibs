@@ -13,7 +13,7 @@
 #include "../facilities/strings.hpp"
 
 
-namespace libs::standard::ansi {
+namespace hlibs::standard::ansi {
 
     struct Enclose {
         enum CSIEndChar : char {
@@ -214,8 +214,8 @@ namespace libs::standard::ansi {
         /// Check if custom ANSI CSI escape sequence is well-formed.
         static bool IsValid(const std::string_view sequence)
         {
-            using libs::types::Range;
-            using libs::facilities::string::CheckRange;
+            using hlibs::types::Range;
+            using hlibs::facilities::string::CheckRange;
 
             if (sequence.empty()) {
                 return false;
@@ -392,7 +392,7 @@ namespace libs::standard::ansi {
 
         /// Sets 24-bit foreground or background color (true color).
         /// @details 2 — red-green-blue format - "ESC[g:2::r:g:bm"
-        [[nodiscard]] std::string getColor(libs::types::RGBColor color, ColorType type, bool useColons = true) const noexcept
+        [[nodiscard]] std::string getColor(hlibs::types::RGBColor color, ColorType type, bool useColons = true) const noexcept
         {
             const auto[colonsFG, semicolonsFG] = getGroundColor(color, true);
             const auto[colonsBG, semicolonsBG] = getGroundColor(color, false);
@@ -414,7 +414,7 @@ namespace libs::standard::ansi {
         const std::string BG = std::string("48", 2);
         const std::string CSI = std::string("\033[", 2);
 
-        [[nodiscard]] GroundColor getGroundColor(libs::types::RGBColor color, bool isFG = true) const noexcept
+        [[nodiscard]] GroundColor getGroundColor(hlibs::types::RGBColor color, bool isFG = true) const noexcept
         {
             const std::string r = std::to_string(color.red);
             const std::string g = std::to_string(color.green);
@@ -468,7 +468,7 @@ namespace libs::standard::ansi {
         using ForegroundColor = SGRNamedColor::Foreground;
         using BackgroundColor = SGRNamedColor::Background;
         using ColorPlan = SGRSequencer::ColorType;
-        using RGB = libs::types::RGBColor;
+        using RGB = hlibs::types::RGBColor;
 
         enum class CursorDirection : uint8_t {
             Up,

@@ -9,7 +9,7 @@
 #include "../types/types.hpp"
 
 
-namespace libs::facilities::string {
+namespace hlibs::facilities::string {
 
     static std::string ToUpperCase(const std::string_view source)
     {

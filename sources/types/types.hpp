@@ -9,7 +9,7 @@
 #include <array>
 
 
-namespace libs::types {
+namespace hlibs::types {
 
     template<typename T>
     concept Character = std::is_same_v<T, char> || std::is_same_v<T, signed char> || std::is_same_v<T, unsigned char>;

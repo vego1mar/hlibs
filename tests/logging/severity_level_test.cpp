@@ -6,7 +6,7 @@
 
 TEST_CASE("SeverityLevel", "[libs][logging]")
 {
-    using libs::logging::SeverityLevel;
+    using hlibs::logging::SeverityLevel;
 
 
     SECTION("Level::Info -> str(Info)", "[functional_requirements]") {

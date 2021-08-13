@@ -7,8 +7,8 @@ namespace hello_world {
 
     static void PrintColorfulHello()
     {
-        using libs::logging::ConsoleLogger;
-        using libs::logging::LoggerSettings;
+        using hlibs::logging::ConsoleLogger;
+        using hlibs::logging::LoggerSettings;
 
         LoggerSettings settings{};
         settings.messages_before_flush = 10;

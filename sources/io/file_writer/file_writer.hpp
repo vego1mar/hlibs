@@ -9,9 +9,9 @@
 #include "../../types/types.hpp"
 
 
-namespace libs::io::file_writer {
+namespace hlibs::io::file_writer {
 
-    class FileWriter : libs::types::interfaces::IStringify {
+    class FileWriter : hlibs::types::interfaces::IStringify {
       public:
         explicit FileWriter(const std::string& path) : out_path(path), out_file(path, std::ios::out | std::ios::trunc)
         {
@@ -60,7 +60,7 @@ namespace libs::io::file_writer {
         }
 
         template<typename T>
-        requires libs::types::Character<T>
+        requires hlibs::types::Character<T>
         void write(const T character)
         {
             out_file << character;

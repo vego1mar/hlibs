@@ -7,13 +7,13 @@
 
 TEST_CASE("StdOutLogger", "[libs][logging]")
 {
-    using libs::logging::Logger;
-    using libs::logging::StringLogger;
-    using libs::logging::StdOutLogger;
-    using libs::logging::LoggerSettings;
-    using libs::types::ObjectCounter;
-    using libs::io::file::StreamToFile;
-    using libs::io::file::GetFileSize;
+    using hlibs::logging::Logger;
+    using hlibs::logging::StringLogger;
+    using hlibs::logging::StdOutLogger;
+    using hlibs::logging::LoggerSettings;
+    using hlibs::types::ObjectCounter;
+    using hlibs::io::file::StreamToFile;
+    using hlibs::io::file::GetFileSize;
 
     struct Before {
         using LoggerCounter = ObjectCounter<Logger>;

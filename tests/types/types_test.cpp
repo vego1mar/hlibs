@@ -8,7 +8,7 @@
 
 TEST_CASE("ObjectCounter", "[libs][types]")
 {
-    using libs::types::ObjectCounter;
+    using hlibs::types::ObjectCounter;
 
     struct Implementer1 : ObjectCounter<Implementer1> {
     };
@@ -100,7 +100,7 @@ TEST_CASE("ObjectCounter", "[libs][types]")
 
 TEST_CASE("Range", "[libs][types]")
 {
-    using libs::types::Range;
+    using hlibs::types::Range;
 
 
     SECTION("Range(5,-2) -> Range(-2,5)", "[functional_requirements]") {
@@ -141,8 +141,8 @@ TEST_CASE("Range", "[libs][types]")
 
 TEST_CASE("RGBColor", "[libs][types]")
 {
-    using libs::types::RGBColor;
-    using libs::types::ColorName;
+    using hlibs::types::RGBColor;
+    using hlibs::types::ColorName;
 
 
     SECTION("ctor(name) -> values OK", "[functional_requirement]") {

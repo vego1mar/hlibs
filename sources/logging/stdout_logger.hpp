@@ -11,7 +11,7 @@
 #include "../facilities/strings.hpp"
 
 
-namespace libs::logging {
+namespace hlibs::logging {
 
     class StdOutLogger : public StringLogger {
       public:
@@ -74,8 +74,8 @@ namespace libs::logging {
 
         static ClassifiedMessage GetClassifiedMessage(const std::string& lastMessage)
         {
-            using libs::facilities::string::ToUpperCase;
-            using libs::facilities::string::Contains;
+            using hlibs::facilities::string::ToUpperCase;
+            using hlibs::facilities::string::Contains;
 
             const auto fatalLevel = ToUpperCase(SeverityLevel::ToString(SeverityLevel::Level::Fatal));
             bool isExceptionMsg = Contains(lastMessage, "std::exception |");

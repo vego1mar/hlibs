@@ -8,8 +8,8 @@
 
 TEST_CASE("StringLogger", "[libs][logging]")
 {
-    using libs::logging::LoggerSettings;
-    using libs::logging::StringLogger;
+    using hlibs::logging::LoggerSettings;
+    using hlibs::logging::StringLogger;
 
 
     SECTION("info() → flush=OK", "[functional_requirements]") {

@@ -11,7 +11,7 @@
 #include "../standard/ansi.hpp"
 
 
-namespace libs::logging {
+namespace hlibs::logging {
 
     /// Uses ANSI escape characters to print colourful output.
     class ConsoleLogger : public StdOutLogger {
@@ -82,7 +82,7 @@ namespace libs::logging {
 
         void classifyMessageByLevel(const std::string& message)
         {
-            using libs::facilities::string::Contains;
+            using hlibs::facilities::string::Contains;
             using SLevel = SeverityLevel::Level;
 
             const std::array<SLevel, 4> levels = {
@@ -99,7 +99,7 @@ namespace libs::logging {
 
         static std::string GetLevelStr(SeverityLevel::Level level)
         {
-            using libs::facilities::string::ToUpperCase;
+            using hlibs::facilities::string::ToUpperCase;
             return '[' + ToUpperCase(SeverityLevel::ToString(level)) + ']';
         };
 
@@ -125,7 +125,7 @@ namespace libs::logging {
 
         void printDebugMessage(const std::string& message) const
         {
-            using libs::facilities::string::Contains;
+            using hlibs::facilities::string::Contains;
 
             bool isDebugMsg = Contains(message, getCache(Cache::LevelDebug));
             bool mayLogException = Contains(message, "std::exception");
@@ -156,11 +156,11 @@ namespace libs::logging {
 
         void buildCache()
         {
-            using RGB = libs::types::RGBColor;
-            using CN = libs::types::ColorName;
-            using Seq = libs::standard::ansi::ANSISequencer;
-            using CP = libs::standard::ansi::SGRSequencer::ColorType;
-            using Fmt = libs::standard::ansi::ANSISequencer::DisplayFormat;
+            using RGB = hlibs::types::RGBColor;
+            using CN = hlibs::types::ColorName;
+            using Seq = hlibs::standard::ansi::ANSISequencer;
+            using CP = hlibs::standard::ansi::SGRSequencer::ColorType;
+            using Fmt = hlibs::standard::ansi::ANSISequencer::DisplayFormat;
 
             Seq seq{};
 

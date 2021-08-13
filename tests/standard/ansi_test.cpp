@@ -8,8 +8,8 @@
 
 TEST_CASE("CSISequencer", "[libs][standard][ansi]")
 {
-    using libs::standard::ansi::Enclose;
-    using libs::standard::ansi::CSISequencer;
+    using hlibs::standard::ansi::Enclose;
+    using hlibs::standard::ansi::CSISequencer;
 
 
     SECTION("CSIEndChar -> convertible to char", "[functional_requirements]") {

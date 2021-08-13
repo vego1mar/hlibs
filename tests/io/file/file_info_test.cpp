@@ -5,7 +5,7 @@
 
 TEST_CASE("GetFileSize()", "[libs][io][file]")
 {
-    using libs::io::file::GetFileSize;
+    using hlibs::io::file::GetFileSize;
 
     SECTION("f(literal) -> 1213 B", "[functional_requirements]") {
         constexpr long LICENSE_MD_SIZE = 1213;

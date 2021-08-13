@@ -7,7 +7,7 @@
 #include <any>
 
 
-namespace libs::io::file {
+namespace hlibs::io::file {
 
     class StreamToFile final : std::filebuf {
       public:
