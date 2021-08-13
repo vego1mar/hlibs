@@ -6,9 +6,9 @@
 #include <functional>
 #include <numeric>
 
-#include "../../../src/io/file_reader/file_reader_base.hpp"
-#include "../../../src/io/file_reader//file_reader.hpp"
-#include "../../../src/io/file_reader/file_reader_buffered.hpp"
+#include "../../../sources/io/file_reader/file_reader_base.hpp"
+#include "../../../sources/io/file_reader//file_reader.hpp"
+#include "../../../sources/io/file_reader/file_reader_buffered.hpp"
 
 
 SCENARIO("Comparing FileReader's speed", "[libs][io][file_readers][!mayfail]")

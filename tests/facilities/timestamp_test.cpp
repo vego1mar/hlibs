@@ -1,7 +1,7 @@
 #include <catch2/catch_test_macros.hpp>
 #include <cctype>
 
-#include "../../src/facilities/timestamp.hpp"
+#include "../../sources/facilities/timestamp.hpp"
 
 
 TEST_CASE("GetDateTime()", "[libs][facilities][timestamp]")

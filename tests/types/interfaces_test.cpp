@@ -1,7 +1,7 @@
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/matchers/catch_matchers_string.hpp>
 
-#include "../../src/types/interfaces.hpp"
+#include "../../sources/types/interfaces.hpp"
 
 
 TEST_CASE("IStringify", "[libs][interfaces]")

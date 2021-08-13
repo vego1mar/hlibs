@@ -1,7 +1,7 @@
 .idea/
 .scannerwork/
-cmake-build-debug/*
-bw_outputs/
+
+cmake-build-*/
 sonar_build/
 outputs/
 

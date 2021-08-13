@@ -3,7 +3,7 @@
 #include <vector>
 #include <string>
 
-#include "../../src/standard/ansi.hpp"
+#include "../../sources/standard/ansi.hpp"
 
 
 TEST_CASE("CSISequencer", "[libs][standard][ansi]")

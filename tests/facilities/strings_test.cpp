@@ -2,7 +2,7 @@
 #include <catch2/matchers/catch_matchers_string.hpp>
 #include <string>
 
-#include "../../src/facilities/strings.hpp"
+#include "../../sources/facilities/strings.hpp"
 
 
 TEST_CASE("ToUpperCase", "[libs][facilities][string]")

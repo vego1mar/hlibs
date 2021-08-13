@@ -1,7 +1,7 @@
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/matchers/catch_matchers_string.hpp>
 
-#include "../../src/logging/logger.hpp"
+#include "../../sources/logging/logger.hpp"
 
 
 TEST_CASE("SeverityLevel", "[libs][logging]")

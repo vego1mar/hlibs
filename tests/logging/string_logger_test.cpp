@@ -2,8 +2,8 @@
 #include <catch2/matchers/catch_matchers_string.hpp>
 #include <string>
 
-#include "../../src/logging/logger.hpp"
-#include "../../src/logging/string_logger.hpp"
+#include "../../sources/logging/logger.hpp"
+#include "../../sources/logging/string_logger.hpp"
 
 
 TEST_CASE("StringLogger", "[libs][logging]")

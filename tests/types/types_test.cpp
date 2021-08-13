@@ -3,7 +3,7 @@
 #include <memory>
 #include <cinttypes>
 
-#include "../../src/types/types.hpp"
+#include "../../sources/types/types.hpp"
 
 
 TEST_CASE("ObjectCounter", "[libs][types]")

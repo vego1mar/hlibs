@@ -2,8 +2,8 @@
 #include <catch2/matchers/catch_matchers_string.hpp>
 #include <iostream>
 
-#include "../../../src/io/file_writer/file_writer.hpp"
-#include "../../../src/io/file/file_info.hpp"
+#include "../../../sources/io/file_writer/file_writer.hpp"
+#include "../../../sources/io/file/file_info.hpp"
 
 
 TEST_CASE("FileWriter", "[libs][io][file_writer]")
