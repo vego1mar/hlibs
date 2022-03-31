@@ -1,5 +1,4 @@
 .idea/
-.scannerwork/
 
 cmake-build-*/
 sonar_build/

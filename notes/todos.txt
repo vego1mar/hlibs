@@ -39,7 +39,7 @@
  * pipes and FIFOs from C as Adapter in C++ (PipeAdapter, PipeWrapper?)
  */
 
-/* TODO: string plan
+/* TODO: strings plan
  * Split(), Contains(); check LM project for more ideas
  * CheckRange: type=[Letters, Digits, Alphanumerics, Special, ControlChars, ASCII]
  * CheckOrder: type=[Lexicographical, ASCII-betical, Alphabetical_Unicode, Subsequent]

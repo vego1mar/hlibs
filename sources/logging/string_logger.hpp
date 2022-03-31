@@ -120,7 +120,7 @@ namespace hlibs::logging {
         static std::string GetMessageHeader(const SeverityLevel::Level& level, const SourceLocation& source)
         {
             const auto timestamp = hlibs::facilities::timestamp::GetDateAndTime();
-            const auto levelStr = hlibs::facilities::string::ToUpperCase(SeverityLevel::ToString(level));
+            const auto levelStr = hlibs::facilities::strings::ToUpperCase(SeverityLevel::ToString(level));
             const std::string path = source.file_name();
             const auto sourceFile = path.substr(path.find_last_of("/\\") + 1);
             const auto line = source.line();

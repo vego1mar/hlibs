@@ -9,12 +9,12 @@
 #include "../types/types.hpp"
 
 
-namespace hlibs::facilities::string {
+namespace hlibs::facilities::strings {
 
     static std::string ToUpperCase(const std::string_view source)
     {
         std::string str{source};
-        std::ranges::transform(str.begin(), str.end(), str.begin(), ::toupper);
+        std::ranges::transform(str, str.begin(), ::toupper);
         return str;
     }
 

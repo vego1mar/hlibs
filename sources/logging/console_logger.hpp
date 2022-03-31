@@ -82,7 +82,7 @@ namespace hlibs::logging {
 
         void classifyMessageByLevel(const std::string& message)
         {
-            using hlibs::facilities::string::Contains;
+            using hlibs::facilities::strings::Contains;
             using SLevel = SeverityLevel::Level;
 
             const std::array<SLevel, 4> levels = {
@@ -99,7 +99,7 @@ namespace hlibs::logging {
 
         static std::string GetLevelStr(SeverityLevel::Level level)
         {
-            using hlibs::facilities::string::ToUpperCase;
+            using hlibs::facilities::strings::ToUpperCase;
             return '[' + ToUpperCase(SeverityLevel::ToString(level)) + ']';
         };
 
@@ -125,7 +125,7 @@ namespace hlibs::logging {
 
         void printDebugMessage(const std::string& message) const
         {
-            using hlibs::facilities::string::Contains;
+            using hlibs::facilities::strings::Contains;
 
             bool isDebugMsg = Contains(message, getCache(Cache::LevelDebug));
             bool mayLogException = Contains(message, "std::exception");

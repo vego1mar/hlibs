@@ -215,7 +215,7 @@ namespace hlibs::standard::ansi {
         static bool IsValid(const std::string_view sequence)
         {
             using hlibs::types::Range;
-            using hlibs::facilities::string::CheckRange;
+            using hlibs::facilities::strings::CheckRange;
 
             if (sequence.empty()) {
                 return false;

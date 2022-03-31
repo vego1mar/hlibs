@@ -74,8 +74,8 @@ namespace hlibs::logging {
 
         static ClassifiedMessage GetClassifiedMessage(const std::string& lastMessage)
         {
-            using hlibs::facilities::string::ToUpperCase;
-            using hlibs::facilities::string::Contains;
+            using hlibs::facilities::strings::ToUpperCase;
+            using hlibs::facilities::strings::Contains;
 
             const auto fatalLevel = ToUpperCase(SeverityLevel::ToString(SeverityLevel::Level::Fatal));
             bool isExceptionMsg = Contains(lastMessage, "std::exception |");

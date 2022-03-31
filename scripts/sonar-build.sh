@@ -3,7 +3,7 @@
 PROJECT_PATH=../
 SOURCES_DIR=../sources
 GCC=/usr/bin/gcc-10
-CPP_VER=-std=c++2a
+CPP_VER=-std=c++20
 GCC_FLAGS=" \
     -Wall -Wextra -Wfloat-equal -Wundef -Wshadow=global -Wpointer-arith -Wcast-align=strict -Wwrite-strings \
     -Wswitch-enum -Wconversion -Wunreachable-code -Wformat=2 -Wpedantic -Wno-unused-function -Wcast-qual \

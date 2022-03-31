@@ -5,11 +5,11 @@
 #include "../../sources/facilities/strings.hpp"
 
 
-TEST_CASE("ToUpperCase", "[libs][facilities][string]")
+TEST_CASE("ToUpperCase", "[libs][facilities][strings]")
 {
-    using hlibs::facilities::string::ToUpperCase;
+    using hlibs::facilities::strings::ToUpperCase;
 
-    SECTION("ToUpperCase(str::string) -> str(STR)", "[functional_requirements]") {
+    SECTION("ToUpperCase('lvalue_str') -> 'LVALUE_STR'", "[functional_requirements]") {
         const std::string input("camelCase");
         const std::string expectedStr("CAMELCASE");
         const auto result = ToUpperCase(input);
@@ -24,9 +24,9 @@ TEST_CASE("ToUpperCase", "[libs][facilities][string]")
     }
 }
 
-TEST_CASE("Contains", "[libs][facilities][string]")
+TEST_CASE("Contains", "[libs][facilities][strings]")
 {
-    using hlibs::facilities::string::Contains;
+    using hlibs::facilities::strings::Contains;
 
     SECTION("Contains(char) -> true", "[functional_requirements]") {
         std::string source("xXVvOfFvjW9zHyNAVzQL\n");
@@ -50,9 +50,9 @@ TEST_CASE("Contains", "[libs][facilities][string]")
 }
 
 
-TEST_CASE("CheckRange", "[libs][facilities][string]")
+TEST_CASE("CheckRange", "[libs][facilities][strings]")
 {
-    using hlibs::facilities::string::CheckRange;
+    using hlibs::facilities::strings::CheckRange;
     using hlibs::types::Range;
 
     SECTION("CheckRange(97,122) -> OK", "[functional_requirements]") {
