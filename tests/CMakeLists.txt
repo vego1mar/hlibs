@@ -1,6 +1,4 @@
 find_package(Catch2 3 REQUIRED)
-# set(CMAKE_CXX_FLAGS "--coverage")
-# set(CMAKE_CXX_FLAGS "-fprofile-arcs -ftest-coverage -fPIC -O0")
 
 add_executable(
         tests_target

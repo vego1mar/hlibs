@@ -1,22 +1,30 @@
 sonar.projectKey=hlibs:hlibs_all
 sonar.projectName=helper-libraries
-sonar.projectVersion=1.0
+sonar.projectVersion=1.1
 
 sonar.sources=sources
+sonar.tests=tests
+sonar.sourceEncoding=UTF-8
 
+sonar.language=c++
 sonar.cfamily.build-wrapper-output=sonar_build/bw_outputs
 sonar.cfamily.cpp20=true
 sonar.cfamily.threads=2
 sonar.cfamily.cache.enabled=true
 sonar.cfamily.cache.path=/home/${env.USER}/.sonar/cache
+sonar.cfamily.gcov.reportsPath=sonar_build/reports
 
-sonar.sourceEncoding=UTF-8
-sonar.language=cpp
+sonar.testExecutionReportPaths=sonar_build/reports/sonar-test-execution-report.xml
+sonar.coverageReportPaths=sonar_build/reports/sonar-coverage-report.xml
+sonar.cxx.coverage.reportPath=sonar_build/reports/sonar-coverage-report.xml
 
-sonar.testExecutionReportPaths=sonar_build/SonarQube_execution_report.xml
+sonar.scm.provider=git
+sonar.scm.exclusions.disabled=false
+sonar.working.directory=sonar_build/.scannerwork
+sonar.log.level=INFO
+sonar.ws.timeout=60
 
 
 sonar.host.url=http://localhost:9000/sonar
 sonar.organization=
 sonar.login=
-

@@ -1,3 +1,2 @@
-# LIBS
-A project with some simple headers.
-
+# hlibs
+A bunch of helper libraries.

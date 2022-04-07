@@ -3,9 +3,9 @@
 # https://docs.sonarqube.org/latest/analysis/scan/sonarscanner/
 # https://sonarcloud.io/static/cpp/build-wrapper-linux-x86.zip
 
-SQ_UTILS="/media/$USER/386407ee-f7b9-4feb-9332-f84151ba34f3/INSTALL/sonarqube"
-BUILD_WRAPPER="$SQ_UTILS/build-wrapper-linux-x86/build-wrapper-linux-x86-64"
-SONAR_SCANNER="$SQ_UTILS/sonar-scanner-4.6.2.2472-linux/bin/sonar-scanner"
+SQ_UTILS="/opt/kassandra"
+BUILD_WRAPPER="$SQ_UTILS/sonar-build-wrapper-linux-x86/build-wrapper-linux-x86-64"
+SONAR_SCANNER="$SQ_UTILS/sonar-scanner-4.7.0.2747-linux/bin/sonar-scanner"
 BUILD_WRAPPER_OUTPUT="sonar_build/bw_outputs"
 PROJECT_DIR=../
 
