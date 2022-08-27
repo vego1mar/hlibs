@@ -14,6 +14,7 @@ add_executable(
         logging/severity_level_test.cpp ${src}/logging/logger.hpp
         logging/string_logger_test.cpp ${src}/logging/string_logger.hpp
         logging/stdout_logger_test.cpp ${src}/logging/stdout_logger.hpp
+        logging/logger_test.cpp ${src}/logging/logger.hpp
 
         standard/ansi_test.cpp ${src}/standard/ansi.hpp
 
