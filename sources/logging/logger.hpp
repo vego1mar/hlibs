@@ -212,8 +212,7 @@ namespace hlibs::logging {
     };
 
 
-    class InMemoryLogger {
-      public:
+    struct InMemoryLogger {
         using Source = std::experimental::source_location;
 
         void info(std::string_view msg, Source sl = std::experimental::source_location::current())
@@ -241,7 +240,6 @@ namespace hlibs::logging {
             messages.emplace_back(msg, e, sl);
         }
 
-      private:
         std::vector<Message> messages;
     };
 
