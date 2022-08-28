@@ -11,6 +11,7 @@
 #include <string_view>
 #include <vector>
 #include <array>
+#include <iostream>
 
 #include "../types/types.hpp"
 #include "../facilities/strings.hpp"
@@ -218,29 +219,80 @@ namespace hlibs::logging {
         void info(std::string_view msg, Source sl = std::experimental::source_location::current())
         {
             messages.emplace_back(Level::Severity::Info, msg, sl);
+            ++current_msg;
         }
 
         void warning(std::string_view msg, Source sl = std::experimental::source_location::current())
         {
             messages.emplace_back(Level::Severity::Warning, msg, sl);
+            ++current_msg;
         }
 
         void fatal(std::string_view msg, Source sl = std::experimental::source_location::current())
         {
             messages.emplace_back(Level::Severity::Fatal, msg, sl);
+            ++current_msg;
         }
 
         void debug(std::string_view msg, Source sl = std::experimental::source_location::current())
         {
             messages.emplace_back(Level::Severity::Debug, msg, sl);
+            ++current_msg;
         }
 
         void exception(std::string_view msg, const std::exception& e, Source sl = std::experimental::source_location::current())
         {
             messages.emplace_back(msg, e, sl);
+            ++current_msg;
         }
 
         std::vector<Message> messages;
+        std::size_t current_msg = 0;
+    };
+
+
+    class StdoutLogger {
+      public:
+        using Source = std::experimental::source_location;
+
+        void info(std::string_view msg, Source sl = std::experimental::source_location::current())
+        {
+            sink.info(msg, sl);
+            insert();
+        }
+
+        void warning(std::string_view msg, Source sl = std::experimental::source_location::current())
+        {
+            sink.warning(msg, sl);
+            insert();
+        }
+
+        void fatal(std::string_view msg, Source sl = std::experimental::source_location::current())
+        {
+            sink.fatal(msg, sl);
+            insert(std::cerr);
+        }
+
+        void debug(std::string_view msg, Source sl = std::experimental::source_location::current())
+        {
+            sink.debug(msg, sl);
+            insert();
+        }
+
+        void exception(std::string_view msg, const std::exception& e, Source sl = std::experimental::source_location::current())
+        {
+            sink.exception(msg, e, sl);
+            insert(std::clog);
+        }
+
+      private:
+        void insert(std::ostream& stream = std::cout)
+        {
+            auto current = (sink.current_msg == 0) ? 0 : (sink.current_msg - 1);
+            stream << sink.messages.at(current).message;
+        }
+
+        InMemoryLogger sink;
     };
 
 }

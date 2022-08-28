@@ -3,12 +3,9 @@
 #include "../../sources/logging/logger.hpp"
 
 
-TEST_CASE("StringLogger", "[libs][logging][logger][InMemoryLogger]")
+TEST_CASE("InMemoryLogger", "[libs][logging][logger][InMemoryLogger]")
 {
-    using hlibs::logging::Level;
-    using hlibs::logging::Message;
     using hlibs::logging::InMemoryLogger;
-
 
     SECTION("is_standard_layout → true", "[type_traits]") {
         REQUIRE(std::is_standard_layout_v<InMemoryLogger>);
@@ -19,23 +16,69 @@ TEST_CASE("StringLogger", "[libs][logging][logger][InMemoryLogger]")
     }
 
     SECTION("log 1 message → pushed back on list", "[basic_check]") {
-        InMemoryLogger zl{};
-        zl.info("one");
-        REQUIRE(zl.messages.size() == 1);
+        InMemoryLogger logger{};
+        logger.info("one");
+        REQUIRE(logger.messages.size() == 1);
+        REQUIRE(logger.current_msg == 1);
     }
 
     SECTION("log many messages → pushed back on list", "[basic_check]") {
-        InMemoryLogger zl{};
+        InMemoryLogger logger{};
 
-        zl.info("one");
-        zl.warning("two");
-        zl.fatal("three");
-        zl.debug("four");
+        logger.info("one");
+        logger.warning("two");
+        logger.fatal("three");
+        logger.debug("four");
 
         auto e = std::domain_error("five");
-        zl.exception("six", e);
+        logger.exception("six", e);
 
-        REQUIRE(zl.messages.size() == 5);
+        REQUIRE(logger.messages.size() == 5);
+        REQUIRE(logger.current_msg == 5);
     }
+
+}
+
+TEST_CASE("StdoutLogger", "[libs][logging][logger][StdoutLogger]")
+{
+    using hlibs::logging::StdoutLogger;
+
+    SECTION("is_standard_layout → true", "[type_traits]") {
+        REQUIRE(std::is_standard_layout_v<StdoutLogger>);
+    }
+
+    SECTION("is_default_constructible → true", "[type_traits]") {
+        REQUIRE(std::is_default_constructible_v<StdoutLogger>);
+    }
+
+    SECTION("log 1 message to stdout → no exception", "[basic_check]") {
+        StdoutLogger logger;
+        REQUIRE_NOTHROW(logger.info("stdout"));
+    }
+
+    SECTION("log 1 message to stderr → no exception", "[basic_check]") {
+        StdoutLogger logger;
+        REQUIRE_NOTHROW(logger.fatal("stderr"));
+    }
+
+    SECTION("log 1 message to clog → no exception", "[basic_check]") {
+        StdoutLogger logger;
+        const std::domain_error e("domain_error");
+        REQUIRE_NOTHROW(logger.exception("clog", e));
+    }
+
+    SECTION("log many messages → no exception", "[basic_check]") {
+        StdoutLogger logger;
+        logger.info("stdout-2");
+        logger.fatal("stderr-2");
+        logger.debug("stdout-2");
+        const std::bad_exception e{};
+        logger.exception("clog-2", e);
+        logger.warning("stdout-2");
+        REQUIRE_NOTHROW(logger);
+    }
+
+    // TODO: test StreamToFile
+    // TODO: test by using StreamToFile
 
 }
