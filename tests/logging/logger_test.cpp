@@ -1,5 +1,4 @@
 #include <catch2/catch_test_macros.hpp>
-#include <catch2/matchers/catch_matchers_string.hpp>
 
 #include "../../sources/logging/logger.hpp"
 
@@ -22,7 +21,6 @@ TEST_CASE("StringLogger", "[libs][logging][logger][ZeroLogger]")
     SECTION("log 1 message → pushed back on list", "[basic_check]") {
         ZeroLogger zl{};
         zl.info("one");
-        REQUIRE_THAT(std::get<1>(zl.metadata()[0]), Catch::Matchers::Equals("1"));
     }
 
     SECTION("log many messages → pushed back on list", "[basic_check]") {
@@ -38,11 +36,6 @@ TEST_CASE("StringLogger", "[libs][logging][logger][ZeroLogger]")
         catch (const std::domain_error& e) {
             zl.exception("six", e);
         }
-
-        REQUIRE_THAT(std::get<1>(zl.metadata()[0]), Catch::Matchers::Equals("5"));
     }
-
-    // functional_requirements
-    // special_functions
 
 }

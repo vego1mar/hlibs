@@ -171,18 +171,18 @@ namespace hlibs::logging {
 
         std::string message;
 
+        /// ${Header}$Message$NewLine
         Message(Level::Severity level, std::string_view msg, const Source& location)
         {
-            // ${Header}$Message$NewLine
             auto head = Header(level, location);
             message.append(head);
             message.append(msg);
             message.append("\n");
         }
 
+        /// ${Header}std::exception->$Type | $What | $Message$NewLine
         Message(std::string_view msg, const std::exception& e, const Source& location)
         {
-            // ${Header}std::exception->$Type | $What | $Message$NewLine
             auto head = Header(Level::Severity::Exception, location);
             auto typeID = std::string(typeid(e).name());
             auto tail = "std::exception->" + typeID + " | what: " + e.what() + " | ";
@@ -239,13 +239,6 @@ namespace hlibs::logging {
         void exception(std::string_view msg, const std::exception& e, Source location = std::experimental::source_location::current())
         {
             messages.emplace_back(msg, e, location);
-        }
-
-        [[nodiscard]] auto metadata() const noexcept
-        {
-            return std::array<std::pair<std::string, std::string>, 1>{
-                    std::make_pair<>("messages.size", std::to_string(messages.size())),
-            };
         }
 
       private:
