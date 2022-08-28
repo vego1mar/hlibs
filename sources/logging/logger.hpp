@@ -212,33 +212,33 @@ namespace hlibs::logging {
     };
 
 
-    class ZeroLogger {
+    class InMemoryLogger {
       public:
         using Source = std::experimental::source_location;
 
-        void info(std::string_view msg, Source location = std::experimental::source_location::current())
+        void info(std::string_view msg, Source sl = std::experimental::source_location::current())
         {
-            messages.emplace_back(Level::Severity::Info, msg, location);
+            messages.emplace_back(Level::Severity::Info, msg, sl);
         }
 
-        void warning(std::string_view msg, Source location = std::experimental::source_location::current())
+        void warning(std::string_view msg, Source sl = std::experimental::source_location::current())
         {
-            messages.emplace_back(Level::Severity::Warning, msg, location);
+            messages.emplace_back(Level::Severity::Warning, msg, sl);
         }
 
-        void fatal(std::string_view msg, Source location = std::experimental::source_location::current())
+        void fatal(std::string_view msg, Source sl = std::experimental::source_location::current())
         {
-            messages.emplace_back(Level::Severity::Fatal, msg, location);
+            messages.emplace_back(Level::Severity::Fatal, msg, sl);
         }
 
-        void debug(std::string_view msg, Source location = std::experimental::source_location::current())
+        void debug(std::string_view msg, Source sl = std::experimental::source_location::current())
         {
-            messages.emplace_back(Level::Severity::Debug, msg, location);
+            messages.emplace_back(Level::Severity::Debug, msg, sl);
         }
 
-        void exception(std::string_view msg, const std::exception& e, Source location = std::experimental::source_location::current())
+        void exception(std::string_view msg, const std::exception& e, Source sl = std::experimental::source_location::current())
         {
-            messages.emplace_back(msg, e, location);
+            messages.emplace_back(msg, e, sl);
         }
 
       private:
