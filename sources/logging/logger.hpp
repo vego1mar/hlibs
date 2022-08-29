@@ -251,6 +251,7 @@ namespace hlibs::logging {
     };
 
 
+    /// Logs messages to std::cout, std::cerr, or std::clog.
     class StdoutLogger {
       public:
         using Source = std::experimental::source_location;

@@ -11,6 +11,7 @@
 
 namespace hlibs::io::file {
 
+    /// Redirects std::cout, std::cerr, or std::clog to a file.
     class StreamToFile final : private std::filebuf {
       public:
         StreamToFile(std::ostream& stream, const std::string& path) : ref_stream(stream), ptr_buffer(stream.rdbuf())
