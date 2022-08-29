@@ -102,3 +102,25 @@ TEST_CASE("StdoutLogger", "[libs][logging][logger][StdoutLogger]")
     }
 
 }
+
+TEST_CASE("TerminalLogger", "[libs][logging][logger][TerminalLogger]")
+{
+    using hlibs::logging::TerminalLogger;
+
+    SECTION("log warning message → no exception", "[basic_check]") {
+        TerminalLogger logger;
+        REQUIRE_NOTHROW(logger.warning("test warning"));
+    }
+
+    SECTION("log many different messages → no exception", "[basic_check]") {
+        TerminalLogger logger;
+        logger.info("info-msg");
+        logger.warning("warning-msg");
+        logger.fatal("fatal-msg");
+        logger.debug("debug-msg");
+
+        std::runtime_error e("dummy");
+        logger.exception("exception-msg", e);
+    }
+
+}

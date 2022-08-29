@@ -296,6 +296,62 @@ namespace hlibs::logging {
         InMemoryLogger sink;
     };
 
+
+    // TODO: single-line doc
+    class TerminalLogger {
+      public:
+        using Source = std::experimental::source_location;
+
+        /// $Message${ColorsReset}
+        void info(std::string_view msg, Source sl = std::experimental::source_location::current())
+        {
+            auto&& enriched = std::string(msg) + reset_colors;
+            sink.info(enriched, sl);
+        }
+
+        /// ${RedFg}$Message${ResetColors}
+        void warning(std::string_view msg, Source sl = std::experimental::source_location::current())
+        {
+            //auto csi = std::string("\033[", 2);
+            std::string redFg = "\033[38:2::255:0:0m";
+            auto&& enriched = redFg + std::string(msg) + reset_colors;
+            sink.warning(enriched, sl);
+        }
+
+        /// ${RedBg}${WhiteFg}$Bold$Message${NormalIntensity}${ResetColors}
+        void fatal(std::string_view msg, Source sl = std::experimental::source_location::current())
+        {
+            std::string redBg = "\033[48:2::255:0:0m";
+            std::string whiteFg = "\033[38:2::255:255:255m";
+            std::string bold = "\033[1m";
+            std::string notBold = "\033[22m";
+            auto&& enriched = redBg + whiteFg + bold + std::string(msg) + notBold + reset_colors;
+            sink.fatal(enriched, sl);
+        }
+
+        /// $Invert$Message$Revert
+        void debug(std::string_view msg, Source sl = std::experimental::source_location::current())
+        {
+            std::string invert = "\033[7m";
+            std::string revert = "\033[27m";
+            auto&& enriched = invert + std::string(msg) + revert;
+            sink.debug(enriched, sl);
+        }
+
+        /// ${TealBg}${WhiteFg}$Message${ResetColors}
+        void exception(std::string_view msg, const std::exception& e, Source sl = std::experimental::source_location::current())
+        {
+            std::string tealBg = "\033[48:2::0:128:128m";
+            std::string whiteFg = "\033[38:2::255:255:255m";
+            auto&& enriched = tealBg + whiteFg + std::string(msg) + reset_colors;
+            sink.exception(enriched, e, sl);
+        }
+
+      private:
+        StdoutLogger sink; // TODO: replace with in-memory logger
+        std::string reset_colors = "\033[39;49m";
+    };
+
 }
 
 #endif //LIBS_LOGGER_HPP
