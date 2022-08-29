@@ -1,20 +1,15 @@
 #include <iostream>
 
-#include "logging/console_logger.hpp"
+#include "logging/logger.hpp"
 
 
 namespace hello_world {
 
-    static void PrintColorfulHello()
+    [[maybe_unused]] static void PrintColorfulHello()
     {
-        using hlibs::logging::ConsoleLogger;
-        using hlibs::logging::LoggerSettings;
+        using hlibs::logging::TerminalLogger;
 
-        LoggerSettings settings{};
-        settings.messages_before_flush = 10;
-
-        ConsoleLogger logger{};
-        logger.set(settings);
+        TerminalLogger logger{};
         logger.debug("Hello Debug!");
         logger.info("Hello Info!");
         logger.warning("Hello Warning!");

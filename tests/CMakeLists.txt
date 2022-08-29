@@ -11,8 +11,6 @@ add_executable(
         io/file_reader/file_reader_base_test.cpp ${src}/io/file_reader/file_reader_base.hpp
         io/file_writer/file_writer_test.cpp ${src}/io/file_writer/file_writer.hpp
 
-        logging/severity_level_test.cpp ${src}/logging/logger.hpp
-        logging/stdout_logger_test.cpp ${src}/logging/stdout_logger.hpp
         logging/logger_test.cpp ${src}/logging/logger.hpp
 
         standard/ansi_test.cpp ${src}/standard/ansi.hpp

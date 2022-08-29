@@ -23,9 +23,6 @@ add_executable(
         ${src}/io/file_writer/file_writer.hpp
 
         ${src}/logging/logger.hpp
-        ${src}/logging/string_logger.hpp
-        ${src}/logging/stdout_logger.hpp
-        ${src}/logging/console_logger.hpp
 
         ${src}/standard/ansi.hpp
 
