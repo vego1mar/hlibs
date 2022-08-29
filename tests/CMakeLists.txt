@@ -12,7 +12,6 @@ add_executable(
         io/file_writer/file_writer_test.cpp ${src}/io/file_writer/file_writer.hpp
 
         logging/severity_level_test.cpp ${src}/logging/logger.hpp
-        logging/string_logger_test.cpp ${src}/logging/string_logger.hpp
         logging/stdout_logger_test.cpp ${src}/logging/stdout_logger.hpp
         logging/logger_test.cpp ${src}/logging/logger.hpp
 
