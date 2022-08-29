@@ -1,6 +1,10 @@
 #include <catch2/catch_test_macros.hpp>
 
+#include <iostream>
+
 #include "../../sources/logging/logger.hpp"
+#include "../../sources/io/file/stream_to_file.hpp"
+#include "../../sources/io/file/file_info.hpp"
 
 
 TEST_CASE("InMemoryLogger", "[libs][logging][logger][InMemoryLogger]")
@@ -42,6 +46,8 @@ TEST_CASE("InMemoryLogger", "[libs][logging][logger][InMemoryLogger]")
 TEST_CASE("StdoutLogger", "[libs][logging][logger][StdoutLogger]")
 {
     using hlibs::logging::StdoutLogger;
+    using hlibs::io::file::StreamToFile;
+    using hlibs::io::file::GetFileSize;
 
     SECTION("is_standard_layout → true", "[type_traits]") {
         REQUIRE(std::is_standard_layout_v<StdoutLogger>);
@@ -78,7 +84,21 @@ TEST_CASE("StdoutLogger", "[libs][logging][logger][StdoutLogger]")
         REQUIRE_NOTHROW(logger);
     }
 
-    // TODO: test StreamToFile
-    // TODO: test by using StreamToFile
+    SECTION("log many info messages → in stdout", "[functional_requirements]") {
+        const std::string path("../../outputs/stdout-logger-1-info.txt");
+        const std::size_t expected = 640;
+
+        constexpr auto log = [](const std::string& file) {
+            const std::size_t nLogs = 10;
+            StreamToFile stdout(std::cout, file);
+            StdoutLogger logger;
+            for (auto i = 0; i < nLogs; ++i) logger.info(std::to_string(i));
+        };
+
+        log(path);
+
+        const auto size = GetFileSize(path);
+        REQUIRE(size == expected);
+    }
 
 }
