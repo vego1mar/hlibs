@@ -5,33 +5,37 @@
 #include <streambuf>
 #include <string>
 #include <any>
+#include <memory>
+#include <functional>
 
 
 namespace hlibs::io::file {
 
-    class StreamToFile final : std::filebuf {
+    class StreamToFile final : private std::filebuf {
       public:
         StreamToFile(std::ostream& stream, const std::string& path) : ref_stream(stream), ptr_buffer(stream.rdbuf())
         {
             open(path.c_str(), std::ios_base::out);
-
-            if (!is_open()) {
-                throw std::ios_base::failure("!is_open()");
-            }
-
+            if (!is_open()) throw std::ios_base::failure("!is_open()");
             stream.rdbuf(this);
         }
 
         ~StreamToFile() noexcept override
         {
-            auto buffer = std::any_cast<decltype(ref_stream.rdbuf())>(ptr_buffer);
-            ref_stream.rdbuf(buffer);
+            auto&& buffer = std::any_cast<decltype(ref_stream.get().rdbuf())>(ptr_buffer);
+            ref_stream.get().rdbuf(buffer);
             ptr_buffer.reset();
             close();
         }
 
+        StreamToFile(const StreamToFile& rhs) = delete;
+        StreamToFile& operator=(const StreamToFile& rhs) = delete;
+
+        StreamToFile(StreamToFile&& rhs) noexcept = delete;
+        StreamToFile& operator=(StreamToFile&& rhs) noexcept = delete;
+
       private:
-        std::ostream& ref_stream;
+        std::reference_wrapper<std::ostream> ref_stream;
         std::any ptr_buffer;
     };
 
