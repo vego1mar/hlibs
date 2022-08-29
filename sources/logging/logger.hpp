@@ -297,7 +297,8 @@ namespace hlibs::logging {
     };
 
 
-    // TODO: single-line doc
+    /// Uses ANSI escape characters (SGR sequences of ECMA-48) to print colourful output.
+    /// url:https://www.ecma-international.org/publications-and-standards/standards/ecma-48/
     class TerminalLogger {
       public:
         using Source = std::experimental::source_location;
@@ -305,17 +306,18 @@ namespace hlibs::logging {
         /// $Message${ColorsReset}
         void info(std::string_view msg, Source sl = std::experimental::source_location::current())
         {
-            auto&& enriched = std::string(msg) + reset_colors;
-            sink.info(enriched, sl);
+            sink.info(msg, sl);
+            currentLog(currentLog() + reset_colors + '\n');
+            print();
         }
 
         /// ${RedFg}$Message${ResetColors}
         void warning(std::string_view msg, Source sl = std::experimental::source_location::current())
         {
-            //auto csi = std::string("\033[", 2);
             std::string redFg = "\033[38:2::255:0:0m";
-            auto&& enriched = redFg + std::string(msg) + reset_colors;
-            sink.warning(enriched, sl);
+            sink.warning(msg, sl);
+            currentLog(redFg + currentLog() + reset_colors + '\n');
+            print();
         }
 
         /// ${RedBg}${WhiteFg}$Bold$Message${NormalIntensity}${ResetColors}
@@ -325,8 +327,9 @@ namespace hlibs::logging {
             std::string whiteFg = "\033[38:2::255:255:255m";
             std::string bold = "\033[1m";
             std::string notBold = "\033[22m";
-            auto&& enriched = redBg + whiteFg + bold + std::string(msg) + notBold + reset_colors;
-            sink.fatal(enriched, sl);
+            sink.fatal(msg, sl);
+            currentLog(redBg + whiteFg + bold + currentLog() + notBold + reset_colors + '\n');
+            print(std::cerr);
         }
 
         /// $Invert$Message$Revert
@@ -334,8 +337,9 @@ namespace hlibs::logging {
         {
             std::string invert = "\033[7m";
             std::string revert = "\033[27m";
-            auto&& enriched = invert + std::string(msg) + revert;
-            sink.debug(enriched, sl);
+            sink.debug(msg, sl);
+            currentLog(invert + currentLog() + revert + '\n');
+            print();
         }
 
         /// ${TealBg}${WhiteFg}$Message${ResetColors}
@@ -343,12 +347,31 @@ namespace hlibs::logging {
         {
             std::string tealBg = "\033[48:2::0:128:128m";
             std::string whiteFg = "\033[38:2::255:255:255m";
-            auto&& enriched = tealBg + whiteFg + std::string(msg) + reset_colors;
-            sink.exception(enriched, e, sl);
+            sink.exception(msg, e, sl);
+            currentLog(tealBg + whiteFg + currentLog() + reset_colors + '\n');
+            print(std::clog);
         }
 
       private:
-        StdoutLogger sink; // TODO: replace with in-memory logger
+        void print(std::ostream& stream = std::cout)
+        {
+            auto&& current = (sink.current_msg == 0) ? 0 : (sink.current_msg - 1);
+            stream << sink.messages.at(current).message;
+        }
+
+        [[nodiscard]] std::string currentLog() const noexcept
+        {
+            auto& current = sink.messages.at(sink.current_msg - 1).message;
+            auto noNewline = current.substr(0, current.size() - 1);
+            return noNewline;
+        }
+
+        void currentLog(std::string&& log) noexcept
+        {
+            sink.messages.at(sink.current_msg - 1).message = std::move(log);
+        }
+
+        InMemoryLogger sink;
         std::string reset_colors = "\033[39;49m";
     };
 
