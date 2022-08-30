@@ -154,10 +154,106 @@ namespace hlibs::io {
         std::size_t lines_read = 0;
     };
 
-    // TODO: binary read
+
+    // TODO: BinaryReader
     // https://stackoverflow.com/questions/15366319/how-to-read-the-binary-file-in-c
     // https://stackoverflow.com/questions/55777716/unable-to-read-a-binary-file-into-stdvectorstdbyte-in-c
     // https://www.positioniseverything.net/cpp-read-binary-file
+
+
+    /// TODO: one-line doc
+    class FileWriter final {
+      public:
+        enum class OpenMode : bool {
+            Truncate = true,
+            Append = false
+        };
+
+        /// url:https://en.cppreference.com/w/cpp/io/ios_base/openmode
+        explicit FileWriter(const std::filesystem::path& path, OpenMode mode = OpenMode::Truncate)
+                : path(path)
+                  , file(path, std::ios::out | ((mode == OpenMode::Truncate) ? std::ios::trunc : std::ios::ate))
+        {
+            if (!file.is_open() || file.fail()) {
+                throw std::ios_base::failure("!file.is_open() || file.fail()");
+            }
+
+            file.exceptions(std::ofstream::badbit);
+        }
+
+        FileWriter(const FileWriter& rhs) = delete;
+        FileWriter& operator=(const FileWriter& rhs) = delete;
+
+        FileWriter(FileWriter&& rhs) noexcept = delete;
+        FileWriter& operator=(FileWriter&& rhs) noexcept = delete;
+
+        ~FileWriter() noexcept = default;
+
+        /// url:https://en.cppreference.com/w/cpp/io/ios_base/fmtflags
+        void write(std::string_view text, std::ios_base::fmtflags flags = std::ios_base::right)
+        {
+            file << flags << text;
+            bytes_written += text.size();
+        }
+
+        template<typename T>
+        requires std::is_same_v<T, char> || std::is_same_v<T, signed char> || std::is_same_v<T, unsigned char>
+        void put(T ch)
+        {
+            file << ch;
+            ++bytes_written;
+        }
+
+        template<typename T>
+        requires std::is_floating_point_v<T>
+        void floating(T number, int point = 4, std::ios_base::fmtflags flags = std::ios_base::floatfield)
+        {
+            file << std::setprecision(point) << flags << number;
+            bytes_written += sizeof(number);
+        }
+
+        void boolean(bool b)
+        {
+            file << std::boolalpha << b << std::noboolalpha;
+            ++bytes_written;
+        }
+
+        /// {"$Path","$FileAddress","$BytesWritten"}
+        std::string toString() const noexcept
+        {
+            std::stringstream ss{"{"};
+            ss << '"' << path << "\",";
+            ss << '"' << &file << "\",";
+            ss << '"' << std::to_string(bytes_written) + '"';
+            ss << "}";
+            return ss.str();
+        }
+
+        std::ofstream::pos_type position()
+        {
+            return file.tellp();
+        }
+
+        void position(std::ofstream::pos_type pos)
+        {
+            file.seekp(pos);
+        }
+
+        void position(std::ofstream::pos_type offset, std::ios::seekdir direction)
+        {
+            file.seekp(std::ofstream::off_type(offset), direction);
+        }
+
+        inline void sync()
+        {
+            file.flush();
+        }
+
+      private:
+        std::filesystem::path path;
+        std::ofstream file;
+        std::size_t bytes_written = 0;
+    };
 
 }
 
