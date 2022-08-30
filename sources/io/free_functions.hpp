@@ -1,5 +1,5 @@
-#ifndef LIBS_FILE_INFO_HPP
-#define LIBS_FILE_INFO_HPP
+#ifndef LIBS_FREE_FUNCTIONS_HPP
+#define LIBS_FREE_FUNCTIONS_HPP
 
 #include <fstream>
 #include <sys/stat.h>
@@ -22,4 +22,4 @@ namespace hlibs::io {
 
 }
 
-#endif //LIBS_FILE_INFO_HPP
+#endif //LIBS_FREE_FUNCTIONS_HPP

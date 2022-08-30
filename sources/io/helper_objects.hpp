@@ -1,5 +1,5 @@
-#ifndef LIBS_STREAM_TO_FILE_HPP
-#define LIBS_STREAM_TO_FILE_HPP
+#ifndef LIBS_HELPER_OBJECTS_HPP
+#define LIBS_HELPER_OBJECTS_HPP
 
 #include <fstream>
 #include <streambuf>
@@ -42,4 +42,4 @@ namespace hlibs::io {
 
 }
 
-#endif //LIBS_STREAM_TO_FILE_HPP
+#endif //LIBS_HELPER_OBJECTS_HPP

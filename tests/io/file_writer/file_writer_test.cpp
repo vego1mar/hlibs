@@ -3,7 +3,7 @@
 #include <iostream>
 
 #include "../../../sources/io/file_writer/file_writer.hpp"
-#include "../../../sources/io/file_info.hpp"
+#include "../../../sources/io/free_functions.hpp"
 
 
 TEST_CASE("FileWriter", "[libs][io][file_writer]")

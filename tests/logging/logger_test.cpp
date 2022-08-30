@@ -3,8 +3,8 @@
 #include <iostream>
 
 #include "../../sources/logging/logger.hpp"
-#include "../../sources/io/stream_to_file.hpp"
-#include "../../sources/io/file_info.hpp"
+#include "../../sources/io/helper_objects.hpp"
+#include "../../sources/io/free_functions.hpp"
 
 
 TEST_CASE("InMemoryLogger", "[libs][logging][logger][InMemoryLogger]")

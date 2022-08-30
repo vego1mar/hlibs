@@ -1,8 +1,8 @@
 #include <catch2/catch_test_macros.hpp>
 #include <iostream>
 
-#include "../../sources/io/stream_to_file.hpp"
-#include "../../sources/io/file_info.hpp"
+#include "../../sources/io/helper_objects.hpp"
+#include "../../sources/io/free_functions.hpp"
 
 
 TEST_CASE("StreamToFile", "[libs][io][file][StreamToFile]")

@@ -1,6 +1,6 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include "../../sources/io/file_info.hpp"
+#include "../../sources/io/free_functions.hpp"
 
 
 TEST_CASE("GetFileSize()", "[libs][io][file]")

@@ -2,7 +2,7 @@
 #define LIBS_FILE_READER_BUFFERED_HPP
 
 #include "file_reader_base.hpp"
-#include "../file_info.hpp"
+#include "../free_functions.hpp"
 
 
 namespace hlibs::io::file_reader {
