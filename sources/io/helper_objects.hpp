@@ -10,6 +10,7 @@
 #include <vector>
 #include <string_view>
 #include <sstream>
+#include <filesystem>
 
 
 namespace hlibs::io {
@@ -44,10 +45,10 @@ namespace hlibs::io {
     };
 
 
-    // TODO: load whole file at once, file pointer valid until lifetime ends
+    /// Reads the whole text file at once (a sink for the data).
     class FileLoader final {
       public:
-        explicit FileLoader(std::string_view path) : path(path), file(std::ifstream(path.data(), std::ios_base::in))
+        explicit FileLoader(const std::filesystem::path& path) : path(path), file(std::ifstream(path, std::ios_base::in))
         {
             if (!isOpened()) {
                 file.close();
@@ -79,7 +80,7 @@ namespace hlibs::io {
         std::string toString() const noexcept
         {
             std::stringstream ss{"{"};
-            ss << '"' + path + "\",\"";
+            ss << '"' + path.string() + "\",\"";
             ss << &file;
             ss << "\",\"" << std::to_string(content.size()) + "\"}";
             return ss.str();
@@ -91,7 +92,7 @@ namespace hlibs::io {
             return !file.fail() && file.is_open();
         }
 
-        std::string path;
+        std::filesystem::path path;
         std::ifstream file;
         std::vector<char> content{};
     };

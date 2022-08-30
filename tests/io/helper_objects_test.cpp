@@ -109,7 +109,7 @@ TEST_CASE("FileLoader", "[libs][io][FileLoader]")
         const std::size_t expected = 633UL;
 
         constexpr auto loadFile = [](const std::filesystem::path& fp, std::size_t size) {
-            FileLoader loader{fp.string()};
+            FileLoader loader{fp};
             loader.read();
             assert(loader.data().size() == size);
             return loader.toString();
