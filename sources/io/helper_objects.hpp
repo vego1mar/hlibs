@@ -12,6 +12,8 @@
 #include <sstream>
 #include <filesystem>
 
+#include "./free_functions.hpp"
+
 
 namespace hlibs::io {
 
@@ -96,6 +98,54 @@ namespace hlibs::io {
         std::ifstream file;
         std::vector<char> content{};
     };
+
+
+    // TODO: one-line doc
+    class FileReader final {
+      public:
+        FileReader() = delete;
+
+        FileReader(const FileReader& rhs) = delete;
+        FileReader& operator=(const FileReader& rhs) = delete;
+
+        FileReader(FileReader&& rhs) noexcept = delete;
+        FileReader& operator=(FileReader&& rhs) noexcept = delete;
+
+        const std::string& getNextLine()
+        {
+            std::getline(file, line);
+            ++lines_read;
+            return line;
+        }
+
+        inline bool hasNextLine() noexcept
+        {
+            return !hlibs::io::IsEOF(file);
+        }
+
+        /// {"$Path","$FileAddress","$LastLineLength","$NumberOfLinesRead"}
+        std::string toString() const noexcept
+        {
+            std::stringstream ss{"{"};
+            ss << '"' << path << "\",";
+            ss << '"' << &file << "\",";
+            ss << '"' << std::to_string(line.size()) << "\",";
+            ss << '"' << std::to_string(lines_read) << '"';
+            ss << '}';
+            return ss.str();
+        }
+
+      private:
+        std::filesystem::path path;
+        std::ifstream file;
+        std::string line;
+        std::size_t lines_read = 0;
+    };
+
+    // TODO: binary read
+    // https://stackoverflow.com/questions/15366319/how-to-read-the-binary-file-in-c
+    // https://stackoverflow.com/questions/55777716/unable-to-read-a-binary-file-into-stdvectorstdbyte-in-c
+    // https://www.positioniseverything.net/cpp-read-binary-file
 
 }
 

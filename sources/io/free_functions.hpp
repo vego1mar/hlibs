@@ -7,6 +7,7 @@
 
 namespace hlibs::io {
 
+    /// The most thorough way to test for End Of File.
     [[maybe_unused]] static bool IsEOF(std::ifstream& file)
     {
         return file.peek() == std::ifstream::traits_type::eof() && file.eof();
