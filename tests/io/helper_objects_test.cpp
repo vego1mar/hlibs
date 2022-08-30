@@ -3,6 +3,8 @@
 #include <catch2/matchers/catch_matchers_string.hpp>
 
 #include <iostream>
+#include <filesystem>
+#include <cassert>
 
 #include "../../sources/io/helper_objects.hpp"
 #include "../../sources/io/free_functions.hpp"
@@ -62,7 +64,6 @@ TEST_CASE("StreamToFile", "[libs][io][StreamToFile]")
 
 TEST_CASE("FileLoader", "[libs][io][FileLoader]")
 {
-
     using hlibs::io::FileLoader;
 
     SECTION("is_standard_layout → true", "[type_traits]") {
@@ -89,17 +90,34 @@ TEST_CASE("FileLoader", "[libs][io][FileLoader]")
         REQUIRE_THAT(errorCode.message(), Catch::Matchers::Equals("iostream error"));
     }
 
-    SECTION("? → ?", "[basic_check]") {
-        const std::string path("../../inputs/file-loader-1-move-1.txt");
-        CHECK(false);
+    SECTION("read file A → data stored", "[basic_check]") {
+        const std::string path("../../inputs/file-loader-1-read.txt");
+        const std::size_t expected = 635UL;
+
+        constexpr auto loadFile = [](std::string_view sv) {
+            FileLoader loader(sv);
+            loader.read();
+            return loader.data().size();
+        };
+
+        auto size = loadFile(path);
+        REQUIRE(size == expected);
     }
 
-    SECTION("? → ?", "[]") {
-        const std::string path("../../inputs/file-loader-1-move-2.txt");
-        CHECK(false);
-    }
+    SECTION("read file B → data stored, str_id valid", "[functional_requirements]") {
+        const std::string path("../../inputs/file-loader-2-read.txt");
+        const std::size_t expected = 633UL;
 
-    // data
-    // toString
+        constexpr auto loadFile = [](const std::filesystem::path& fp, std::size_t size) {
+            FileLoader loader{fp.string()};
+            loader.read();
+            assert(loader.data().size() == size);
+            return loader.toString();
+        };
+
+        auto strId = loadFile(std::filesystem::path(path), expected);
+        REQUIRE_THAT(strId, Catch::Matchers::ContainsSubstring(std::to_string(expected)));
+        REQUIRE_THAT(strId, Catch::Matchers::ContainsSubstring(path));
+    }
 
 }
