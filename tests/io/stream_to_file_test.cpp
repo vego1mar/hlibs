@@ -1,14 +1,14 @@
 #include <catch2/catch_test_macros.hpp>
 #include <iostream>
 
-#include "../../../sources/io/file/stream_to_file.hpp"
-#include "../../../sources/io/file/file_info.hpp"
+#include "../../sources/io/stream_to_file.hpp"
+#include "../../sources/io/file_info.hpp"
 
 
 TEST_CASE("StreamToFile", "[libs][io][file][StreamToFile]")
 {
-    using hlibs::io::file::StreamToFile;
-    using hlibs::io::file::GetFileSize;
+    using hlibs::io::StreamToFile;
+    using hlibs::io::GetFileSize;
 
     SECTION("redirect to clog → no exception", "[basic_check]") {
         const std::string file("../../outputs/stream-to-file-1-clog.txt");

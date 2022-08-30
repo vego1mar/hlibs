@@ -5,15 +5,15 @@
 #include <sys/stat.h>
 
 
-namespace hlibs::io::file {
+namespace hlibs::io {
 
-    static bool IsEOF(std::ifstream& file)
+    [[maybe_unused]] static bool IsEOF(std::ifstream& file)
     {
         return file.peek() == std::ifstream::traits_type::eof() && file.eof();
     }
 
     /// Portable for Windows, Mac and Linux as part of C Runtime Library.
-    static long GetFileSize(const std::string& file)
+    [[maybe_unused]] static long GetFileSize(const std::string& file)
     {
         struct stat stat_buffer{};
         int rc = stat(file.c_str(), &stat_buffer);

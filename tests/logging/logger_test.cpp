@@ -3,8 +3,8 @@
 #include <iostream>
 
 #include "../../sources/logging/logger.hpp"
-#include "../../sources/io/file/stream_to_file.hpp"
-#include "../../sources/io/file/file_info.hpp"
+#include "../../sources/io/stream_to_file.hpp"
+#include "../../sources/io/file_info.hpp"
 
 
 TEST_CASE("InMemoryLogger", "[libs][logging][logger][InMemoryLogger]")
@@ -46,8 +46,8 @@ TEST_CASE("InMemoryLogger", "[libs][logging][logger][InMemoryLogger]")
 TEST_CASE("StdoutLogger", "[libs][logging][logger][StdoutLogger]")
 {
     using hlibs::logging::StdoutLogger;
-    using hlibs::io::file::StreamToFile;
-    using hlibs::io::file::GetFileSize;
+    using hlibs::io::StreamToFile;
+    using hlibs::io::GetFileSize;
 
     SECTION("is_standard_layout → true", "[type_traits]") {
         REQUIRE(std::is_standard_layout_v<StdoutLogger>);

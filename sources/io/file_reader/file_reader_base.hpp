@@ -5,7 +5,7 @@
 #include <fstream>
 #include <vector>
 
-#include "../file/file_info.hpp"
+#include "../file_info.hpp"
 #include "../../types/interfaces.hpp"
 
 
@@ -36,7 +36,7 @@ namespace hlibs::io::file_reader {
 
         bool isReadClean() const
         {
-            return static_cast<std::size_t>(hlibs::io::file::GetFileSize(path)) == content.size();
+            return static_cast<std::size_t>(hlibs::io::GetFileSize(path)) == content.size();
         }
 
         inline bool isOpened() const

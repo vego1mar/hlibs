@@ -6,8 +6,8 @@ add_executable(
         facilities/strings_test.cpp ${src}/facilities/strings.hpp
         facilities/timestamp_test.cpp ${src}/facilities/timestamp.hpp
 
-        io/file/file_info_test.cpp ${src}/io/file/file_info.hpp
-        io/file/stream_to_file_test.cpp ${src}/io/file/stream_to_file.hpp
+        io/file_info_test.cpp ${src}/io/file_info.hpp
+        io/stream_to_file_test.cpp ${src}/io/stream_to_file.hpp
         io/file_reader/file_reader_base_test.cpp ${src}/io/file_reader/file_reader_base.hpp
         io/file_writer/file_writer_test.cpp ${src}/io/file_writer/file_writer.hpp
 

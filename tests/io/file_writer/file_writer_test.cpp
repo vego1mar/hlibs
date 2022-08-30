@@ -3,13 +3,13 @@
 #include <iostream>
 
 #include "../../../sources/io/file_writer/file_writer.hpp"
-#include "../../../sources/io/file/file_info.hpp"
+#include "../../../sources/io/file_info.hpp"
 
 
 TEST_CASE("FileWriter", "[libs][io][file_writer]")
 {
     using hlibs::io::file_writer::FileWriter;
-    using hlibs::io::file::GetFileSize;
+    using hlibs::io::GetFileSize;
 
     struct Paths {
         static std::string GetNext()

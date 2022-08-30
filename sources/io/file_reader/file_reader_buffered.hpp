@@ -2,7 +2,7 @@
 #define LIBS_FILE_READER_BUFFERED_HPP
 
 #include "file_reader_base.hpp"
-#include "../file/file_info.hpp"
+#include "../file_info.hpp"
 
 
 namespace hlibs::io::file_reader {
@@ -21,7 +21,7 @@ namespace hlibs::io::file_reader {
 
         bool hasNextLine()
         {
-            return !hlibs::io::file::IsEOF(elicitStream());
+            return !hlibs::io::IsEOF(elicitStream());
         }
 
         std::string toString() const noexcept override

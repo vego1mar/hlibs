@@ -1,11 +1,11 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include "../../../sources/io/file/file_info.hpp"
+#include "../../sources/io/file_info.hpp"
 
 
 TEST_CASE("GetFileSize()", "[libs][io][file]")
 {
-    using hlibs::io::file::GetFileSize;
+    using hlibs::io::GetFileSize;
 
     SECTION("f(literal) -> 1213 B", "[functional_requirements]") {
         constexpr long LICENSE_MD_SIZE = 1213;

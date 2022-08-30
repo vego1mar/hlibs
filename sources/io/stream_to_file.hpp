@@ -9,7 +9,7 @@
 #include <functional>
 
 
-namespace hlibs::io::file {
+namespace hlibs::io {
 
     /// Redirects std::cout, std::cerr, or std::clog to a file.
     class StreamToFile final : private std::filebuf {

@@ -15,8 +15,8 @@ add_executable(
         ${src}/facilities/strings.hpp
         ${src}/facilities/timestamp.hpp
 
-        ${src}/io/file/file_info.hpp
-        ${src}/io/file/stream_to_file.hpp
+        ${src}/io/file_info.hpp
+        ${src}/io/stream_to_file.hpp
         ${src}/io/file_reader/file_reader_base.hpp
         ${src}/io/file_reader/file_reader_buffered.hpp
         ${src}/io/file_reader/file_reader.hpp
