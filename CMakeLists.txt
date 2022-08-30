@@ -17,9 +17,6 @@ add_executable(
 
         ${src}/io/free_functions.hpp
         ${src}/io/helper_objects.hpp
-        ${src}/io/file_reader/file_reader_base.hpp
-        ${src}/io/file_reader/file_reader_buffered.hpp
-        ${src}/io/file_reader/file_reader.hpp
         ${src}/io/file_writer/file_writer.hpp
 
         ${src}/logging/logger.hpp
