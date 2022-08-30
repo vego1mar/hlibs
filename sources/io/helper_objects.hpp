@@ -7,6 +7,9 @@
 #include <any>
 #include <memory>
 #include <functional>
+#include <vector>
+#include <string_view>
+#include <sstream>
 
 
 namespace hlibs::io {
@@ -38,6 +41,59 @@ namespace hlibs::io {
       private:
         std::reference_wrapper<std::ostream> ref_stream;
         std::any ptr_buffer;
+    };
+
+
+    // TODO: load whole file at once, file pointer valid until lifetime ends
+    class FileLoader final {
+      public:
+        explicit FileLoader(std::string_view path) : path(path), file(std::ifstream(path.data(), std::ios_base::in))
+        {
+            if (!isOpened()) {
+                file.close();
+                throw std::ios::failure("!isOpened()");
+            }
+        }
+
+        FileLoader(const FileLoader& rhs) = delete;
+        FileLoader& operator=(const FileLoader& rhs) = delete;
+
+        FileLoader(FileLoader&& rhs) noexcept = delete;
+        FileLoader& operator=(FileLoader&& rhs) noexcept = delete;
+
+        ~FileLoader() noexcept = default;
+
+        void read()
+        {
+            auto first = (std::istreambuf_iterator<char>(file));
+            auto last = (std::istreambuf_iterator<char>());
+            content = std::vector<char>(first, last);
+        }
+
+        inline const std::vector<char>& data() const noexcept
+        {
+            return content;
+        }
+
+        /// {"$Path","$FileAddress","$DataSize"}
+        std::string toString() const noexcept
+        {
+            std::stringstream ss{"{"};
+            ss << '"' + path + "\",\"";
+            ss << &file;
+            ss << "\",\"" << std::to_string(content.size()) + "\"}";
+            return ss.str();
+        }
+
+      private:
+        inline bool isOpened() const noexcept
+        {
+            return !file.fail() && file.is_open();
+        }
+
+        std::string path;
+        std::ifstream file;
+        std::vector<char> content{};
     };
 
 }

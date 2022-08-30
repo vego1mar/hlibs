@@ -1,11 +1,14 @@
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/matchers/catch_matchers.hpp>
+#include <catch2/matchers/catch_matchers_string.hpp>
+
 #include <iostream>
 
 #include "../../sources/io/helper_objects.hpp"
 #include "../../sources/io/free_functions.hpp"
 
 
-TEST_CASE("StreamToFile", "[libs][io][file][StreamToFile]")
+TEST_CASE("StreamToFile", "[libs][io][StreamToFile]")
 {
     using hlibs::io::StreamToFile;
     using hlibs::io::GetFileSize;
@@ -54,5 +57,49 @@ TEST_CASE("StreamToFile", "[libs][io][file][StreamToFile]")
         REQUIRE(size1 == size2);
         REQUIRE(size1 == size3);
     }
+
+}
+
+TEST_CASE("FileLoader", "[libs][io][FileLoader]")
+{
+
+    using hlibs::io::FileLoader;
+
+    SECTION("is_standard_layout → true", "[type_traits]") {
+        REQUIRE(!std::is_standard_layout_v<FileLoader>);
+    }
+
+    SECTION("is_default_constructible → true", "[type_traits]") {
+        REQUIRE(!std::is_default_constructible_v<FileLoader>);
+    }
+
+    SECTION("non-existing file → exception thrown", "[exceptions]") {
+        std::string what;
+        std::error_code errorCode;
+
+        try {
+            FileLoader loader{"./this-file-should-not-exist"};
+        }
+        catch (const std::ios::failure& e) {
+            what = e.what();
+            errorCode = e.code();
+        }
+
+        REQUIRE_THAT(what, Catch::Matchers::StartsWith("!isOpened()"));
+        REQUIRE_THAT(errorCode.message(), Catch::Matchers::Equals("iostream error"));
+    }
+
+    SECTION("? → ?", "[basic_check]") {
+        const std::string path("../../inputs/file-loader-1-move-1.txt");
+        CHECK(false);
+    }
+
+    SECTION("? → ?", "[]") {
+        const std::string path("../../inputs/file-loader-1-move-2.txt");
+        CHECK(false);
+    }
+
+    // data
+    // toString
 
 }
