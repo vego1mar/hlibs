@@ -111,6 +111,8 @@ namespace hlibs::io {
         FileReader(FileReader&& rhs) noexcept = delete;
         FileReader& operator=(FileReader&& rhs) noexcept = delete;
 
+        ~FileReader() noexcept = default;
+        
         const std::string& getNextLine()
         {
             std::getline(file, line);
