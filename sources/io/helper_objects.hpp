@@ -100,10 +100,16 @@ namespace hlibs::io {
     };
 
 
-    // TODO: one-line doc
+    // Allows to read a text file line-by-line (and counts the number of lines already read).
     class FileReader final {
       public:
-        FileReader() = delete;
+        explicit FileReader(const std::filesystem::path& path) : path(path), file(std::ifstream(path, std::ios::in))
+        {
+            if (file.fail() || !file.is_open()) {
+                file.close();
+                throw std::ios::failure("file.fail() || !file.is_open()");
+            }
+        }
 
         FileReader(const FileReader& rhs) = delete;
         FileReader& operator=(const FileReader& rhs) = delete;
@@ -113,8 +119,9 @@ namespace hlibs::io {
 
         ~FileReader() noexcept = default;
 
-        const std::string& getNextLine()
+        std::string getNextLine()
         {
+            std::string line;
             std::getline(file, line);
             ++lines_read;
             return line;
@@ -125,22 +132,25 @@ namespace hlibs::io {
             return !hlibs::io::IsEOF(file);
         }
 
-        /// {"$Path","$FileAddress","$LastLineLength","$NumberOfLinesRead"}
+        /// {"$Path","$FileAddress","$NumberOfLinesRead"}
         std::string toString() const noexcept
         {
             std::stringstream ss{"{"};
             ss << '"' << path << "\",";
             ss << '"' << &file << "\",";
-            ss << '"' << std::to_string(line.size()) << "\",";
             ss << '"' << std::to_string(lines_read) << '"';
             ss << '}';
             return ss.str();
         }
 
+        inline std::size_t lines() const noexcept
+        {
+            return lines_read;
+        }
+
       private:
         std::filesystem::path path;
         std::ifstream file;
-        std::string line;
         std::size_t lines_read = 0;
     };
 

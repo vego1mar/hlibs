@@ -7,7 +7,6 @@
 #include <cassert>
 
 #include "../../sources/io/helper_objects.hpp"
-#include "../../sources/io/free_functions.hpp"
 
 
 TEST_CASE("StreamToFile", "[libs][io][StreamToFile]")
@@ -118,6 +117,73 @@ TEST_CASE("FileLoader", "[libs][io][FileLoader]")
         auto strId = loadFile(std::filesystem::path(path), expected);
         REQUIRE_THAT(strId, Catch::Matchers::ContainsSubstring(std::to_string(expected)));
         REQUIRE_THAT(strId, Catch::Matchers::ContainsSubstring(path));
+    }
+
+}
+
+TEST_CASE("FileReader", "[libs][io][FileReader]")
+{
+    using hlibs::io::FileReader;
+    using hlibs::io::GetFileSize;
+
+    SECTION("is_standard_layout → true", "[type_traits]") {
+        REQUIRE(!std::is_standard_layout_v<FileReader>);
+    }
+
+    SECTION("is_default_constructible → true", "[type_traits]") {
+        REQUIRE(!std::is_default_constructible_v<FileReader>);
+    }
+
+    SECTION("construct & destruct → no exception", "[basic_check]") {
+        const std::string path("../../inputs/file-reader-1-read.txt");
+
+        constexpr auto openAndClose = [](const std::filesystem::path& p) {
+            FileReader reader(p);
+        };
+
+        REQUIRE_NOTHROW(openAndClose(path));
+    }
+
+    SECTION("read next lines until eof → expected file size", "[functional_requirements][basic_check]") {
+        const std::string path("../../inputs/file-reader-1-read.txt");
+        const std::size_t expected = 802UL;
+        std::vector<std::string> buffer{};
+
+        auto readTillEnd = [&buffer](const std::filesystem::path& p) {
+            FileReader reader(p);
+
+            while (reader.hasNextLine()) {
+                buffer.emplace_back(reader.getNextLine());
+            }
+
+            return reader.toString();
+        };
+
+        auto repr = readTillEnd(path);
+        auto size = hlibs::io::GetFileSize(path);
+        REQUIRE(size == expected);
+        REQUIRE_THAT(repr, Catch::Matchers::ContainsSubstring(path));
+        REQUIRE_THAT(repr, Catch::Matchers::EndsWith("\"14\"}"));
+    }
+
+    SECTION("read whole file → all lines read", "[basic_check]") {
+        const std::string path("../../inputs/file-reader-2-read.txt");
+        const std::size_t expected = 392UL;
+
+        auto readFile = [](const std::filesystem::path& p) {
+            FileReader reader(p);
+
+            while (reader.hasNextLine()) {
+                reader.getNextLine();
+            }
+
+            return reader.lines();
+        };
+
+        auto linesRead = readFile(path);
+        auto size = hlibs::io::GetFileSize(path);
+        REQUIRE(size == expected);
+        REQUIRE(linesRead == 21UL);
     }
 
 }
