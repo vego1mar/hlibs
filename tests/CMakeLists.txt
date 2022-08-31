@@ -8,7 +8,6 @@ add_executable(
 
         io/free_functions_test.cpp ${src}/io/free_functions.hpp
         io/helper_objects_test.cpp ${src}/io/helper_objects.hpp
-        io/file_writer/file_writer_test.cpp ${src}/io/file_writer/file_writer.hpp
 
         logging/logger_test.cpp ${src}/logging/logger.hpp
 
