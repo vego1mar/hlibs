@@ -187,3 +187,99 @@ TEST_CASE("FileReader", "[libs][io][FileReader]")
     }
 
 }
+
+TEST_CASE("FileWriter", "[libs][io][FileWriter]")
+{
+    using hlibs::io::FileWriter;
+    using hlibs::io::GetFileSize;
+
+    SECTION("is_standard_layout → true", "[type_traits]") {
+        REQUIRE(!std::is_standard_layout_v<FileWriter>);
+    }
+
+    SECTION("is_default_constructible → true", "[type_traits]") {
+        REQUIRE(!std::is_default_constructible_v<FileWriter>);
+    }
+
+    SECTION("create & no-op → no exception", "[basic_check]") {
+        const std::string path("../../outputs/file-writer-1-write.txt");
+        const std::size_t expected = 0UL;
+
+        constexpr auto create = [](const std::filesystem::path& p) {
+            FileWriter writer{p};
+        };
+
+        REQUIRE_NOTHROW(create(path));
+        auto size = GetFileSize(path);
+        REQUIRE(size == expected);
+    }
+
+    SECTION("append to file & read again → content appended", "[basic_check]") {
+        const std::filesystem::path path("../../outputs/file-writer-2-write.txt");
+        const std::size_t size = GetFileSize(path);
+
+        constexpr auto append = [](const std::filesystem::path& p, char ch1, char ch2) {
+            FileWriter writer{p, std::ios::app};
+            writer.put(ch1);
+            writer.put(ch2);
+            return writer.bytes();
+        };
+
+        auto bytes = append(path, 'a', 'b');
+        bytes += append(path, 'y', 'z');
+
+        auto after = GetFileSize(path);
+        std::size_t expected = size + bytes;
+        REQUIRE(after == expected);
+        REQUIRE(bytes == 4);
+    }
+
+    SECTION("wrong open mode → exception", "[exception]") {
+        constexpr auto tryCreate = []() {
+            const std::filesystem::path path("../../outputs/file-writer-2-write.txt");
+            FileWriter writer(path, std::ios::in);
+            writer.sync();
+        };
+
+        REQUIRE_THROWS(tryCreate());
+    }
+
+    SECTION("write & put unformatted → expected number of bytes written", "[functional_requirements]") {
+        const std::filesystem::path path("../../outputs/file-writer-3-unformatted.txt");
+        const std::size_t expected = 40UL;
+
+        constexpr auto writeUnformatted = [](const std::filesystem::path& p) {
+            FileWriter writer{p};
+            writer.write("UGV3bm/Fm8SHIGpha8SFIGRhamUgd2lhcmE=");
+            writer.put(' ');
+            writer.put(static_cast<signed char>('s'));
+            writer.put(static_cast<unsigned char>('u'));
+            writer.put('\n');
+            return writer.bytes();
+        };
+
+        auto written = writeUnformatted(path);
+        REQUIRE(written == expected);
+    }
+
+    SECTION("write & put formatted → expected number of bytes written", "[functional_requirements]") {
+        CHECK(false);
+    }
+
+    SECTION("write floating point numbers → expected number of bytes written", "[functional_requirements]") {
+        CHECK(false);
+    }
+
+    SECTION("write booleans → expected number of bytes written", "[functional_requirements]") {
+        CHECK(false);
+    }
+
+    SECTION("write, set & get position, then put → expected number of bytes written", "[functional_requirements]") {
+        CHECK(false);
+    }
+
+    SECTION("write different data → expected string representation", "[basic_check]") {
+        CHECK(false);
+    }
+
+}

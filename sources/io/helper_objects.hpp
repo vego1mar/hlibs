@@ -20,7 +20,7 @@ namespace hlibs::io {
     /// Redirects std::cout, std::cerr, or std::clog to a file.
     class StreamToFile final : private std::filebuf {
       public:
-        StreamToFile(std::ostream& stream, const std::string& path) : ref_stream(stream), ptr_buffer(stream.rdbuf())
+        StreamToFile(std::ostream& stream, const std::string& path): ref_stream(stream), ptr_buffer(stream.rdbuf())
         {
             open(path.c_str(), std::ios_base::out);
             if (!is_open()) throw std::ios_base::failure("!is_open()");
@@ -50,7 +50,7 @@ namespace hlibs::io {
     /// Reads the whole text file at once (a sink for the data).
     class FileLoader final {
       public:
-        explicit FileLoader(const std::filesystem::path& path) : path(path), file(std::ifstream(path, std::ios_base::in))
+        explicit FileLoader(const std::filesystem::path& path): path(path), file(std::ifstream(path, std::ios_base::in))
         {
             if (!isOpened()) {
                 file.close();
@@ -103,7 +103,7 @@ namespace hlibs::io {
     // Allows to read a text file line-by-line (and counts the number of lines already read).
     class FileReader final {
       public:
-        explicit FileReader(const std::filesystem::path& path) : path(path), file(std::ifstream(path, std::ios::in))
+        explicit FileReader(const std::filesystem::path& path): path(path), file(std::ifstream(path, std::ios::in))
         {
             if (file.fail() || !file.is_open()) {
                 file.close();
@@ -161,21 +161,18 @@ namespace hlibs::io {
     // https://www.positioniseverything.net/cpp-read-binary-file
 
 
-    /// TODO: one-line doc
+    /// TODO: one-line doc + tests
     class FileWriter final {
       public:
-        enum class OpenMode : bool {
-            Truncate = true,
-            Append = false
-        };
-
         /// url:https://en.cppreference.com/w/cpp/io/ios_base/openmode
-        explicit FileWriter(const std::filesystem::path& path, OpenMode mode = OpenMode::Truncate)
-                : path(path)
-                  , file(path, std::ios::out | ((mode == OpenMode::Truncate) ? std::ios::trunc : std::ios::ate))
+        explicit FileWriter(const std::filesystem::path& path, std::ios_base::openmode mode = std::ios::trunc)
+                : path(path), file(path, mode)
         {
-            if (!file.is_open() || file.fail()) {
-                throw std::ios_base::failure("!file.is_open() || file.fail()");
+            bool isAllowedOpenMode = mode == std::ios::trunc || mode == std::ios::app || mode == std::ios::out;
+
+            if (bool isOpenedCorrectly = file.is_open() && !file.fail(); !isAllowedOpenMode || !isOpenedCorrectly) {
+                file.close();
+                throw std::ios_base::failure("!isAllowedOpenMode || !isOpenedCorrectly");
             }
 
             file.exceptions(std::ofstream::badbit);
@@ -192,15 +189,19 @@ namespace hlibs::io {
         /// url:https://en.cppreference.com/w/cpp/io/ios_base/fmtflags
         void write(std::string_view text, std::ios_base::fmtflags flags = std::ios_base::right)
         {
-            file << flags << text;
+            file.setf(flags);
+            file << text;
+            file.unsetf(flags);
             bytes_written += text.size();
         }
 
         template<typename T>
         requires std::is_same_v<T, char> || std::is_same_v<T, signed char> || std::is_same_v<T, unsigned char>
-        void put(T ch)
+        void put(T ch, std::ios_base::fmtflags flags = std::ios_base::skipws)
         {
-            file << ch;
+            file.setf(flags);
+            file.put(ch);
+            file.unsetf(flags);
             ++bytes_written;
         }
 
@@ -239,6 +240,7 @@ namespace hlibs::io {
             file.seekp(pos);
         }
 
+        /// url:https://en.cppreference.com/w/cpp/io/ios_base/seekdir
         void position(std::ofstream::pos_type offset, std::ios::seekdir direction)
         {
             file.seekp(std::ofstream::off_type(offset), direction);
@@ -247,6 +249,11 @@ namespace hlibs::io {
         inline void sync()
         {
             file.flush();
+        }
+
+        inline std::size_t bytes() const noexcept
+        {
+            return bytes_written;
         }
 
       private:
