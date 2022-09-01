@@ -20,9 +20,6 @@ add_executable(
 
         ${src}/logging/logger.hpp
 
-        ${src}/standard/ansi.hpp
-
-        ${src}/types/interfaces.hpp
         ${src}/types/types.hpp
 )
 

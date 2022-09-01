@@ -13,7 +13,7 @@ namespace hlibs::io {
         return file.peek() == std::ifstream::traits_type::eof() && file.eof();
     }
 
-    /// Portable for Windows, Mac and Linux as part of C Runtime Library.
+    /// Portable for Windows, Mac, and Linux as part of C Runtime Library.
     [[maybe_unused]] static long GetFileSize(const std::string& file)
     {
         struct stat stat_buffer{};

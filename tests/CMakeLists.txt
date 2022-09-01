@@ -11,9 +11,6 @@ add_executable(
 
         logging/logger_test.cpp ${src}/logging/logger.hpp
 
-        standard/ansi_test.cpp ${src}/standard/ansi.hpp
-
-        types/interfaces_test.cpp ${src}/types/interfaces.hpp
         types/types_test.cpp ${src}/types/types.hpp
 )
 

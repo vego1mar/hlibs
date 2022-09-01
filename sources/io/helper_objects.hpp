@@ -42,6 +42,7 @@ namespace hlibs::io {
         StreamToFile(const StreamToFile& rhs) = delete;
         StreamToFile& operator=(const StreamToFile& rhs) = delete;
 
+        // TODO: open class for move
         StreamToFile(StreamToFile&& rhs) noexcept = delete;
         StreamToFile& operator=(StreamToFile&& rhs) noexcept = delete;
 
@@ -51,7 +52,7 @@ namespace hlibs::io {
     };
 
 
-    /// Reads the whole text file at once (a sink for the data).
+    /// Reads the whole text file at once (sink for data).
     class FileLoader final {
       public:
         explicit FileLoader(const std::filesystem::path& path): path(path), file(std::ifstream(path, std::ios_base::in))
@@ -65,6 +66,7 @@ namespace hlibs::io {
         FileLoader(const FileLoader& rhs) = delete;
         FileLoader& operator=(const FileLoader& rhs) = delete;
 
+        // TODO: open class for move
         FileLoader(FileLoader&& rhs) noexcept = delete;
         FileLoader& operator=(FileLoader&& rhs) noexcept = delete;
 
@@ -118,6 +120,7 @@ namespace hlibs::io {
         FileReader(const FileReader& rhs) = delete;
         FileReader& operator=(const FileReader& rhs) = delete;
 
+        // TODO: open class for move
         FileReader(FileReader&& rhs) noexcept = delete;
         FileReader& operator=(FileReader&& rhs) noexcept = delete;
 
@@ -165,7 +168,7 @@ namespace hlibs::io {
     // https://www.positioniseverything.net/cpp-read-binary-file
 
 
-    /// TODO: one-line doc + tests
+    /// Allows to write formatted text and numbers (and holds the number of written bytes).
     class FileWriter final {
       public:
         enum class NewLine : int8_t {
@@ -191,6 +194,7 @@ namespace hlibs::io {
         FileWriter(const FileWriter& rhs) = delete;
         FileWriter& operator=(const FileWriter& rhs) = delete;
 
+        // TODO: open class for move
         FileWriter(FileWriter&& rhs) noexcept = delete;
         FileWriter& operator=(FileWriter&& rhs) noexcept = delete;
 
