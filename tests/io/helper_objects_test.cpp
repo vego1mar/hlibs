@@ -5,6 +5,7 @@
 #include <iostream>
 #include <filesystem>
 #include <cassert>
+#include <array>
 
 #include "../../sources/io/helper_objects.hpp"
 
@@ -192,6 +193,7 @@ TEST_CASE("FileWriter", "[libs][io][FileWriter]")
 {
     using hlibs::io::FileWriter;
     using hlibs::io::GetFileSize;
+    using hlibs::io::FileLoader;
 
     SECTION("is_standard_layout → true", "[type_traits]") {
         REQUIRE(!std::is_standard_layout_v<FileWriter>);
@@ -244,7 +246,7 @@ TEST_CASE("FileWriter", "[libs][io][FileWriter]")
         REQUIRE_THROWS(tryCreate());
     }
 
-    SECTION("write & put unformatted → expected number of bytes written", "[functional_requirements]") {
+    SECTION("write & put unformatted → expected bytes written", "[functional_requirements]") {
         const std::filesystem::path path("../../outputs/file-writer-3-unformatted.txt");
         const std::size_t expected = 40UL;
 
@@ -262,24 +264,169 @@ TEST_CASE("FileWriter", "[libs][io][FileWriter]")
         REQUIRE(written == expected);
     }
 
-    SECTION("write & put formatted → expected number of bytes written", "[functional_requirements]") {
-        CHECK(false);
+    SECTION("write formatted numbers → expected bytes written", "[functional_requirements]") {
+        const std::filesystem::path path("../../outputs/file-writer-4-formatted.txt");
+        const std::size_t expected = 128UL;
+
+        constexpr auto writeFormatted = [](const std::filesystem::path& p) {
+            constexpr auto newline = [](FileWriter& w) {
+                w.newline(FileWriter::NewLine::Windows);
+            };
+
+            FileWriter writer{p};
+            writer.boolean(false, 30);
+            newline(writer);
+            writer.integer(144, std::ios::dec, 30);
+            newline(writer);
+            writer.floating(739528.046, 6, std::ios::fixed, 30);
+            newline(writer);
+            writer.floating(7395.28046, 6, std::ios::fixed, 30);
+            newline(writer);
+            return writer.bytes();
+        };
+
+        auto written = writeFormatted(path);
+        REQUIRE(written == expected);
     }
 
-    SECTION("write floating point numbers → expected number of bytes written", "[functional_requirements]") {
-        CHECK(false);
+    SECTION("write integers → expected number of bytes written", "[functional_requirements]") {
+        const std::filesystem::path path("../../outputs/file-writer-5-integers.txt");
+        const std::size_t expected = 40UL;
+
+        constexpr auto writeIntegers = [](const std::filesystem::path& p) {
+            FileWriter writer{p};
+            writer.integer(true, std::ios_base::boolalpha);
+            writer.newline();
+            writer.integer('\t', std::ios_base::unitbuf);
+            writer.newline();
+            writer.integer(static_cast<short>(15), std::ios_base::hex | std::ios::showbase);
+            writer.newline();
+            writer.integer(static_cast<int16_t>(128), std::ios_base::dec);
+            writer.newline();
+            writer.integer(111UL, std::ios::showpos | std::ios::oct);
+            writer.newline();
+            writer.integer(static_cast<long long>(132407896), std::ios::basefield);
+            writer.newline();
+            writer.integer(23, std::ios::dec, 10);
+            writer.newline();
+            return writer.bytes();
+        };
+
+        auto written = writeIntegers(path);
+        REQUIRE(written == expected);
     }
 
-    SECTION("write booleans → expected number of bytes written", "[functional_requirements]") {
-        CHECK(false);
+    SECTION("write floating point numbers → expected bytes written", "[functional_requirements]") {
+        const std::filesystem::path path("../../outputs/file-writer-6-floating-points.txt");
+        const std::size_t expected = 73UL;
+
+        constexpr auto writeFloatingPoints = [](const std::filesystem::path& p) {
+            FileWriter writer{p};
+            writer.floating(121.0077, 4, std::ios::floatfield);
+            writer.newline();
+            writer.floating(1501.0277541, 5, std::ios::scientific);
+            writer.newline();
+            writer.floating(9876.543201, 4, std::ios::fixed);
+            writer.newline();
+            writer.floating(9876.543201);
+            writer.newline();
+            writer.floating(9876.543201, 6, std::ios::fixed, 15);
+            writer.newline();
+            return writer.bytes();
+        };
+
+        auto written = writeFloatingPoints(path);
+        REQUIRE(written == expected);
     }
 
-    SECTION("write, set & get position, then put → expected number of bytes written", "[functional_requirements]") {
-        CHECK(false);
+    SECTION("write booleans → expected bytes written", "[functional_requirements]") {
+        const std::filesystem::path path("../../outputs/file-writer-7-booleans.txt");
+        const std::size_t expected = 20UL;
+
+        constexpr auto writeBooleans = [](const std::filesystem::path& p) {
+            FileWriter writer{p};
+            writer.boolean(false);
+            writer.newline();
+            writer.boolean(true);
+            writer.newline();
+            writer.boolean(false, 9);
+            return writer.bytes();
+        };
+
+        auto written = writeBooleans(path);
+        REQUIRE(written == expected);
     }
 
-    SECTION("write different data → expected string representation", "[basic_check]") {
-        CHECK(false);
+    SECTION("write, set & get position, then put → expected bytes written", "[functional_requirements]") {
+        const std::filesystem::path path("../../outputs/file-writer-8-position.txt");
+        const std::string expected = "*1234*67*9*";
+
+        constexpr auto useCursorAndWrite = [](const std::filesystem::path& p) {
+            FileWriter writer(p);
+            writer.write("0123456789");
+            writer.position(5, std::ios::beg);
+            writer.put('*');
+            writer.position(2, std::ios::cur);
+            writer.put('*');
+            writer.position(0, std::ios::end);
+            writer.put('*');
+            writer.position(0, std::ios::beg);
+            writer.put('*');
+            return writer.toString();
+        };
+
+        constexpr auto getFileContent = [](const std::filesystem::path& p) {
+            FileLoader loader{p};
+            loader.read();
+            return std::string(loader.data().data());
+        };
+
+        auto repr = useCursorAndWrite(path);
+        auto str = getFileContent(path);
+        REQUIRE_THAT(str, Catch::Matchers::Equals(expected));
+        REQUIRE_THAT(repr, Catch::Matchers::ContainsSubstring(path));
+        REQUIRE_THAT(repr, Catch::Matchers::ContainsSubstring("\"14\""));
+    }
+
+    SECTION("write, move cursor, then get position → cursor repositioned", "[basic_check]") {
+        const std::filesystem::path path("../../outputs/file-writer-9-position.txt");
+        const std::fstream::pos_type expected = 4;
+
+        constexpr auto reposition = [](const std::filesystem::path& p) {
+            FileWriter writer(p);
+            writer.write("paganini");
+            writer.position(4, std::ios::beg);
+            return writer.position();
+        };
+
+        auto pos = reposition(path);
+        REQUIRE(pos == expected);
+    }
+
+    SECTION("write width-lines(integer, floating-point) → expected bytes written & str representation", "[use_case]") {
+        const std::filesystem::path path("../../outputs/file-writer-10-width-numbers.txt");
+        const std::size_t expected = 440UL;
+
+        constexpr auto populateFile = [](const std::filesystem::path& p) {
+            const std::size_t size = 10;
+            const std::array<int, size> integers = {1, 22, 333, 4444, 55555, 666666, 76543, 8765, 987, 0};
+            const std::array<float, size> floats = {1, +22, .333f, 44.44f, 555.55f, 66666.6f, 7.6543f, 87.65f, 0.987f, -0};
+
+            const std::streamsize width = 20;
+            FileWriter writer(p);
+
+            for (auto i = 0; i != size; ++i) {
+                writer.integer(integers[i], std::ios::dec, width);
+                writer.write(" | ");
+                writer.floating(floats[i], 5, std::ios::fixed, width);
+                writer.newline();
+            }
+
+            return writer.bytes();
+        };
+
+        auto bytes = populateFile(path);
+        REQUIRE(bytes == expected);
     }
 
 }

@@ -11,6 +11,10 @@
 #include <string_view>
 #include <sstream>
 #include <filesystem>
+#include <iomanip>
+#include <unordered_map>
+#include <limits>
+#include <array>
 
 #include "./free_functions.hpp"
 
@@ -164,13 +168,19 @@ namespace hlibs::io {
     /// TODO: one-line doc + tests
     class FileWriter final {
       public:
+        enum class NewLine : int8_t {
+            Unix = 1,
+            Windows = 2,
+            Mac = 4
+        };
+
         /// url:https://en.cppreference.com/w/cpp/io/ios_base/openmode
         explicit FileWriter(const std::filesystem::path& path, std::ios_base::openmode mode = std::ios::trunc)
                 : path(path), file(path, mode)
         {
             bool isAllowedOpenMode = mode == std::ios::trunc || mode == std::ios::app || mode == std::ios::out;
 
-            if (bool isOpenedCorrectly = file.is_open() && !file.fail(); !isAllowedOpenMode || !isOpenedCorrectly) {
+            if (bool isOpenedCorrectly = file.is_open() && file.good(); !isAllowedOpenMode || !isOpenedCorrectly) {
                 file.close();
                 throw std::ios_base::failure("!isAllowedOpenMode || !isOpenedCorrectly");
             }
@@ -186,62 +196,95 @@ namespace hlibs::io {
 
         ~FileWriter() noexcept = default;
 
-        /// url:https://en.cppreference.com/w/cpp/io/ios_base/fmtflags
-        void write(std::string_view text, std::ios_base::fmtflags flags = std::ios_base::right)
+        void write(std::string_view text)
         {
-            file.setf(flags);
             file << text;
-            file.unsetf(flags);
             bytes_written += text.size();
         }
 
         template<typename T>
         requires std::is_same_v<T, char> || std::is_same_v<T, signed char> || std::is_same_v<T, unsigned char>
-        void put(T ch, std::ios_base::fmtflags flags = std::ios_base::skipws)
+        void put(T ch)
         {
-            file.setf(flags);
             file.put(ch);
-            file.unsetf(flags);
             ++bytes_written;
+        }
+
+        /// url:https://en.wikipedia.org/wiki/Newline
+        void newline(NewLine type = NewLine::Unix)
+        {
+            static const std::unordered_map<NewLine, std::array<char, 2>> separator = {
+                    {NewLine::Unix,    std::array<char, 2>{'\n', '\0'}},
+                    {NewLine::Windows, std::array<char, 2>{'\r', '\n'}},
+                    {NewLine::Mac,     std::array<char, 2>{'\r', '\0'}},
+            };
+
+            file << separator.at(type).data();
+            ++bytes_written;
+            if (type == NewLine::Windows) ++bytes_written;
         }
 
         template<typename T>
-        requires std::is_floating_point_v<T>
-        void floating(T number, int point = 4, std::ios_base::fmtflags flags = std::ios_base::floatfield)
+        requires std::numeric_limits<T>::is_integer
+        void integer(T integer, std::ios_base::fmtflags flags = std::ios_base::dec, std::streamsize width = 0)
         {
-            file << std::setprecision(point) << flags << number;
-            bytes_written += sizeof(number);
+            std::ostringstream ss;
+            ss.flags(flags);
+            ss.width(width);
+            ss << integer;
+            auto str = ss.str();
+
+            file << str;
+            bytes_written += str.size();
         }
 
-        void boolean(bool b)
+        /// url:https://en.cppreference.com/w/cpp/io/ios_base/fmtflags
+        template<typename T>
+        requires std::is_floating_point_v<T>
+        void floating(T number, std::streamsize point = 8, std::ios_base::fmtflags flags = std::ios::fixed, std::streamsize width = 0)
         {
-            file << std::boolalpha << b << std::noboolalpha;
-            ++bytes_written;
+            std::ostringstream ss;
+            ss.flags(flags);
+            ss.precision(point);
+            ss.width(width);
+            ss << number;
+            auto str = ss.str();
+
+            file << str;
+            bytes_written += str.size();
+        }
+
+        void boolean(bool b, std::streamsize width = 0)
+        {
+            std::ostringstream ss;
+            ss.width(width);
+            ss << std::boolalpha << b;
+            auto str = ss.str();
+
+            file << str;
+            bytes_written += str.size();
         }
 
         /// {"$Path","$FileAddress","$BytesWritten"}
         std::string toString() const noexcept
         {
-            std::stringstream ss{"{"};
-            ss << '"' << path << "\",";
+            std::stringstream ss;
+            ss << '{';
+            ss << std::quoted(path.string()) << ',';
             ss << '"' << &file << "\",";
-            ss << '"' << std::to_string(bytes_written) + '"';
+            ss << std::quoted(std::to_string(bytes_written));
             ss << "}";
             return ss.str();
         }
 
+        /// url:https://en.cppreference.com/w/cpp/io/basic_ostream/tellp
         std::ofstream::pos_type position()
         {
             return file.tellp();
         }
 
-        void position(std::ofstream::pos_type pos)
-        {
-            file.seekp(pos);
-        }
-
         /// url:https://en.cppreference.com/w/cpp/io/ios_base/seekdir
-        void position(std::ofstream::pos_type offset, std::ios::seekdir direction)
+        void position(std::ofstream::pos_type offset, std::ios::seekdir direction = std::ios::cur)
         {
             file.seekp(std::ofstream::off_type(offset), direction);
         }
