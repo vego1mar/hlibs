@@ -162,12 +162,6 @@ namespace hlibs::io {
     };
 
 
-    // TODO: BinaryReader
-    // https://stackoverflow.com/questions/15366319/how-to-read-the-binary-file-in-c
-    // https://stackoverflow.com/questions/55777716/unable-to-read-a-binary-file-into-stdvectorstdbyte-in-c
-    // https://www.positioniseverything.net/cpp-read-binary-file
-
-
     /// Allows to write formatted text and numbers (and holds the number of written bytes).
     class FileWriter final {
       public:
@@ -308,6 +302,12 @@ namespace hlibs::io {
         std::ofstream file;
         std::size_t bytes_written = 0;
     };
+
+
+    // TODO: BinaryReader && BinaryWriter
+    // https://stackoverflow.com/questions/15366319/how-to-read-the-binary-file-in-c
+    // https://stackoverflow.com/questions/55777716/unable-to-read-a-binary-file-into-stdvectorstdbyte-in-c
+    // https://www.positioniseverything.net/cpp-read-binary-file
 
 }
 
