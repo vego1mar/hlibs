@@ -46,6 +46,8 @@ namespace hlibs::io {
         StreamToFile(StreamToFile&& rhs) noexcept = delete;
         StreamToFile& operator=(StreamToFile&& rhs) noexcept = delete;
 
+        // TODO: provide [[nodiscard]] toString() const noexcept
+
       private:
         std::reference_wrapper<std::ostream> ref_stream;
         std::any ptr_buffer;
@@ -85,7 +87,7 @@ namespace hlibs::io {
         }
 
         /// {"$Path","$FileAddress","$DataSize"}
-        std::string toString() const noexcept
+        [[nodiscard]] std::string toString() const noexcept
         {
             std::stringstream ss{"{"};
             ss << '"' + path.string() + "\",\"";
@@ -140,7 +142,7 @@ namespace hlibs::io {
         }
 
         /// {"$Path","$FileAddress","$NumberOfLinesRead"}
-        std::string toString() const noexcept
+        [[nodiscard]] std::string toString() const noexcept
         {
             std::stringstream ss{"{"};
             ss << '"' << path << "\",";
@@ -264,7 +266,7 @@ namespace hlibs::io {
         }
 
         /// {"$Path","$FileAddress","$BytesWritten"}
-        std::string toString() const noexcept
+        [[nodiscard]] std::string toString() const noexcept
         {
             std::stringstream ss;
             ss << '{';

@@ -28,18 +28,15 @@ namespace hlibs::facilities::timestamp {
             time = str.substr(delimiter + 1);
         }
 
+        /// "$Date $Time"
+        [[nodiscard]] std::string timestamp() const noexcept
+        {
+            return date + ' ' + time;
+        }
+
         std::string date;
         std::string time;
     };
-
-
-    // TODO: count duration
-//    static auto CountDuration(const std::function<void()>& procedure)
-//    auto start = std::chrono::system_clock::now()
-//    procedure()
-//    auto end = std::chrono::system_clock::now()
-//    auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count()
-//    return duration
 
 }
 

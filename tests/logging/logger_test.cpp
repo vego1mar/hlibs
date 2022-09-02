@@ -1,10 +1,11 @@
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/matchers/catch_matchers.hpp>
+#include <catch2/matchers/catch_matchers_string.hpp>
 
 #include <iostream>
 
 #include "../../sources/logging/logger.hpp"
 #include "../../sources/io/helper_objects.hpp"
-#include "../../sources/io/free_functions.hpp"
 
 
 TEST_CASE("InMemoryLogger", "[libs][logging][logger][InMemoryLogger]")
@@ -39,6 +40,22 @@ TEST_CASE("InMemoryLogger", "[libs][logging][logger][InMemoryLogger]")
 
         REQUIRE(logger.messages.size() == 5);
         REQUIRE(logger.current_msg == 5);
+    }
+
+    SECTION("log many messages → expected str representation", "[basic_check]") {
+        constexpr auto log = []() {
+            constexpr std::size_t nMessages = 100;
+            InMemoryLogger logger;
+
+            for (auto i = 0; i != nMessages; ++i) {
+                logger.info("message-" + std::to_string(i));
+            }
+
+            return logger.toString();
+        };
+
+        auto repr = log();
+        REQUIRE_THAT(repr, Catch::Matchers::Equals("{\"100\"}"));
     }
 
 }
@@ -86,19 +103,39 @@ TEST_CASE("StdoutLogger", "[libs][logging][logger][StdoutLogger]")
 
     SECTION("log many info messages → in stdout", "[functional_requirements]") {
         const std::string path("../../outputs/stdout-logger-1-info.txt");
-        const std::size_t expected = 640;
+        const std::size_t expected = 650;
 
         constexpr auto log = [](const std::string& file) {
             const std::size_t nLogs = 10;
             StreamToFile stdout(std::cout, file);
             StdoutLogger logger;
-            for (auto i = 0; i < nLogs; ++i) logger.info(std::to_string(i));
+            for (auto i = 0; i != nLogs; ++i) logger.info(std::to_string(i));
+            return logger.toString();
         };
 
-        log(path);
+        auto repr = log(path);
 
         const auto size = GetFileSize(path);
         REQUIRE(size == expected);
+        REQUIRE_THAT(repr, Catch::Matchers::ContainsSubstring("{\"10\"}"));
+    }
+
+    SECTION("log many messages → expected str representation", "[basic_check]") {
+        constexpr auto logToFile = []() {
+            const std::string path("../../outputs/stdout-logger-2-to-string.txt");
+            constexpr std::size_t nMessages = 111;
+            StreamToFile stderr(std::cerr, path);
+            StdoutLogger logger;
+
+            for (auto i = 0; i != nMessages; ++i) {
+                logger.fatal("message-" + std::to_string(i));
+            }
+
+            return logger.toString();
+        };
+
+        auto repr = logToFile();
+        REQUIRE_THAT(repr, Catch::Matchers::Equals("{{\"111\"}}"));
     }
 
 }
@@ -106,6 +143,7 @@ TEST_CASE("StdoutLogger", "[libs][logging][logger][StdoutLogger]")
 TEST_CASE("TerminalLogger", "[libs][logging][logger][TerminalLogger]")
 {
     using hlibs::logging::TerminalLogger;
+    using hlibs::io::StreamToFile;
 
     SECTION("log warning message → no exception", "[basic_check]") {
         TerminalLogger logger;
@@ -121,6 +159,23 @@ TEST_CASE("TerminalLogger", "[libs][logging][logger][TerminalLogger]")
 
         std::runtime_error e("dummy");
         logger.exception("exception-msg", e);
+    }
+
+    SECTION("log many messages → expected str representation", "[basic_check]") {
+        constexpr auto logToFile = []() {
+            const std::string path("../../outputs/stdout-logger-3-to-string.txt");
+            constexpr std::size_t nLogs = 67;
+
+            StreamToFile outLog(std::clog, path);
+            TerminalLogger logger;
+            std::out_of_range e("out of range exception");
+            for (auto i = 0; i != nLogs; ++i) logger.exception("message-" + std::to_string(i), e);
+
+            return logger.toString();
+        };
+
+        auto repr = logToFile();
+        REQUIRE_THAT(repr, Catch::Matchers::Equals("{{\"67\"}}"));
     }
 
 }

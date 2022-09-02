@@ -10,6 +10,14 @@ TEST_CASE("DateTime", "[libs][facilities][timestamp][DateTime]")
     using hlibs::facilities::timestamp::DateTime;
     using hlibs::facilities::strings::Contains;
 
+    SECTION("is_standard_layout → true", "[type_traits]") {
+        REQUIRE(std::is_standard_layout_v<DateTime>);
+    }
+
+    SECTION("is_default_constructible → true", "[type_traits]") {
+        REQUIRE(std::is_default_constructible_v<DateTime>);
+    }
+
     SECTION("construct DateTime → date=YYYY-MM-DD, time=HH:MM:SS", "[functional_requirements]") {
         constexpr auto isCorrectStr = [](std::string_view sv, char sep) {
             bool containsWhiteSpace = Contains(sv, ' ');

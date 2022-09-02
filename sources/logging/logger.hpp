@@ -75,10 +75,9 @@ namespace hlibs::logging {
         static std::string Header(Level::Severity lv, const Source& source)
         {
             static Level severity;
-            using hlibs::facilities::timestamp::DateTime;
+            hlibs::facilities::timestamp::DateTime marker;
 
-            DateTime marker;
-            std::string timestamp = marker.date + ' ' + marker.time;
+            std::string timestamp = marker.timestamp();
             std::string level = hlibs::facilities::strings::ToUpperCase(severity.toString(lv));
             std::string path = source.file_name();
             std::string file = path.substr(path.find_last_of("/\\") + 1);
@@ -127,6 +126,16 @@ namespace hlibs::logging {
             ++current_msg;
         }
 
+        /// {"$NumberOfMessages"}
+        [[nodiscard]] std::string toString() const noexcept
+        {
+            std::ostringstream ss;
+            ss << '{';
+            ss << std::quoted(std::to_string(messages.size()));
+            ss << '}';
+            return ss.str();
+        }
+
         std::vector<Message> messages;
         std::size_t current_msg = 0;
     };
@@ -165,6 +174,12 @@ namespace hlibs::logging {
         {
             sink.exception(msg, e, sl);
             insert(std::clog);
+        }
+
+        /// {{"$NumberOfMessages"}}
+        [[nodiscard]] std::string toString() const noexcept
+        {
+            return '{' + sink.toString() + '}';
         }
 
       private:
@@ -231,6 +246,12 @@ namespace hlibs::logging {
             sink.exception(msg, e, sl);
             currentLog(tealBg + whiteFg + currentLog() + reset_colors + '\n');
             print(std::clog);
+        }
+
+        /// {{"$NumberOfMessages"}}
+        [[nodiscard]] std::string toString() const noexcept
+        {
+            return '{' + sink.toString() + '}';
         }
 
       private:
