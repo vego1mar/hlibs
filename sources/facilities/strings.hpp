@@ -28,16 +28,6 @@ namespace hlibs::facilities::strings {
         return source.find(what) != std::string::npos;
     }
 
-    template<typename T>
-    static bool CheckRange(const std::string_view source, const types::Range <T>& range)
-    {
-        const auto isInRange = [&range](const char& ch) {
-            return range.isIn(ch);
-        };
-
-        return std::ranges::all_of(source.begin(), source.end(), isInRange);
-    }
-
 }
 
 #endif //LIBS_STRING_HPP
