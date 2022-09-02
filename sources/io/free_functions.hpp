@@ -3,6 +3,7 @@
 
 #include <fstream>
 #include <sys/stat.h>
+#include <filesystem>
 
 
 namespace hlibs::io {
@@ -14,7 +15,7 @@ namespace hlibs::io {
     }
 
     /// Portable for Windows, Mac, and Linux as part of C Runtime Library.
-    [[maybe_unused]] static long GetFileSize(const std::string& file)
+    [[maybe_unused]] static long GetFileSize(const std::filesystem::path& file)
     {
         struct stat stat_buffer{};
         int rc = stat(file.c_str(), &stat_buffer);

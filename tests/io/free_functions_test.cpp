@@ -1,23 +1,36 @@
 #include <catch2/catch_test_macros.hpp>
 
+#include <filesystem>
+
 #include "../../sources/io/free_functions.hpp"
 
 
-TEST_CASE("GetFileSize()", "[libs][io][file]")
+TEST_CASE("GetFileSize()", "[libs][io][GetFileSize]")
 {
     using hlibs::io::GetFileSize;
 
-    SECTION("f(literal) -> 1213 B", "[functional_requirements]") {
-        constexpr long LICENSE_MD_SIZE = 1213;
-        const auto size = GetFileSize("../../UNLICENSE.md");
-        CHECK(size == LICENSE_MD_SIZE);
+    SECTION("get file size, path is lvalue → expected file size", "[type_traits][functional_requirements]") {
+        const std::filesystem::path path("../../inputs/get-file-size-1.txt");
+        constexpr std::size_t expected = 5805UL;
+
+        constexpr auto getFileSize = [](const std::filesystem::path& p) {
+            CHECK(std::is_lvalue_reference_v<decltype(p)>);
+            auto size = GetFileSize(p);
+            return size;
+        };
+
+        auto size = getFileSize(path);
+        REQUIRE(size == expected);
     }
 
-    SECTION("f(std::strings) -> 65 B", "[functional_requirements]") {
-        constexpr long README_MD_SIZE = 44;
-        const std::string README_MD_PATH("../../README.md");
-        const auto size = GetFileSize(README_MD_PATH);
-        CHECK(size == README_MD_SIZE);
+    SECTION("get unicode file size → expected file size", "[type_traits][functional_requirements]") {
+        const std::filesystem::path path("../../inputs/get-file-size-2-unicode.txt");
+
+        auto size = GetFileSize(path);
+        auto cppSize = std::filesystem::file_size(std::filesystem::path(path));
+
+        REQUIRE(size == 9920UL);
+        REQUIRE(size == cppSize);
     }
 
 }

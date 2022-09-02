@@ -383,7 +383,7 @@ TEST_CASE("FileWriter", "[libs][io][FileWriter]")
 
         auto repr = useCursorAndWrite(path);
         auto str = getFileContent(path);
-        REQUIRE_THAT(str, Catch::Matchers::Equals(expected));
+        REQUIRE_THAT(str, Catch::Matchers::StartsWith(expected));
         REQUIRE_THAT(repr, Catch::Matchers::ContainsSubstring(path));
         REQUIRE_THAT(repr, Catch::Matchers::ContainsSubstring("\"14\""));
     }
