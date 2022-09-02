@@ -13,7 +13,6 @@
 #include <array>
 #include <iostream>
 
-#include "../types/types.hpp"
 #include "../facilities/strings.hpp"
 #include "../facilities/timestamp.hpp"
 

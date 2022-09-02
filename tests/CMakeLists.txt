@@ -10,8 +10,6 @@ add_executable(
         io/helper_objects_test.cpp ${src}/io/helper_objects.hpp
 
         logging/logger_test.cpp ${src}/logging/logger.hpp
-
-        types/types_test.cpp ${src}/types/types.hpp
 )
 
 target_link_libraries(tests_target PRIVATE Catch2::Catch2WithMain)

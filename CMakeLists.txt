@@ -19,8 +19,6 @@ add_executable(
         ${src}/io/helper_objects.hpp
 
         ${src}/logging/logger.hpp
-
-        ${src}/types/types.hpp
 )
 
 enable_testing()

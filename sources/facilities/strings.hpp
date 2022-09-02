@@ -6,8 +6,6 @@
 #include <ranges>
 #include <algorithm>
 
-#include "../types/types.hpp"
-
 
 namespace hlibs::facilities::strings {
 
