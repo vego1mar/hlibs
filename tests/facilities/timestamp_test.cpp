@@ -2,37 +2,38 @@
 #include <cctype>
 
 #include "../../sources/facilities/timestamp.hpp"
+#include "../../sources/facilities/strings.hpp"
 
 
-TEST_CASE("GetDateTime()", "[libs][facilities][timestamp]")
+TEST_CASE("DateTime", "[libs][facilities][timestamp][DateTime]")
 {
-    using hlibs::facilities::timestamp::GetDate;
-    using hlibs::facilities::timestamp::GetTime;
+    using hlibs::facilities::timestamp::DateTime;
+    using hlibs::facilities::strings::Contains;
 
+    SECTION("construct DateTime → date=YYYY-MM-DD, time=HH:MM:SS", "[functional_requirements]") {
+        constexpr auto isCorrectStr = [](std::string_view sv, char sep) {
+            bool containsWhiteSpace = Contains(sv, ' ');
+            bool containsSeparator = Contains(sv, sep);
+            return !containsWhiteSpace && containsSeparator;
+        };
 
-    SECTION("GetDateTime() -> date=YYYY-MM-DD, time=HH:MM:SS", "[functional_requirements]") {
-        const auto& date = GetDate();
-        const auto& time = GetTime();
+        DateTime dt{};
+        bool isCorrectDate = isCorrectStr(dt.date, '-');
+        bool isCorrectTime = isCorrectStr(dt.time, ':');
+        bool isCorrect = isCorrectDate && isCorrectTime;
+        REQUIRE(isCorrect);
+    }
 
-        for (int i = 0; i < date.size(); i++) {
-            if (i == 4 || i == 7) {
-                REQUIRE(date[i] == '-');
-                continue;
-            }
+    SECTION("construct localized DateTime → expected str size", "[basic_check]") {
+        constexpr auto constructLocalized = []() {
+            DateTime dt(std::locale("pl_PL.utf8"));
+            bool isDateLength = dt.date.size() == 10;
+            bool isTimeLength = dt.time.size() == 8;
+            return isDateLength && isTimeLength;
+        };
 
-            bool is_digit = std::isdigit(date[i]);
-            REQUIRE(is_digit);
-        }
-
-        for (std::size_t i = 0; i < time.size(); i++) {
-            if (i == 2 || i == 5) {
-                REQUIRE(time[i] == ':');
-                continue;
-            }
-
-            bool is_digit = std::isdigit(time[i]);
-            REQUIRE(is_digit);
-        }
+        auto isProperLength = constructLocalized();
+        REQUIRE(isProperLength);
     }
 
 }

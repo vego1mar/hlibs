@@ -4,35 +4,34 @@
 #include <string>
 #include <ctime>
 #include <array>
+#include <chrono>
+#include <iomanip>
+#include <locale>
 
 
 namespace hlibs::facilities::timestamp {
 
-    static std::string GetDateAndTime()
-    {
-        time_t now = std::time(nullptr);
-        struct tm timeStruct{};
-        std::array<char, 40> buffer{};
-        timeStruct = *localtime_r(&now, &timeStruct);
-        strftime(buffer.begin(), buffer.size(), "%Y-%m-%d %X", &timeStruct);
-        std::string result(std::begin(buffer));
-        return result;
-    }
+    struct DateTime {
+        /// url:https://en.cppreference.com/w/cpp/locale/locale
+        explicit DateTime(const std::locale& locale = std::locale::classic())
+        {
+            auto now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+            std::tm current = *std::localtime(&now);
 
-    static std::string GetDate()
-    {
-        const auto dateTime = GetDateAndTime();
-        const auto delimiterPos = dateTime.find(' ');
-        auto date = dateTime.substr(0, delimiterPos);
-        return date;
-    }
+            std::ostringstream ss;
+            ss.imbue(std::locale(locale));
+            ss << std::put_time(&current, "%Y-%m-%d %H:%M:%S");
+            auto str = ss.str();
 
-    static std::string GetTime()
-    {
-        const auto dateTime = GetDateAndTime();
-        auto time = dateTime.substr(dateTime.find(' ') + 1);
-        return time;
-    }
+            auto delimiter = str.find_first_of(' ');
+            date = str.substr(0, delimiter);
+            time = str.substr(delimiter + 1);
+        }
+
+        std::string date;
+        std::string time;
+    };
+
 
     // TODO: count duration
 //    static auto CountDuration(const std::function<void()>& procedure)

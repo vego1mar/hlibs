@@ -75,7 +75,10 @@ namespace hlibs::logging {
         static std::string Header(Level::Severity lv, const Source& source)
         {
             static Level severity;
-            std::string timestamp = hlibs::facilities::timestamp::GetDateAndTime();
+            using hlibs::facilities::timestamp::DateTime;
+
+            DateTime marker;
+            std::string timestamp = marker.date + ' ' + marker.time;
             std::string level = hlibs::facilities::strings::ToUpperCase(severity.toString(lv));
             std::string path = source.file_name();
             std::string file = path.substr(path.find_last_of("/\\") + 1);
