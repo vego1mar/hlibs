@@ -5,46 +5,105 @@
 #include "../../sources/facilities/strings.hpp"
 
 
-TEST_CASE("ToUpperCase", "[libs][facilities][strings]")
+TEST_CASE("ToUpperCase", "[libs][facilities][strings][ToUpperCase]")
 {
     using hlibs::facilities::strings::ToUpperCase;
 
-    SECTION("ToUpperCase('lvalue_str') -> 'LVALUE_STR'", "[functional_requirements]") {
+    SECTION("not all chars lowercase → all uppercase", "[functional_requirements]") {
         const std::string input("camelCase");
-        const std::string expectedStr("CAMELCASE");
-        const auto result = ToUpperCase(input);
-        REQUIRE_THAT(result, Catch::Matchers::Equals(expectedStr));
+        const std::string expected("CAMELCASE");
+
+        auto result = ToUpperCase(input);
+
+        REQUIRE_THAT(result, Catch::Matchers::Equals(expected));
     }
 
-    SECTION("ToUpperCase(const char*) -> str(STR)", "[functional_requirements]") {
-        const char* input = "camelCase with spaces and numbers 0123";
-        const std::string expectedStr("CAMELCASE WITH SPACES AND NUMBERS 0123");
+    SECTION("text with numbers & control characters → all uppercase", "[functional_requirements]") {
+        const std::string input = "camel_Case\r\fwith_spaces and\tnumbers\t0123.";
+        const std::string expected("CAMEL_CASE\r\fWITH_SPACES AND\tNUMBERS\t0123.");
+
         const auto result = ToUpperCase(input);
-        REQUIRE_THAT(result, Catch::Matchers::Equals(expectedStr));
+
+        REQUIRE_THAT(result, Catch::Matchers::Equals(expected));
     }
+
+    SECTION("all lowercase, T=const char* → all uppercase", "[basic_check]") {
+        const char* input = "abracadabra";
+        const std::string expected("ABRACADABRA");
+
+        const auto result = ToUpperCase(input);
+
+        REQUIRE_THAT(result, Catch::Matchers::Equals(expected));
+    }
+
 }
 
-TEST_CASE("Contains", "[libs][facilities][strings]")
+TEST_CASE("Contains", "[libs][facilities][strings][Contains]")
 {
     using hlibs::facilities::strings::Contains;
 
-    SECTION("Contains(char) -> true", "[functional_requirements]") {
-        std::string source("xXVvOfFvjW9zHyNAVzQL\n");
-        bool isNewLined = Contains(source, '\n');
-        REQUIRE(isNewLined);
-    }
-
-    SECTION("Contains(str) -> true", "[functional_requirements]") {
-        std::string source("5D7OVjSrm0JLVEgTwae2");
-        std::string strToFind("m0JLVEg");
-        bool isFound = Contains(source, strToFind);
+    SECTION("unique char in the middle → found", "[functional_requirements]") {
+        const std::string source("xXVvOfFvjW9zHyNAVzQL\n");
+        bool isFound = Contains(source, 'W');
         REQUIRE(isFound);
     }
 
-    SECTION("Contains(str) -> false", "[functional_requirements]") {
-        std::string source("MMWfSBhRBOiMau3yAfMO");
-        std::string strToFind("RBOj");
-        bool isFound = Contains(source, strToFind);
+    SECTION("unique char at the end → found", "[functional_requirements]") {
+        const std::string source("xXVvOfFvjW9zHyNAVzQL\n");
+        bool isFound = Contains(source, '\n');
+        REQUIRE(isFound);
+    }
+
+    SECTION("unique char at the beginning → found", "[functional_requirements]") {
+        const std::string source("aBxXVvOfFvjW9zHyNAVzQL");
+        bool isFound = Contains(source, 'a');
+        REQUIRE(isFound);
+    }
+
+    SECTION("the same lowercase and uppercase char → case sensitive search", "[functional_requirements]") {
+        const std::string source("baVvOf_visW9zXHyNAVzQL");
+
+        bool isFoundLower = Contains(source, 'a');
+        bool isFoundUpper = Contains(source, 'A');
+
+        bool isFound = isFoundLower && isFoundUpper;
+        REQUIRE(isFound);
+    }
+
+    SECTION("substring in the middle → found", "[functional_requirements]") {
+        const std::string source("5D7OVjSrm0JLVEg_T.w.a.e_2");
+        const std::string expected("m0JLVEg");
+
+        bool isFound = Contains(source, expected);
+
+        REQUIRE(isFound);
+    }
+
+    SECTION("substring at the end → found", "[functional_requirements]") {
+        const std::string source("5D7OVjSrm0JLVEg_T.w.ae_2");
+        const std::string expected("ae_2");
+
+        bool isFound = Contains(source, expected);
+
+        REQUIRE(isFound);
+    }
+
+    SECTION("substring at the beginning → found", "[functional_requirements]") {
+        const std::string source("5D7OVjSrm0JLVEg");
+        const std::string expected("5D7OV");
+
+        bool isFound = Contains(source, expected);
+
+        REQUIRE(isFound);
+    }
+
+    SECTION("substring not in string → not found", "[functional_requirements]") {
+        const std::string source("MMWfSBhRBOiMau3yAfMO");
+        const std::string expected("RBOj");
+
+        bool isFound = Contains(source, expected);
+
         REQUIRE(!isFound);
     }
+
 }

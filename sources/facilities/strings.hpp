@@ -11,19 +11,19 @@
 
 namespace hlibs::facilities::strings {
 
-    static std::string ToUpperCase(const std::string_view source)
+    [[maybe_unused]] static std::string ToUpperCase(std::string_view source)
     {
         std::string str{source};
         std::ranges::transform(str, str.begin(), ::toupper);
         return str;
     }
 
-    static bool Contains(const std::string_view source, const char what)
+    [[maybe_unused]] static bool Contains(std::string_view source, char what) noexcept
     {
         return source.find(what) != std::string::npos;
     }
 
-    static bool Contains(const std::string_view source, const std::string_view what)
+    [[maybe_unused]] static bool Contains(std::string_view source, std::string_view what) noexcept
     {
         return source.find(what) != std::string::npos;
     }
