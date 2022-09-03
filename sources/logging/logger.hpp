@@ -49,15 +49,15 @@ namespace hlibs::logging {
     struct Message final {
         using Source = std::experimental::source_location;
 
-        std::string message;
+        std::string str;
 
         /// ${Header}$Message$NewLine
         Message(Level::Severity level, std::string_view msg, const Source& location)
         {
             auto head = Header(level, location);
-            message.append(head);
-            message.append(msg);
-            message.append("\n");
+            str.append(head);
+            str.append(msg);
+            str.append("\n");
         }
 
         /// ${Header}std::exception->$Type | $What | $Message$NewLine
@@ -66,10 +66,10 @@ namespace hlibs::logging {
             auto head = Header(Level::Severity::Exception, location);
             auto typeID = std::string(typeid(e).name());
             auto tail = "std::exception->" + typeID + " | what: " + e.what() + " | ";
-            message.append(head);
-            message.append(tail);
-            message.append(msg);
-            message.append("\n");
+            str.append(head);
+            str.append(tail);
+            str.append(msg);
+            str.append("\n");
         }
 
       private:
@@ -100,31 +100,26 @@ namespace hlibs::logging {
         void info(std::string_view msg, Source sl = std::experimental::source_location::current())
         {
             messages.emplace_back(Level::Severity::Info, msg, sl);
-            ++current_msg;
         }
 
         void warning(std::string_view msg, Source sl = std::experimental::source_location::current())
         {
             messages.emplace_back(Level::Severity::Warning, msg, sl);
-            ++current_msg;
         }
 
         void fatal(std::string_view msg, Source sl = std::experimental::source_location::current())
         {
             messages.emplace_back(Level::Severity::Fatal, msg, sl);
-            ++current_msg;
         }
 
         void debug(std::string_view msg, Source sl = std::experimental::source_location::current())
         {
             messages.emplace_back(Level::Severity::Debug, msg, sl);
-            ++current_msg;
         }
 
         void exception(std::string_view msg, const std::exception& e, Source sl = std::experimental::source_location::current())
         {
             messages.emplace_back(msg, e, sl);
-            ++current_msg;
         }
 
         /// {"$NumberOfMessages"}
@@ -137,8 +132,17 @@ namespace hlibs::logging {
             return ss.str();
         }
 
+        [[nodiscard]] std::string last() const
+        {
+            return messages.at(messages.size() - 1).str;
+        }
+
+        void last(std::string&& msg)
+        {
+            messages.at(messages.size() - 1).str = std::move(msg);
+        }
+
         std::vector<Message> messages;
-        std::size_t current_msg = 0;
     };
 
 
@@ -150,31 +154,31 @@ namespace hlibs::logging {
         void info(std::string_view msg, Source sl = std::experimental::source_location::current())
         {
             sink.info(msg, sl);
-            insert();
+            std::cout << sink.last();
         }
 
         void warning(std::string_view msg, Source sl = std::experimental::source_location::current())
         {
             sink.warning(msg, sl);
-            insert();
+            std::cout << sink.last();
         }
 
         void fatal(std::string_view msg, Source sl = std::experimental::source_location::current())
         {
             sink.fatal(msg, sl);
-            insert(std::cerr);
+            std::cerr << sink.last();
         }
 
         void debug(std::string_view msg, Source sl = std::experimental::source_location::current())
         {
             sink.debug(msg, sl);
-            insert();
+            std::cout << sink.last();
         }
 
         void exception(std::string_view msg, const std::exception& e, Source sl = std::experimental::source_location::current())
         {
             sink.exception(msg, e, sl);
-            insert(std::clog);
+            std::clog << sink.last();
         }
 
         /// {{"$NumberOfMessages"}}
@@ -184,12 +188,6 @@ namespace hlibs::logging {
         }
 
       private:
-        void insert(std::ostream& stream = std::cout)
-        {
-            auto current = (sink.current_msg == 0) ? 0 : (sink.current_msg - 1);
-            stream << sink.messages.at(current).message;
-        }
-
         InMemoryLogger sink;
     };
 
@@ -204,8 +202,8 @@ namespace hlibs::logging {
         void info(std::string_view msg, Source sl = std::experimental::source_location::current())
         {
             sink.info(msg, sl);
-            currentLog(currentLog() + reset_colors + '\n');
-            print();
+            current(current());
+            std::cout << sink.last();
         }
 
         /// ${RedFg}$Message${ResetColors}
@@ -213,8 +211,8 @@ namespace hlibs::logging {
         {
             std::string redFg = "\033[38:2::255:0:0m";
             sink.warning(msg, sl);
-            currentLog(redFg + currentLog() + reset_colors + '\n');
-            print();
+            current(redFg + current());
+            std::cout << sink.last();
         }
 
         /// ${RedBg}${WhiteFg}$Bold$Message${NormalIntensity}${ResetColors}
@@ -225,8 +223,8 @@ namespace hlibs::logging {
             std::string bold = "\033[1m";
             std::string notBold = "\033[22m";
             sink.fatal(msg, sl);
-            currentLog(redBg + whiteFg + bold + currentLog() + notBold + reset_colors + '\n');
-            print(std::cerr);
+            current(redBg + whiteFg + bold + current() + notBold);
+            std::cerr << sink.last();
         }
 
         /// $Invert$Message$Revert
@@ -235,8 +233,8 @@ namespace hlibs::logging {
             std::string invert = "\033[7m";
             std::string revert = "\033[27m";
             sink.debug(msg, sl);
-            currentLog(invert + currentLog() + revert + '\n');
-            print();
+            current(invert + current() + revert, false);
+            std::cout << sink.last();
         }
 
         /// ${TealBg}${WhiteFg}$Message${ResetColors}
@@ -245,8 +243,8 @@ namespace hlibs::logging {
             std::string tealBg = "\033[48:2::0:128:128m";
             std::string whiteFg = "\033[38:2::255:255:255m";
             sink.exception(msg, e, sl);
-            currentLog(tealBg + whiteFg + currentLog() + reset_colors + '\n');
-            print(std::clog);
+            current(tealBg + whiteFg + current());
+            std::clog << sink.last();
         }
 
         /// {{"$NumberOfMessages"}}
@@ -256,26 +254,24 @@ namespace hlibs::logging {
         }
 
       private:
-        void print(std::ostream& stream = std::cout)
+        // TODO: make this compliant with Windows line break
+        [[nodiscard]] std::string current() const noexcept
         {
-            auto&& current = (sink.current_msg == 0) ? 0 : (sink.current_msg - 1);
-            stream << sink.messages.at(current).message;
-        }
-
-        [[nodiscard]] std::string currentLog() const noexcept
-        {
-            auto& current = sink.messages.at(sink.current_msg - 1).message;
+            auto current = sink.last();
             auto noNewline = current.substr(0, current.size() - 1);
             return noNewline;
         }
 
-        void currentLog(std::string&& log) noexcept
+        /// "${LogMessage}${ColorResetTerminator}${NewLine}"
+        void current(std::string&& log, bool shouldResetColors = true) noexcept
         {
-            sink.messages.at(sink.current_msg - 1).message = std::move(log);
+            auto enriched = std::move(log);
+            if (shouldResetColors) enriched.append("\033[39;49m");
+            enriched.append("\n");
+            sink.last(std::move(enriched));
         }
 
         InMemoryLogger sink;
-        std::string reset_colors = "\033[39;49m";
     };
 
 
@@ -302,7 +298,7 @@ namespace hlibs::logging {
         void info(std::string_view msg, Source sl = std::experimental::source_location::current())
         {
             sink.info(msg, sl);
-            write();
+            writer.write(sink.last());
         }
 
         /// {{$InMemoryLogger},{$FileWriter}}
@@ -328,13 +324,6 @@ namespace hlibs::logging {
             auto filepath = std::filesystem::path(base);
             filepath.append("file_logger_${20220903}_${1233}.log");
             return filepath.string();
-        }
-
-        void write()
-        {
-            auto current = (sink.current_msg == 0) ? 0 : (sink.current_msg - 1); // TODO: let Message start from 1 with an empty msg
-            const auto& msg = sink.messages.at(current).message; // TODO: rename Message::message to Message::str
-            writer.write(msg);
         }
 
         InMemoryLogger sink{};

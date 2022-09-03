@@ -17,11 +17,13 @@ TEST_CASE("InMemoryLogger", "[libs][logging][InMemoryLogger]")
         REQUIRE(std::is_default_constructible_v<InMemoryLogger>);
     }
 
-    SECTION("log 1 message → pushed back on list", "[basic_check]") {
+    SECTION("log 1 str → pushed back on list", "[basic_check]") {
         InMemoryLogger logger{};
+
         logger.info("one");
+
         REQUIRE(logger.messages.size() == 1);
-        REQUIRE(logger.current_msg == 1);
+        REQUIRE_THAT(logger.toString(), Catch::Matchers::Equals("{\"1\"}"));
     }
 
     SECTION("log many messages → pushed back on list", "[basic_check]") {
@@ -31,12 +33,10 @@ TEST_CASE("InMemoryLogger", "[libs][logging][InMemoryLogger]")
         logger.warning("two");
         logger.fatal("three");
         logger.debug("four");
-
-        auto e = std::domain_error("five");
-        logger.exception("six", e);
+        logger.exception("six", std::domain_error("five"));
 
         REQUIRE(logger.messages.size() == 5);
-        REQUIRE(logger.current_msg == 5);
+        REQUIRE_THAT(logger.toString(), Catch::Matchers::Equals("{\"5\"}"));
     }
 
     SECTION("log many messages → expected str representation", "[basic_check]") {
@@ -45,7 +45,7 @@ TEST_CASE("InMemoryLogger", "[libs][logging][InMemoryLogger]")
             InMemoryLogger logger;
 
             for (auto i = 0; i != nMessages; ++i) {
-                logger.info("message-" + std::to_string(i));
+                logger.info("str-" + std::to_string(i));
             }
 
             return logger.toString();
@@ -71,17 +71,17 @@ TEST_CASE("StdoutLogger", "[libs][logging][StdoutLogger]")
         REQUIRE(std::is_default_constructible_v<StdoutLogger>);
     }
 
-    SECTION("log 1 message to stdout → no exception", "[basic_check]") {
+    SECTION("log 1 str to stdout → no exception", "[basic_check]") {
         StdoutLogger logger;
         REQUIRE_NOTHROW(logger.info("stdout"));
     }
 
-    SECTION("log 1 message to stderr → no exception", "[basic_check]") {
+    SECTION("log 1 str to stderr → no exception", "[basic_check]") {
         StdoutLogger logger;
         REQUIRE_NOTHROW(logger.fatal("stderr"));
     }
 
-    SECTION("log 1 message to clog → no exception", "[basic_check]") {
+    SECTION("log 1 str to clog → no exception", "[basic_check]") {
         StdoutLogger logger;
         const std::domain_error e("domain_error");
         REQUIRE_NOTHROW(logger.exception("clog", e));
@@ -125,7 +125,7 @@ TEST_CASE("StdoutLogger", "[libs][logging][StdoutLogger]")
             StdoutLogger logger;
 
             for (auto i = 0; i != nMessages; ++i) {
-                logger.fatal("message-" + std::to_string(i));
+                logger.fatal("str-" + std::to_string(i));
             }
 
             return logger.toString();
@@ -150,7 +150,7 @@ TEST_CASE("TerminalLogger", "[libs][logging][TerminalLogger]")
         REQUIRE(std::is_default_constructible_v<TerminalLogger>);
     }
 
-    SECTION("log warning message → no exception", "[basic_check]") {
+    SECTION("log warning str → no exception", "[basic_check]") {
         TerminalLogger logger;
         REQUIRE_NOTHROW(logger.warning("test warning"));
     }
@@ -174,7 +174,7 @@ TEST_CASE("TerminalLogger", "[libs][logging][TerminalLogger]")
             StreamToFile outLog(std::clog, path);
             TerminalLogger logger;
             std::out_of_range e("out of range exception");
-            for (auto i = 0; i != nLogs; ++i) logger.exception("message-" + std::to_string(i), e);
+            for (auto i = 0; i != nLogs; ++i) logger.exception("str-" + std::to_string(i), e);
 
             return logger.toString();
         };
