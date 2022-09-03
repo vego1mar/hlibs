@@ -5,6 +5,7 @@
 #include <string_view>
 #include <ranges>
 #include <algorithm>
+#include <regex>
 
 
 namespace hlibs::facilities::strings {
@@ -26,7 +27,25 @@ namespace hlibs::facilities::strings {
         return source.find(what) != std::string::npos;
     }
 
-    // TODO: IsNumber
+    /// Checks if str consists only of digits.
+    [[maybe_unused]] static bool IsNumber(std::string_view str)
+    {
+        bool hasOnlyDigits = true;
+
+        auto isNumber = [&hasOnlyDigits](const auto& ch) {
+            hasOnlyDigits = hasOnlyDigits && std::isdigit(ch);
+        };
+
+        std::ranges::for_each(str, isNumber);
+        return hasOnlyDigits;
+    }
+
+    /// Checks if str corresponds to a number notation (e.g. +1.0, -1).
+    [[maybe_unused]] static bool IsNumeric(const std::string& str)
+    {
+        std::regex number("((\\+|-)?[[:digit:]]+)(\\.(([[:digit:]]+)?))?");
+        return std::regex_match(str, number);
+    }
 
 }
 

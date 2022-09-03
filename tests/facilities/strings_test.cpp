@@ -107,3 +107,59 @@ TEST_CASE("Contains", "[libs][facilities][strings][Contains]")
     }
 
 }
+
+TEST_CASE("IsNumber", "[libs][facilities][strings][IsNumber]")
+{
+
+    using hlibs::facilities::strings::IsNumber;
+
+    SECTION("only digits string → true", "[functional_requirements]") {
+        const std::string source("12345678098765");
+        bool isNumber = IsNumber(source);
+        REQUIRE(isNumber);
+    }
+
+    SECTION("only chars string → false", "[functional_requirements]") {
+        const std::string source("Ala ma kota, a\u00A0kot ma Alę 64-bitową.");
+        bool isNumber = IsNumber(source);
+        REQUIRE(!isNumber);
+    }
+
+    SECTION("mixed string → false", "[functional_requirements]") {
+        const std::string source("a12b_c.d/ef8");
+        bool isNumber = IsNumber(source);
+        REQUIRE(!isNumber);
+    }
+
+    SECTION("number with a padding → false", "[functional_requirements]") {
+        const std::string source(" 65242 ");
+        bool isNumber = IsNumber(source);
+        REQUIRE(!isNumber);
+    }
+
+}
+
+TEST_CASE("IsNumeric", "[libs][facilities][strings][IsNumeric]")
+{
+
+    using hlibs::facilities::strings::IsNumeric;
+
+    SECTION("integers/floats with/without a sign", "[functional_requirements]") {
+        REQUIRE(IsNumeric("0"));
+        REQUIRE(IsNumeric("10"));
+        REQUIRE(IsNumeric("+100"));
+        REQUIRE(IsNumeric("-1000"));
+        REQUIRE(!IsNumeric(".0"));
+
+        REQUIRE(IsNumeric("1.0"));
+        REQUIRE(IsNumeric("+10.0"));
+        REQUIRE(IsNumeric("-100.0"));
+
+        REQUIRE(!IsNumeric("02918273727384726546587346 "));
+        REQUIRE(!IsNumeric(" 02918273727384726546587346"));
+        REQUIRE(!IsNumeric("0291827372738 4726546587346"));
+        REQUIRE(!IsNumeric("-10+2"));
+        REQUIRE(!IsNumeric("2-0.0+5.24"));
+    }
+
+}

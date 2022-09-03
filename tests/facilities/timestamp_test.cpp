@@ -12,6 +12,7 @@ TEST_CASE("DateTime", "[libs][facilities][timestamp][DateTime]")
 {
     using hlibs::facilities::timestamp::DateTime;
     using hlibs::facilities::strings::Contains;
+    using hlibs::facilities::strings::IsNumber;
 
     SECTION("is_standard_layout → true", "[type_traits]") {
         REQUIRE(std::is_standard_layout_v<DateTime>);
@@ -48,13 +49,6 @@ TEST_CASE("DateTime", "[libs][facilities][timestamp][DateTime]")
     }
 
     SECTION("filestamp() → only digits", "[basic_check]") {
-        constexpr auto isFromDigits = [](std::string& str) {
-            std::erase(str, '_');
-            bool hasOnlyDigits = true;
-            std::ranges::for_each(str, [&hasOnlyDigits](const auto& c) { return std::isdigit(c) && hasOnlyDigits; });
-            return hasOnlyDigits;
-        };
-
         constexpr auto getFilestamp = []() {
             DateTime dt{};
             return dt.filestamp();
@@ -64,7 +58,8 @@ TEST_CASE("DateTime", "[libs][facilities][timestamp][DateTime]")
 
         bool isProperLength = filestamp.size() == 15;
         bool isUnderscored = filestamp.find_first_of('_') != std::string::npos;
-        bool isNumber = isFromDigits(filestamp);
+        std::erase(filestamp, '_');
+        bool isNumber = IsNumber(filestamp);
         REQUIRE(isProperLength);
         REQUIRE(isUnderscored);
         REQUIRE(isNumber);
