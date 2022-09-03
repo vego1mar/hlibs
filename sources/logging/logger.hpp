@@ -317,12 +317,12 @@ namespace hlibs::logging {
         static std::string GetFileName(const std::filesystem::path& base)
         {
             using facilities::timestamp::DateTime;
-            // TODO: move this to DateTime
             DateTime dt{};
+            auto filename = "file_logger_" + dt.filestamp() + ".log";
 
             if (base.has_filename()) throw std::invalid_argument("base.has_filename()");
             auto filepath = std::filesystem::path(base);
-            filepath.append("file_logger_${20220903}_${1233}.log");
+            filepath.append(filename);
             return filepath.string();
         }
 

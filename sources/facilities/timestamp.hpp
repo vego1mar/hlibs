@@ -7,10 +7,12 @@
 #include <chrono>
 #include <iomanip>
 #include <locale>
+#include <ranges>
 
 
 namespace hlibs::facilities::timestamp {
 
+    /// Obtains current date and time.
     struct DateTime {
         /// url:https://en.cppreference.com/w/cpp/locale/locale
         explicit DateTime(const std::locale& locale = std::locale::classic())
@@ -28,14 +30,24 @@ namespace hlibs::facilities::timestamp {
             time = str.substr(delimiter + 1);
         }
 
-        /// "$Date $Time"
+        /// "YYYY-mm-dd HH:MM:SS"
         [[nodiscard]] std::string timestamp() const noexcept
         {
             return date + ' ' + time;
         }
 
-        std::string date;
-        std::string time;
+        /// "YYYYmmDD_HHMMSS"
+        [[nodiscard]] std::string filestamp() const noexcept
+        {
+            std::string ymd;
+            std::string hm;
+            std::ranges::remove_copy(date, std::back_inserter(ymd), '-');
+            std::ranges::remove_copy(time, std::back_inserter(hm), ':');
+            return ymd + '_' + hm;
+        }
+
+        std::string date;    ///< "YYYY-mm-dd"
+        std::string time;    ///< "HH:MM:SS"
     };
 
 }

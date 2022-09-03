@@ -26,6 +26,8 @@ namespace hlibs::facilities::strings {
         return source.find(what) != std::string::npos;
     }
 
+    // TODO: IsNumber
+
 }
 
 #endif //LIBS_STRING_HPP

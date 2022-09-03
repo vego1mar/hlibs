@@ -1,6 +1,8 @@
 #include <catch2/catch_test_macros.hpp>
 #include <cctype>
 #include <chrono>
+#include <ranges>
+#include <algorithm>
 
 #include "../../sources/facilities/timestamp.hpp"
 #include "../../sources/facilities/strings.hpp"
@@ -43,6 +45,29 @@ TEST_CASE("DateTime", "[libs][facilities][timestamp][DateTime]")
 
         auto isProperLength = constructLocalized();
         REQUIRE(isProperLength);
+    }
+
+    SECTION("filestamp() → only digits", "[basic_check]") {
+        constexpr auto isFromDigits = [](std::string& str) {
+            std::erase(str, '_');
+            bool hasOnlyDigits = true;
+            std::ranges::for_each(str, [&hasOnlyDigits](const auto& c) { return std::isdigit(c) && hasOnlyDigits; });
+            return hasOnlyDigits;
+        };
+
+        constexpr auto getFilestamp = []() {
+            DateTime dt{};
+            return dt.filestamp();
+        };
+
+        auto filestamp = getFilestamp();
+
+        bool isProperLength = filestamp.size() == 15;
+        bool isUnderscored = filestamp.find_first_of('_') != std::string::npos;
+        bool isNumber = isFromDigits(filestamp);
+        REQUIRE(isProperLength);
+        REQUIRE(isUnderscored);
+        REQUIRE(isNumber);
     }
 
 }
