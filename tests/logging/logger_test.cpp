@@ -190,6 +190,18 @@ TEST_CASE("FileLogger", "[libs][logging][FileLogger]")
 
     using hlibs::logging::FileLogger;
 
+    struct FileName {
+        static std::string FromToString(std::string_view str)
+        {
+            // {{"1"},{"../../outputs/file_logger_20220903_173759.log","0x7fffffffcd50","86"}}
+            auto first = str.find_first_of(',') + 3;
+            auto last = str.rfind(".log") + 4;
+            auto distance = last - first;
+            auto result = str.substr(first, distance);
+            return std::string(result);
+        }
+    };
+
     SECTION("is_standard_layout → false", "[type_traits]") {
         REQUIRE(!std::is_standard_layout_v<FileLogger>);
     }
@@ -216,6 +228,45 @@ TEST_CASE("FileLogger", "[libs][logging][FileLogger]")
         };
 
         REQUIRE_NOTHROW(construct(path));
+    }
+
+    SECTION("log 1 info message → expected file size", "[functional_requirements]") {
+        const std::filesystem::path path("../../outputs/");
+        const std::size_t expected = 86UL;
+
+        constexpr auto log = [](const std::filesystem::path& p) {
+            FileLogger logger{p};
+            logger.info("first-and-last-message");
+            return logger.toString();
+        };
+
+        auto repr = log(path);
+
+        REQUIRE(std::filesystem::file_size(FileName::FromToString(repr)) == expected);
+        REQUIRE_THAT(repr, Catch::Matchers::ContainsSubstring("{\"1\"}"));
+        REQUIRE_THAT(repr, Catch::Matchers::ContainsSubstring(path.string()));
+    }
+
+    SECTION("log many different messages → expected file size", "[functional_requirements]") {
+        const std::filesystem::path path("../../outputs/");
+        const std::size_t expected = 493UL;
+
+        constexpr auto log = [](const std::filesystem::path& p) {
+            FileLogger logger{p};
+            logger.info("1\t...");
+            logger.warning("2\t...");
+            logger.fatal("3\t...");
+            logger.debug("4\t...");
+            logger.exception("5\t...", std::runtime_error("...6..."));
+            return logger.toString();
+        };
+
+        auto repr = log(path);
+
+        REQUIRE_THAT(repr, Catch::Matchers::ContainsSubstring(path.string()));
+        REQUIRE_THAT(repr, Catch::Matchers::ContainsSubstring("{\"5\"}"));
+//        REQUIRE_THAT(repr, Catch::Matchers::ContainsSubstring("{\"493\"}"));
+        REQUIRE(std::filesystem::file_size(FileName::FromToString(repr)) == expected);
     }
 
 }

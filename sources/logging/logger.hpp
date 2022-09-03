@@ -148,9 +148,9 @@ namespace hlibs::logging {
 
     /// Logs messages to std::cout, std::cerr, or std::clog.
     class StdoutLogger {
-      public:
         using Source = std::experimental::source_location;
 
+      public:
         void info(std::string_view msg, Source sl = std::experimental::source_location::current())
         {
             sink.info(msg, sl);
@@ -195,9 +195,9 @@ namespace hlibs::logging {
     /// Uses ANSI escape characters (SGR sequences of ECMA-48) to print colourful output.
     /// url:https://www.ecma-international.org/publications-and-standards/standards/ecma-48/
     class TerminalLogger {
-      public:
         using Source = std::experimental::source_location;
 
+      public:
         /// $Message${ColorsReset}
         void info(std::string_view msg, Source sl = std::experimental::source_location::current())
         {
@@ -275,7 +275,7 @@ namespace hlibs::logging {
     };
 
 
-    // TODO: single-line doc
+    // Logs messages into a single file of name schema "file_logger_${YYYYmmDD}_${HHMM}.log".
     class FileLogger {
         using Source = std::experimental::source_location;
 
@@ -298,6 +298,30 @@ namespace hlibs::logging {
         void info(std::string_view msg, Source sl = std::experimental::source_location::current())
         {
             sink.info(msg, sl);
+            writer.write(sink.last());
+        }
+
+        void warning(std::string_view msg, Source sl = std::experimental::source_location::current())
+        {
+            sink.warning(msg, sl);
+            writer.write(sink.last());
+        }
+
+        void fatal(std::string_view msg, Source sl = std::experimental::source_location::current())
+        {
+            sink.fatal(msg, sl);
+            writer.write(sink.last());
+        }
+
+        void debug(std::string_view msg, Source sl = std::experimental::source_location::current())
+        {
+            sink.debug(msg, sl);
+            writer.write(sink.last());
+        }
+
+        void exception(std::string_view msg, const std::exception& e, Source sl = std::experimental::source_location::current())
+        {
+            sink.exception(msg, e, sl);
             writer.write(sink.last());
         }
 

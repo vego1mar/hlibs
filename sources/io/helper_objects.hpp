@@ -57,7 +57,7 @@ namespace hlibs::io {
     /// Reads the whole text file at once (sink for data).
     class FileLoader final {
       public:
-        explicit FileLoader(const std::filesystem::path& path): path(path), file(std::ifstream(path, std::ios_base::in))
+        explicit FileLoader(const std::filesystem::path& p): path(p), file(std::ifstream(p, std::ios_base::in))
         {
             if (!isOpened()) {
                 file.close();
@@ -111,7 +111,7 @@ namespace hlibs::io {
     // Allows to read a text file line-by-line (and counts the number of lines already read).
     class FileReader final {
       public:
-        explicit FileReader(const std::filesystem::path& path): path(path), file(std::ifstream(path, std::ios::in))
+        explicit FileReader(const std::filesystem::path& p): path(p), file(std::ifstream(p, std::ios::in))
         {
             if (file.fail() || !file.is_open()) {
                 file.close();
@@ -174,8 +174,8 @@ namespace hlibs::io {
         };
 
         /// url:https://en.cppreference.com/w/cpp/io/ios_base/openmode
-        explicit FileWriter(const std::filesystem::path& path, std::ios_base::openmode mode = std::ios::trunc)
-                : path(path), file(path, mode)
+        explicit FileWriter(const std::filesystem::path& p, std::ios_base::openmode mode = std::ios::trunc)
+                : path(p), file(p, mode)
         {
             bool isAllowedOpenMode = mode == std::ios::trunc || mode == std::ios::app || mode == std::ios::out;
 
