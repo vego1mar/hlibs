@@ -100,7 +100,7 @@ function build_coverage_report() {
     cd "$BUILD_DIR"/coverage_build || report_error_code 6
     # shellcheck disable=SC2034
     dump=$(find "$TESTS_DIR"/CMakeFiles/tests_target.dir/ -name '*.gcda' -type f -print0 -nowarn | xargs -0 gcov -bclp)
-    gcovr . --root "$SOURCES_DIR" --use-gcov-files --keep --sonarqube > "$REPORT_COVERAGE"
+    gcovr . --root "$SOURCES_DIR" --use-gcov-files --keep --sonarqube --exclude-unreachable-branches > "$REPORT_COVERAGE"
     sed -i "s.path=\".path=\"${SOURCES_DIR}/.g" "$REPORT_COVERAGE"
 }
 
