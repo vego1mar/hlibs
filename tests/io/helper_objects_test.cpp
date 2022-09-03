@@ -66,11 +66,11 @@ TEST_CASE("FileLoader", "[libs][io][FileLoader]")
 {
     using hlibs::io::FileLoader;
 
-    SECTION("is_standard_layout → true", "[type_traits]") {
+    SECTION("is_standard_layout → false", "[type_traits]") {
         REQUIRE(!std::is_standard_layout_v<FileLoader>);
     }
 
-    SECTION("is_default_constructible → true", "[type_traits]") {
+    SECTION("is_default_constructible → false", "[type_traits]") {
         REQUIRE(!std::is_default_constructible_v<FileLoader>);
     }
 
@@ -127,11 +127,11 @@ TEST_CASE("FileReader", "[libs][io][FileReader]")
     using hlibs::io::FileReader;
     using hlibs::io::GetFileSize;
 
-    SECTION("is_standard_layout → true", "[type_traits]") {
+    SECTION("is_standard_layout → false", "[type_traits]") {
         REQUIRE(!std::is_standard_layout_v<FileReader>);
     }
 
-    SECTION("is_default_constructible → true", "[type_traits]") {
+    SECTION("is_default_constructible → false", "[type_traits]") {
         REQUIRE(!std::is_default_constructible_v<FileReader>);
     }
 
@@ -146,7 +146,7 @@ TEST_CASE("FileReader", "[libs][io][FileReader]")
     }
 
     SECTION("read next lines until eof → expected file size", "[functional_requirements][basic_check]") {
-        const std::string path("../../inputs/file-reader-1-read.txt");
+        const std::filesystem::path path("../../inputs/file-reader-1-read.txt");
         const std::size_t expected = 802UL;
         std::vector<std::string> buffer{};
 
@@ -168,7 +168,7 @@ TEST_CASE("FileReader", "[libs][io][FileReader]")
     }
 
     SECTION("read whole file → all lines read", "[basic_check]") {
-        const std::string path("../../inputs/file-reader-2-read.txt");
+        const std::filesystem::path path("../../inputs/file-reader-2-read.txt");
         const std::size_t expected = 392UL;
 
         auto readFile = [](const std::filesystem::path& p) {
@@ -195,16 +195,16 @@ TEST_CASE("FileWriter", "[libs][io][FileWriter]")
     using hlibs::io::GetFileSize;
     using hlibs::io::FileLoader;
 
-    SECTION("is_standard_layout → true", "[type_traits]") {
+    SECTION("is_standard_layout → false", "[type_traits]") {
         REQUIRE(!std::is_standard_layout_v<FileWriter>);
     }
 
-    SECTION("is_default_constructible → true", "[type_traits]") {
+    SECTION("is_default_constructible → false", "[type_traits]") {
         REQUIRE(!std::is_default_constructible_v<FileWriter>);
     }
 
     SECTION("create & no-op → no exception", "[basic_check]") {
-        const std::string path("../../outputs/file-writer-1-write.txt");
+        const std::filesystem::path path("../../outputs/file-writer-1-write.txt");
         const std::size_t expected = 0UL;
 
         constexpr auto create = [](const std::filesystem::path& p) {

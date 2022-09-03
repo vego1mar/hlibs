@@ -2,13 +2,10 @@
 #include <catch2/matchers/catch_matchers.hpp>
 #include <catch2/matchers/catch_matchers_string.hpp>
 
-#include <iostream>
-
 #include "../../sources/logging/logger.hpp"
-#include "../../sources/io/helper_objects.hpp"
 
 
-TEST_CASE("InMemoryLogger", "[libs][logging][logger][InMemoryLogger]")
+TEST_CASE("InMemoryLogger", "[libs][logging][InMemoryLogger]")
 {
     using hlibs::logging::InMemoryLogger;
 
@@ -60,7 +57,7 @@ TEST_CASE("InMemoryLogger", "[libs][logging][logger][InMemoryLogger]")
 
 }
 
-TEST_CASE("StdoutLogger", "[libs][logging][logger][StdoutLogger]")
+TEST_CASE("StdoutLogger", "[libs][logging][StdoutLogger]")
 {
     using hlibs::logging::StdoutLogger;
     using hlibs::io::StreamToFile;
@@ -140,10 +137,18 @@ TEST_CASE("StdoutLogger", "[libs][logging][logger][StdoutLogger]")
 
 }
 
-TEST_CASE("TerminalLogger", "[libs][logging][logger][TerminalLogger]")
+TEST_CASE("TerminalLogger", "[libs][logging][TerminalLogger]")
 {
     using hlibs::logging::TerminalLogger;
     using hlibs::io::StreamToFile;
+
+    SECTION("is_standard_layout → true", "[type_traits]") {
+        REQUIRE(std::is_standard_layout_v<TerminalLogger>);
+    }
+
+    SECTION("is_default_constructible → true", "[type_traits]") {
+        REQUIRE(std::is_default_constructible_v<TerminalLogger>);
+    }
 
     SECTION("log warning message → no exception", "[basic_check]") {
         TerminalLogger logger;
@@ -176,6 +181,41 @@ TEST_CASE("TerminalLogger", "[libs][logging][logger][TerminalLogger]")
 
         auto repr = logToFile();
         REQUIRE_THAT(repr, Catch::Matchers::Equals("{{\"67\"}}"));
+    }
+
+}
+
+TEST_CASE("FileLogger", "[libs][logging][FileLogger]")
+{
+
+    using hlibs::logging::FileLogger;
+
+    SECTION("is_standard_layout → false", "[type_traits]") {
+        REQUIRE(!std::is_standard_layout_v<FileLogger>);
+    }
+
+    SECTION("is_default_constructible → false", "[type_traits]") {
+        REQUIRE(!std::is_default_constructible_v<FileLogger>);
+    }
+
+    SECTION("construct with a file name → exception", "[basic_check][exception]") {
+        const std::filesystem::path path("../../outputs/file-logger-1-empty.txt");
+
+        constexpr auto construct = [](const std::filesystem::path& p) {
+            FileLogger logger{p};
+        };
+
+        REQUIRE_THROWS_AS(construct(path), std::invalid_argument);
+    }
+
+    SECTION("construct with a folder name → no exception", "[basic_check][exception]") {
+        const std::filesystem::path path("../../outputs/");
+
+        constexpr auto construct = [](const std::filesystem::path& p) {
+            FileLogger logger{p};
+        };
+
+        REQUIRE_NOTHROW(construct(path));
     }
 
 }

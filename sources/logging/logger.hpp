@@ -15,6 +15,7 @@
 
 #include "../facilities/strings.hpp"
 #include "../facilities/timestamp.hpp"
+#include "../io/helper_objects.hpp"
 
 
 namespace hlibs::logging {
@@ -275,6 +276,69 @@ namespace hlibs::logging {
 
         InMemoryLogger sink;
         std::string reset_colors = "\033[39;49m";
+    };
+
+
+    // TODO: single-line doc
+    class FileLogger {
+        using Source = std::experimental::source_location;
+
+      public:
+        explicit FileLogger(const std::filesystem::path& folder = std::filesystem::current_path())
+                : writer(GetFileName(folder), std::ios::app)
+        {
+        }
+
+        FileLogger() = delete;
+        ~FileLogger() noexcept = default;
+
+        FileLogger(const FileLogger& rhs) = delete;
+        FileLogger& operator=(const FileLogger& rhs) = delete;
+
+        // TODO: open class for move
+        FileLogger(FileLogger&& rhs) noexcept = delete;
+        FileLogger& operator=(FileLogger&& rhs) noexcept = delete;
+
+        void info(std::string_view msg, Source sl = std::experimental::source_location::current())
+        {
+            sink.info(msg, sl);
+            write();
+        }
+
+        /// {{$InMemoryLogger},{$FileWriter}}
+        std::string toString() const noexcept
+        {
+            std::ostringstream ss;
+            ss << '{';
+            ss << sink.toString() << ',';
+            ss << writer.toString();
+            ss << '}';
+            return ss.str();
+        }
+
+      private:
+        /// "file_logger_${YYYYmmDD}_${HHMM}.log"
+        static std::string GetFileName(const std::filesystem::path& base)
+        {
+            using facilities::timestamp::DateTime;
+            // TODO: move this to DateTime
+            DateTime dt{};
+
+            if (base.has_filename()) throw std::invalid_argument("base.has_filename()");
+            auto filepath = std::filesystem::path(base);
+            filepath.append("file_logger_${20220903}_${1233}.log");
+            return filepath.string();
+        }
+
+        void write()
+        {
+            auto current = (sink.current_msg == 0) ? 0 : (sink.current_msg - 1); // TODO: let Message start from 1 with an empty msg
+            const auto& msg = sink.messages.at(current).message; // TODO: rename Message::message to Message::str
+            writer.write(msg);
+        }
+
+        InMemoryLogger sink{};
+        hlibs::io::FileWriter writer;
     };
 
 }
