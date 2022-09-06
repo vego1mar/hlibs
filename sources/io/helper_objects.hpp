@@ -31,12 +31,16 @@ namespace hlibs::io {
             stream.rdbuf(this);
         }
 
-        ~StreamToFile() noexcept override
+        /// This destructor is needed to not cause SIGSEGV for the underlying buffer.
+        ~StreamToFile() noexcept override try
         {
-            auto&& buffer = std::any_cast<decltype(ref_stream.get().rdbuf())>(ptr_buffer);
+            auto buffer = std::any_cast<decltype(ref_stream.get().rdbuf())>(ptr_buffer);
             ref_stream.get().rdbuf(buffer);
             ptr_buffer.reset();
             close();
+        }
+        catch (const std::bad_any_cast& e) {
+            std::cerr << "~StreamToFile->bad_any_cast: " << e.what();
         }
 
         StreamToFile(const StreamToFile& rhs) = delete;
@@ -46,7 +50,16 @@ namespace hlibs::io {
         StreamToFile(StreamToFile&& rhs) noexcept = delete;
         StreamToFile& operator=(StreamToFile&& rhs) noexcept = delete;
 
-        // TODO: provide [[nodiscard]] toString() const noexcept
+        /// {"StreamAddress","CompilerSpecificStreamDeclaredTypeName"}
+        [[nodiscard]] std::string toString() const noexcept
+        {
+            std::ostringstream ss;
+            ss << '{';
+            ss << '"' << &ref_stream << "\",";
+            ss << std::quoted(typeid(decltype(ref_stream)).name());
+            ss << '}';
+            return ss.str();
+        }
 
       private:
         std::reference_wrapper<std::ostream> ref_stream;

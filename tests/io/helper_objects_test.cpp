@@ -60,6 +60,21 @@ TEST_CASE("StreamToFile", "[libs][io][StreamToFile]")
         REQUIRE(size1 == size3);
     }
 
+    SECTION("redirect to stderr → expected str representation", "[basic_check][validity]") {
+        const std::filesystem::path file("../../outputs/stream-to-file-4-stderr.txt");
+
+        constexpr auto redirect = [](const std::string& path) {
+            StreamToFile wrapper(std::cerr, path);
+            return wrapper.toString();
+        };
+
+        auto repr = redirect(file);
+        REQUIRE(std::filesystem::file_size(file) == 0UL);
+        REQUIRE_THAT(repr, Catch::Matchers::StartsWith("{"));
+        REQUIRE_THAT(repr, Catch::Matchers::ContainsSubstring("\"0x"));
+        REQUIRE_THAT(repr, Catch::Matchers::EndsWith("}"));
+    }
+
 }
 
 TEST_CASE("FileLoader", "[libs][io][FileLoader]")
